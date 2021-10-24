@@ -1,9 +1,10 @@
 import React from 'react';
+import GridElem from './components/grid.jsx';
 
 export default function App() {
   return (
     <div>
-      This is App.jsx
+     <GridElem/>
     </div>
   );
 }

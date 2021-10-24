@@ -1,3 +1,22 @@
+$cell-dim: 30px;
+
 body {
-  background-color: pink;
+  background-color: azure;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(30, $cell-dim);
+  grid-template-rows: repeat(20, $cell-dim);
+  // grid-template-columns: 1fr;
+  // grid-template-columns: $cell-dim;
+  grid-template-rows: $cell-dim;
+}
+.cell {
+  width: $cell-dim;
+  height: $cell-dim;
+  background-color: whitesmoke;
+  border: 1px solid rgb(206, 224, 247);
+  display: inline-block;
+  text-align: center;
 }
