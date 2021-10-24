@@ -15,8 +15,8 @@ body {
 .cell {
   width: $cell-dim;
   height: $cell-dim;
-  background-color: whitesmoke;
   border: 1px solid rgb(206, 224, 247);
+  background-color: transparent;
   display: inline-block;
   text-align: center;
 }
