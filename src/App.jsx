@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import GridElem from './components/grid.jsx';
 
 export default function App() {
   const handleKeyDown = (e) => {
     console.log('e.code :>> ', e.code);
-    //TODO FIGURE OUT HOW TO LOG KEYBOARD EVENTS
+    // TODO FIGURE OUT HOW TO LOG KEYBOARD EVENTS
     //  switch (e.code) {
     //    case 'keyA':
     //      movePlayer(-1, 0);
@@ -23,7 +23,8 @@ export default function App() {
   };
 
   return (
-    <div onKeyDown={handleKeyDown}>
+    <div>
+      {/* <div onKeyDown={handleKeyDown}> */}
       <GridElem />
     </div>
   );
