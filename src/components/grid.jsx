@@ -91,7 +91,28 @@ const movePlayer = (userPosition, x, y) => {
   }
   return [destinationX, destinationY];
 };
-
+const getDisplacementFromKey = (code) => {
+  let displacementX = 0;
+  let displacementY = 0;
+  console.log('keydown');
+  switch (code) {
+    case 'KeyA':
+      displacementX = -1;
+      break;
+    case 'KeyW':
+      displacementY = -1;
+      break;
+    case 'KeyD':
+      displacementX = 1;
+      break;
+    case 'KeyS':
+      displacementY = 1;
+      break;
+    default:
+      break;
+  }
+  return [displacementX, displacementY];
+};
 // players grid
 const PlayersGrid = ({ items }) => {
   const [userPosition, setUserPosition] = useState({
@@ -101,45 +122,24 @@ const PlayersGrid = ({ items }) => {
   const prevPosition = useRef(userPosition);
   useEffect(() => {
     const handleKeyPress = (e) => {
-      let displacementX = 0;
-      let displacementY = 0;
-      console.log('keydown');
-      switch (e.code) {
-        case 'KeyA':
-          displacementX = -1;
-          break;
-        case 'KeyW':
-          displacementY = -1;
-          break;
-        case 'KeyD':
-          displacementX = 1;
-          break;
-        case 'KeyS':
-          displacementY = 1;
-          break;
-        default:
-          break;
-      }
+      const [displacementX, displacementY] = getDisplacementFromKey(e.code);
       prevPosition.current = userPosition;
       const [x, y] = movePlayer(userPosition, displacementX, displacementY);
-      if (prevPosition.current.x !== x || prevPosition.current.y !== y) {
-        setUserPosition({ x, y }); // causing multiple rerenders
-      }
+      setUserPosition({ x, y });
     };
     document.addEventListener('keypress', handleKeyPress);
     return () => {
       // needs to be removed as if its retained, document will have multiple 'keypress' listeners
+      // can't use an anonymous function, won't be able to track the exact function
       document.removeEventListener('keypress', handleKeyPress);
     };
   }, [userPosition]);
 
-  // implant player in
   console.log('rendering player grid');
   if (prevPosition !== null || prevPosition !== undefined) {
     items[prevPosition.current.y][prevPosition.current.x] = null;
   }
   items[userPosition.y][userPosition.x] = userColor;
-  // playersArr2d[0][0] = userColor;
   const arr1d = [].concat(...items);
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (
@@ -189,12 +189,6 @@ const addUser = (rowCoord, colCoord, arr) => {};
 // MOVE DOT IN GRID
 
 export default function GridElem() {
-  // const [prevPosition, setPrevPosition] = useState(userPosition);
-
-  // useEffect(() => {
-  //   prevPosition.current = userPosition;
-  // }, [userPosition]);
-
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(
     genGridArray('rgb(255, 255, 255)')
