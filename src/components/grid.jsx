@@ -27,28 +27,14 @@ const genGridArray = (fill = null) => {
 const clickOnCell = (index) => {
   console.log(`cell ${index} clicked`);
 };
-// flat list of divs <-
-// or rows of divs
-const GridCells = (arr2d) => {
-  const arr1d = [].concat(...arr2d);
-  const cells = arr1d.map((cell, index) => (
-    <button
-      type="button"
-      onClick={() => {
-        clickOnCell(`grid${Math.floor(index / numCols)}_${index % numCols}`);
-      }}
-      className="cell"
-      key={`grid${Math.floor(index / numCols)}_${index % numCols}`}
-    />
-  ));
-
-  return cells;
-};
 
 // click grid for special objects
 const ClickGrid = ({ items }) => {
   console.log('rendering click grid');
   const arr1d = [].concat(...items);
+  // on click, if square is empty, fill with new color
+  // if not remove color
+
   const cells = arr1d.map((cell, index) =>
     cell !== null ? (
       <button
@@ -70,7 +56,49 @@ const ClickGrid = ({ items }) => {
   return (
     <div
       id="clickGrid"
-      style={{ zIndex: 2 }}
+      style={{ zIndex: 3 }}
+      className="grid-container position-absolute"
+    >
+      {cells}
+    </div>
+  );
+};
+
+const getRow = (index) => Math.floor(index / numCols);
+const getCol = (index) => index % numCols;
+const colorPalette = ['#A09ABC', '#21A179', '#0B4F6C', '#FFC09F', '#FF5A5F'];
+const buildOnCell = (row, col, worldArr, setWorldArr) => {
+  const color = colorPalette[0];
+  if (worldArr[row][col] === null) {
+    worldArr[row][col] = color;
+  } else {
+    worldArr[row][col] = null;
+  }
+  setWorldArr([...worldArr]);
+  console.log('worldArr :>> ', worldArr);
+  console.log(`building on cell ${row}_${col}`);
+};
+const BuildGrid = ({ items, setItems }) => {
+  console.log('rendering click grid');
+  const arr1d = [].concat(...items);
+  // on click, if square is empty, fill with new color
+  // if not remove color
+
+  const cells = arr1d.map((cell, index) => (
+    <input
+      type="text"
+      onMouseDown={() => {
+        buildOnCell(getRow(index), getCol(index), items, setItems);
+      }}
+      className="cell"
+      key={`bg${getRow(index)}_${getCol(index)}`}
+    />
+  ));
+
+  return (
+    <div
+      id="BuildGrid"
+      style={{ zIndex: 4, cursor: 'grab' }}
       className="grid-container position-absolute"
     >
       {cells}
@@ -91,6 +119,7 @@ const movePlayer = (userPosition, x, y) => {
   }
   return [destinationX, destinationY];
 };
+
 const getDisplacementFromKey = (code) => {
   let displacementX = 0;
   let displacementY = 0;
@@ -114,18 +143,22 @@ const getDisplacementFromKey = (code) => {
   return [displacementX, displacementY];
 };
 // players grid
-const PlayersGrid = ({ items }) => {
+const PlayersGrid = () => {
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
-  const prevPosition = useRef(userPosition);
+  const items = genGridArray();
+  items[userPosition.y][userPosition.x] = userColor;
+
   useEffect(() => {
     const handleKeyPress = (e) => {
       const [displacementX, displacementY] = getDisplacementFromKey(e.code);
-      prevPosition.current = userPosition;
-      const [x, y] = movePlayer(userPosition, displacementX, displacementY);
-      setUserPosition({ x, y });
+      if (!((displacementX === displacementY) === 0)) {
+        const [x, y] = movePlayer(userPosition, displacementX, displacementY);
+        setUserPosition({ x, y });
+        // should send this new position to other users via sockets
+      }
     };
     document.addEventListener('keypress', handleKeyPress);
     return () => {
@@ -136,10 +169,6 @@ const PlayersGrid = ({ items }) => {
   }, [userPosition]);
 
   console.log('rendering player grid');
-  if (prevPosition !== null || prevPosition !== undefined) {
-    items[prevPosition.current.y][prevPosition.current.x] = null;
-  }
-  items[userPosition.y][userPosition.x] = userColor;
   const arr1d = [].concat(...items);
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (
@@ -147,14 +176,12 @@ const PlayersGrid = ({ items }) => {
       className="cell"
       key={`player${Math.floor(index / numCols)}_${index % numCols}`}
       style={{ backgroundColor: cell }}
-    >
-      {Math.floor(index / numCols)}_{index % numCols}
-    </div>
+    />
   ));
   return (
     <div
       id="playerGrid"
-      style={{ zIndex: 1, fontSize: '9px' }}
+      style={{ zIndex: 2 }}
       className="grid-container position-absolute"
     >
       {cells}
@@ -190,9 +217,7 @@ const addUser = (rowCoord, colCoord, arr) => {};
 
 export default function GridElem() {
   // to read from db
-  const [backgrndArr, setBackgrndArr] = useState(
-    genGridArray('rgb(255, 255, 255)')
-  );
+  const [backgrndArr, setBackgrndArr] = useState(genGridArray());
   const [playerPos, setPlayerPos] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState(genGridArray());
   console.log('rendering grid elem');
@@ -203,6 +228,7 @@ export default function GridElem() {
       <BaseGrid items={backgrndArr} />
       <PlayersGrid items={playerPos} />
       <ClickGrid items={clickableCells} />
+      <BuildGrid items={backgrndArr} setItems={setBackgrndArr} />
     </div>
   );
 }
