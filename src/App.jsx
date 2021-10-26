@@ -27,6 +27,7 @@ export default function App() {
   return (
     <Router>
       <Navbar />
+
       <Switch>
         <Route exact path={['/', '/home', '/main']} component={Grid} />
         <Route path="/edit" component={EditWorld} />
