@@ -11,7 +11,7 @@ export default function userModel(sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       unique: true,
     },
-    real_name: {
+    realName: {
       type: DataTypes.STRING(64),
       allowNull: false,
     },

@@ -13,7 +13,7 @@ export default function initSignupController(db) {
       }
       // get the hashed password as output from the SHA object
       const hashedPassword = util.getHash(validatedUserInfo.password);
-      const nameFmt = validatedUserInfo.realname.trim().replace(/\s+/g, ' ');
+      const nameFmt = validatedUserInfo.realName.trim().replace(/\s+/g, ' ');
       const { username } = validatedUserInfo;
       const user = await db.User.findOne({
         where: {
@@ -46,7 +46,7 @@ export default function initSignupController(db) {
         error.message === globals.USERNAME_EXISTS_ERROR_MESSAGE
         || error.message === globals.INVALID_REGISTER_REQUEST_MESSAGE
       ) {
-        errorMessage = 'There has been an error. Please try registering again with a proper name and password.';
+        errorMessage = 'There has been an error. Please try registering again with a proper username, name, or password.';
       } else {
         errorMessage = error.message;
       }

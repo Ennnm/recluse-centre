@@ -30,7 +30,7 @@ export default function App() {
       <Switch>
         <Route exact path={['/', '/home', '/main']} component={Grid} />
         <Route path="/edit" component={EditWorld} />
-        <Route path="/register" component={Register} />
+        <Route path="/signup" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="*" component={Error404} />
       </Switch>
