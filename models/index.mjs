@@ -2,8 +2,11 @@ import { Sequelize } from 'sequelize';
 import url from 'url';
 import allConfig from '../config/config.js';
 
+// no admin model, because it only contains foreign keys
 import initUserModel from './user.mjs';
 import initWorldModel from './world.mjs';
+import initSessionModel from './session.mjs';
+import initMessageModel from './message.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -35,9 +38,51 @@ if (env === 'production') {
 
 db.User = initUserModel(sequelize, Sequelize.DataTypes);
 db.World = initWorldModel(sequelize, Sequelize.DataTypes);
+db.Session = initSessionModel(sequelize, Sequelize.DataTypes);
+db.Message = initMessageModel(sequelize, Sequelize.DataTypes);
 
 db.User.hasMany(db.World);
 db.World.belongsTo(db.User);
+
+// creates a method in the
+// user object with getSentMessages, etc.
+// allows the use of include with sentMessages
+db.User.hasMany(db.Message, {
+  as: 'sentMessages',
+  foreignKey: 'user_id',
+});
+// creates a method in the
+// user object with getWorldMessages, etc.
+// allows the use of include with worldMessages
+db.World.hasMany(db.Message, {
+  as: 'worldMessages',
+  foreignKey: 'world_id',
+});
+db.Message.belongsTo(db.User, {
+  as: 'messageSender',
+  foreignKey: 'user_id',
+});
+db.Message.belongsTo(db.World, {
+  as: 'messageWorld',
+  foreignKey: 'world_id',
+});
+
+db.User.hasMany(db.Session, {
+  as: 'userSessions',
+  foreignKey: 'user_id',
+});
+db.World.hasMany(db.Session, {
+  as: 'worldSessions',
+  foreignKey: 'world_id',
+});
+db.Session.belongsTo(db.User, {
+  as: 'sessionUser',
+  foreignKey: 'user_id',
+});
+db.Session.belongsTo(db.World, {
+  as: 'sessionWorld',
+  foreignKey: 'world_id',
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
