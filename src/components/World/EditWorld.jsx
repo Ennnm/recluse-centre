@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { numCols, numRows } from './GridConstants.jsx';
+import { numCols, numRows, genGridArray } from './GridConstants.jsx';
+import BaseGrid from './BaseGrid.jsx';
 
 const getRow = (index) => Math.floor(index / numCols);
 const getCol = (index) => index % numCols;
 const colorPalette = ['#A09ABC', '#21A179', '#0B4F6C', '#FFC09F', '#FF5A5F'];
+
+// change item built on click grid based on tool selected
 
 const buildOnCell = (row, col, worldArr, setWorldArr) => {
   const color = colorPalette[0];
@@ -47,5 +50,18 @@ const BuildGrid = ({ items, setItems }) => {
 };
 
 export default function EditWorld() {
-  return <></>;
+  // to read from db
+  const [backgrndArr, setBackgrndArr] = useState(genGridArray());
+  const [worldState, setWorldState] = useState({
+    rooms: [],
+    walls: [],
+    actionObjects: [],
+  });
+  return (
+    <div className="pt-5">
+      <h1>⚒ Edit World</h1>
+      <BaseGrid items={backgrndArr} worldState={worldState} />
+      <BuildGrid items={backgrndArr} setItems={setBackgrndArr} />
+    </div>
+  );
 }

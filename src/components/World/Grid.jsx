@@ -23,10 +23,10 @@ export default function GridElem() {
   console.log('playerPos :>> ', playerPos);
 
   return (
-    <div>
+    <>
       <BaseGrid items={backgrndArr} worldState={worldState} />
       <PlayersGrid items={playerPos} />
       <ClickGrid items={clickableCells} />
-    </div>
+    </>
   );
 }
