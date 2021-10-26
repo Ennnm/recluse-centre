@@ -1,3 +1,5 @@
+import { genGridArray, WorldState } from '../src/components/World/GridConstants.jsx';
+
 const jssha = require('jssha');
 
 const { SALT } = process.env;
@@ -11,6 +13,7 @@ function getHash(input) {
   return shaObj.getHash('HEX');
 }
 
+const blankWorld = new WorldState();
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('users', [{
@@ -21,9 +24,17 @@ module.exports = {
       updated_at: new Date(),
 
     }]);
+    await queryInterface.bulkInsert('worlds', [{
+      created_user_id: 1,
+      name: 'plato\'s cave',
+      world_state: JSON.stringify(blankWorld),
+      created_at: new Date(),
+      updated_at: new Date(),
+    }]);
   },
   // to create default world json here
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('worlds', null, {});
     await queryInterface.bulkDelete('users', null, {});
   },
 };
