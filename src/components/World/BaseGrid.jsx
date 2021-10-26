@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows } from './GridConstants.jsx';
+import React from 'react';
+import { numCols } from './GridConstants.mjs';
 
 export default function BaseGrid({ items, worldState }) {
   console.log('rendering base grid');

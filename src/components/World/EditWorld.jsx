@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { numCols, numRows, genGridArray } from './GridConstants.jsx';
+import { numCols, genGridArray } from './GridConstants.mjs';
 import BaseGrid from './BaseGrid.jsx';
 
 const getRow = (index) => Math.floor(index / numCols);

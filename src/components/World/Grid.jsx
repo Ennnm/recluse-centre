@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.jsx';
+import React, { useState } from 'react';
+import { genGridArray } from './GridConstants.mjs';
 import BaseGrid from './BaseGrid.jsx';
 import PlayersGrid from './PlayersGrid.jsx';
 import ClickGrid from './ClickGrid.jsx';

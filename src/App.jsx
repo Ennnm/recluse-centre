@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 // component partials
@@ -27,7 +27,6 @@ export default function App() {
   return (
     <Router>
       <Navbar />
-
       <Switch>
         <Route exact path={['/', '/home', '/main']} component={Grid} />
         <Route path="/edit" component={EditWorld} />

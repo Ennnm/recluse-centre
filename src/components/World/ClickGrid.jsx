@@ -2,7 +2,7 @@
 /* eslint-disable no-confusing-arrow */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.jsx';
+import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 
 const clickOnCell = (index) => {
   console.log(`cell ${index} clicked`);
