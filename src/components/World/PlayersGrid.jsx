@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.jsx';
+import React, { useState, useEffect } from 'react';
+import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 
 import { getRandomColor, getRandomInt } from './utils.jsx';
 

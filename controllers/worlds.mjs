@@ -1,10 +1,10 @@
-import pkg from 'sequelize';
+// import pkg from 'sequelize';
 import {
-  numCols, numRows, genGridArray, WorldState,
-} from '../src/components/World/GridConstants.jsx';
+  WorldState,
+} from '../src/components/World/GridConstants.mjs';
 import { checkError } from './utils.mjs';
 
-const { Op } = pkg;
+// const { Op } = pkg;
 
 export default function initWorldsController(db) {
   const create = async (req, res) => {
