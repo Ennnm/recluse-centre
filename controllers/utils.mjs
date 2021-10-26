@@ -26,3 +26,5 @@ export function checkError(error) {
     console.error(error);
   }
 }
+
+export const getInvalidFormRequests = (obj) => Object.keys(obj).filter((key) => key.indexOf('invalid') >= 0);
