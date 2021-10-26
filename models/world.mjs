@@ -6,7 +6,7 @@ export default function worldModel(sequelize, DataTypes) {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    created_user_id: {
+    createdUserId: {
       allowNull: false,
       type: DataTypes.INTEGER,
       references: {
@@ -18,7 +18,7 @@ export default function worldModel(sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       allowNull: false,
     },
-    world_state: {
+    worldState: {
       type: DataTypes.JSON,
     },
     createdAt: {

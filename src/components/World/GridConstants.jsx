@@ -35,3 +35,10 @@ export function genGridArray(fill = null) {
   const arr = [...Array(numRows)].map(() => Array(numCols).fill(fill));
   return arr;
 }
+
+export function WorldState() {
+  this.board = genGridArray();
+  this.wallCells = [];
+  this.roomCells = [];
+  this.activeObjCells = [];
+}
