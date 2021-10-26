@@ -2,6 +2,9 @@ import { Sequelize } from 'sequelize';
 import url from 'url';
 import allConfig from '../config/config.js';
 
+import initUserModel from './user.mjs';
+import initWorldModel from './world.mjs';
+
 const env = process.env.NODE_ENV || 'development';
 
 const config = allConfig[env];
@@ -29,6 +32,12 @@ if (env === 'production') {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
+
+db.User = initUserModel(sequelize, Sequelize.DataTypes);
+db.World = initWorldModel(sequelize, Sequelize.DataTypes);
+
+db.User.hasMany(db.World);
+db.World.belongsTo(db.User);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

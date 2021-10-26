@@ -8,6 +8,8 @@ const getRow = (index) => Math.floor(index / numCols);
 const getCol = (index) => index % numCols;
 const colorPalette = ['#A09ABC', '#21A179', '#0B4F6C', '#FFC09F', '#FF5A5F'];
 
+// change item built on click grid based on tool selected
+
 const buildOnCell = (row, col, worldArr, setWorldArr) => {
   const color = colorPalette[0];
   if (worldArr[row][col] === null) {
