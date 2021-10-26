@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,6 +16,7 @@ import Register from './components/Register/RegisterPage.jsx';
 import GridElem from './components/grid.jsx';
 // error pages
 import Error404 from './components/Error/Error404Page.jsx';
+
 
 function Grid() {
   return (
