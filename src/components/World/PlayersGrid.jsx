@@ -41,8 +41,15 @@ const getDisplacementFromKey = (code) => {
   }
   return [displacementX, displacementY];
 };
-
-export default function PlayersGrid() {
+const getGridObject = (x, y, grid) => grid[y][x];
+const isWall = (obj) => {
+  if (obj !== null && obj.color !== '') {
+    return true;
+  }
+  return false;
+};
+export default function PlayersGrid({ playerPositions, backgrndArr }) {
+  // to replace with last position from db
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
@@ -55,7 +62,11 @@ export default function PlayersGrid() {
       const [displacementX, displacementY] = getDisplacementFromKey(e.code);
       if (!((displacementX === displacementY) === 0)) {
         const [x, y] = movePlayer(userPosition, displacementX, displacementY);
-        setUserPosition({ x, y });
+        // check if player is hitting any walls
+        const gridObj = getGridObject(x, y, backgrndArr);
+        if (!isWall(gridObj)) {
+          setUserPosition({ x, y });
+        }
         // should send this new position to other users via sockets
       }
     };

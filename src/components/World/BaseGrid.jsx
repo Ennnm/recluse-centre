@@ -22,3 +22,13 @@ export default function BaseGrid({ items, worldState, showText = true }) {
     </div>
   );
 }
+
+export const setWorldProperties = (world, setBackgrndArr, setWorld) => {
+  const { id, userId, name, worldState } = world;
+  const { board, activeObjCells, roomCells, wallCells } = worldState;
+  worldId.current = id;
+  worldName.current = name;
+  // setWorldName(name);
+  setBackgrndArr(board);
+  setWorld(worldState);
+};
