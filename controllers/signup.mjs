@@ -44,9 +44,10 @@ export default function initSignupController(db) {
       let errorMessage = '';
       if (
         error.message === globals.USERNAME_EXISTS_ERROR_MESSAGE
-        || error.message === globals.INVALID_REGISTER_REQUEST_MESSAGE
       ) {
         errorMessage = 'There has been an error. Please try registering again with a proper username, name, or password.';
+      } else if (error.message === globals.INVALID_REGISTER_REQUEST_MESSAGE) {
+        errorMessage = 'There has been an error. Registration input validation failed!';
       } else {
         errorMessage = error.message;
       }
