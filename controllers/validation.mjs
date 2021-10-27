@@ -28,10 +28,18 @@ const validateUserName = (userInfo, type) => {
   return obj;
 };
 
-const validatePassword = (userInfo) => {
+const validatePassword = (userInfo, type) => {
   const obj = {};
+  if (!userInfo.password || userInfo.password.trim === '') {
+    if (type === 'login') {
+      obj.password_invalid = 'Please type in your password.';
+    }
+  }
+
   if (!userInfo.password || userInfo.password.trim === '' || userInfo.password.length < 8) {
-    obj.password_invalid = 'Please enter a valid password of at least 8 characters long.';
+    if (type === 'signup') {
+      obj.password_invalid = 'Please enter a valid password of at least 8 characters long.';
+    }
   }
   return obj;
 };
@@ -40,10 +48,11 @@ export const validateUserInfo = (userInfo) => ({
   ...userInfo,
   ...validateRealName(userInfo, 'signup'),
   ...validateUserName(userInfo, 'signup'),
-  ...validatePassword(userInfo),
+  ...validatePassword(userInfo, 'signup'),
 });
 
 export const validateLogin = (userInfo) => ({
   ...userInfo,
   ...validateUserName(userInfo, 'login'),
+  ...validatePassword(userInfo, 'login'),
 });
