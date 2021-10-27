@@ -7,7 +7,7 @@ export default function BaseGrid({ items, worldState, showText = true }) {
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (
     <div
-      className="cell"
+      className="cell gridBorder"
       key={`base${Math.floor(index / numCols)}_${index % numCols}`}
       style={{
         backgroundColor: cell === null ? cell : cell.color,
@@ -17,18 +17,8 @@ export default function BaseGrid({ items, worldState, showText = true }) {
     </div>
   ));
   return (
-    <div id="baseGrid" className="grid-container position-absolute">
+    <div id="baseGrid" className="grid-container position-absolute ">
       {cells}
     </div>
   );
 }
-
-export const setWorldProperties = (world, setBackgrndArr, setWorld) => {
-  const { id, userId, name, worldState } = world;
-  const { board, activeObjCells, roomCells, wallCells } = worldState;
-  worldId.current = id;
-  worldName.current = name;
-  // setWorldName(name);
-  setBackgrndArr(board);
-  setWorld(worldState);
-};

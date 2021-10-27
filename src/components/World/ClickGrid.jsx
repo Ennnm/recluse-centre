@@ -23,11 +23,13 @@ export default function ClickGrid({ items }) {
           clickOnCell(`cg${Math.floor(index / numCols)}_${index % numCols}`);
         }}
         className="cell"
+        style={{ border: '0px' }}
         key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
       />
     ) : (
       <div
         className="cell"
+        style={{ border: '0px' }}
         key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
       />
     )
