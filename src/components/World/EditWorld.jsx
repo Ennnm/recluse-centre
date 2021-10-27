@@ -9,6 +9,7 @@ import {
   numCols,
   genGridArray,
 } from './GridConstants.mjs';
+
 import { setWorldFromId, updateWorldInDb } from './axiosRequests.jsx';
 import BaseGrid from './BaseGrid.jsx';
 
@@ -28,7 +29,7 @@ const buildWallOnCell = (row, col, world, setWorld) => {
 
   const worldArr = world.board;
   if (board[row][col] === null || board[row][col].color === '') {
-    board[row][col] = { color };
+    board[row][col] = { ...board[row][col], color };
     // might not be needed
     // wallCells.push(new Wall(row, col, color));
   } else {
@@ -44,14 +45,15 @@ const addCharToCell = (value, row, col, world, setWorld) => {
 };
 const BuildGrid = ({ items, world, setWorld }) => {
   console.log('rendering click grid');
-  const [boardArr, setBoardArr] = useState(items);
-  const arr1d = [].concat(...boardArr);
+  // const [boardArr, setBoardArr] = useState(items);
+  const arr1d = [].concat(...items);
+  // const arr1d = [].concat(...world.board);
   // on click, if square is empty, fill with new color
   // if not remove color
 
   // different click modes for wall, room and activeObject creation
   // wall creation
-
+  console.log('arr1d :>> ', arr1d);
   const cells = arr1d.map((cell, index) => (
     <input
       type="text"
@@ -68,8 +70,12 @@ const BuildGrid = ({ items, world, setWorld }) => {
           setWorld
         );
       }}
+      style={{
+        backgroundColor: cell === null ? cell : cell.color,
+      }}
       className="cell"
       key={`bg${getRow(index)}_${getCol(index)}`}
+      value={cell !== null && cell.charFill !== '' ? cell.charFill : ''}
     />
   ));
 
@@ -115,7 +121,7 @@ export default function EditWorld() {
   return (
     <div className="pt-5">
       <h1>⚒ Editing {worldName.current}</h1>
-      <BaseGrid items={backgrndArr} world={world} showText={false} />
+
       <BuildGrid
         items={backgrndArr}
         setItems={setBackgrndArr}
