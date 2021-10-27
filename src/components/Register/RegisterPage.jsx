@@ -104,7 +104,7 @@ export default function RegisterPage() {
 
   if (isRegistered) {
     return (
-      <Redirect push to="/login?registersuccess=true" />
+      <Redirect push to={`/login?registersuccess=true&username=${username}`} />
     );
   }
 
