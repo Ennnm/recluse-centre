@@ -36,7 +36,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      created_user_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

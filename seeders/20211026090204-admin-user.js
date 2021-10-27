@@ -1,4 +1,5 @@
-import { genGridArray, WorldState } from '../src/components/World/GridConstants.jsx';
+// import { genGridArray, WorldState } from '../src/components/World/GridConstants.jsx';
+// const WorldState = require('./src/components/World/GridConstants.jsx');
 
 const jssha = require('jssha');
 
@@ -12,8 +13,15 @@ function getHash(input) {
 
   return shaObj.getHash('HEX');
 }
+const numCols = 30;
+const numRows = 20;
 
-const blankWorld = new WorldState();
+const blankWorld = {
+  board: [...Array(numRows)].map(() => Array(numCols).fill()),
+  wallCells: [],
+  roomCells: [],
+  activeObjCells: [],
+};
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('users', [{
@@ -25,7 +33,7 @@ module.exports = {
 
     }]);
     await queryInterface.bulkInsert('worlds', [{
-      created_user_id: 1,
+      user_id: 1,
       name: 'plato\'s cave',
       world_state: JSON.stringify(blankWorld),
       created_at: new Date(),
