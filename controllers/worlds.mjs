@@ -42,7 +42,7 @@ export default function initWorldsController(db) {
       res.status(500).send({ error });
     }
   };
-  const show = async (res, req) => {
+  const show = async (req, res) => {
     const { id } = req.params;
     try {
       const world = await db.World.findByPk(id);

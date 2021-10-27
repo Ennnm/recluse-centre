@@ -1,7 +1,7 @@
 import React from 'react';
 import { numCols } from './GridConstants.mjs';
 
-export default function BaseGrid({ items, worldState }) {
+export default function BaseGrid({ items, worldState, showText = true }) {
   console.log('rendering base grid');
   const arr1d = [].concat(...items);
   // read arr2d for wall grid, set div style accordigng to color stored in array
@@ -9,9 +9,11 @@ export default function BaseGrid({ items, worldState }) {
     <div
       className="cell"
       key={`base${Math.floor(index / numCols)}_${index % numCols}`}
-      style={{ backgroundColor: cell, fontSize: '9px' }}
+      style={{
+        backgroundColor: cell === null ? cell : cell.color,
+      }}
     >
-      {Math.floor(index / numCols)}_{index % numCols}
+      {cell === null || !showText ? '' : cell.charFill}
     </div>
   ));
   return (
@@ -20,3 +22,13 @@ export default function BaseGrid({ items, worldState }) {
     </div>
   );
 }
+
+export const setWorldProperties = (world, setBackgrndArr, setWorld) => {
+  const { id, userId, name, worldState } = world;
+  const { board, activeObjCells, roomCells, wallCells } = worldState;
+  worldId.current = id;
+  worldName.current = name;
+  // setWorldName(name);
+  setBackgrndArr(board);
+  setWorld(worldState);
+};
