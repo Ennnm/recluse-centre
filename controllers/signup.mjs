@@ -53,6 +53,7 @@ export default function initSignupController(db) {
       }
 
       const resObj = {
+        error: errorMessage,
         message: errorMessage,
         ...validatedUserInfo,
       };

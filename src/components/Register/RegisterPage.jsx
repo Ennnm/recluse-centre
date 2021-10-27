@@ -1,7 +1,31 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import * as errors from '../../modules/errors.mjs';
+
+// eslint-disable-next-line react/prop-types
+function GlobalRegisterErrorAlert({ errorMessage }) {
+  // eslint-disable-next-line react/prop-types
+  if (errorMessage.trim() !== '') {
+    return (
+      <div className="col-12">
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
 
 export default function RegisterPage() {
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [globalErrorMessage, setGlobalErrorMessage] = useState('');
+  const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
+  const [nameInvalidMessage, setNameInvalidMessage] = useState('');
+  const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');
+
   const [username, setUsername] = useState('');
   const [realname, setRealname] = useState('');
   const [password, setPassword] = useState('');
@@ -30,6 +54,10 @@ export default function RegisterPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    let usernameInvalid = '';
+    let nameInvalid = '';
+    let passwordInvalid = '';
+
     const data = {
       realName: realname,
       username,
@@ -39,16 +67,43 @@ export default function RegisterPage() {
     axios
       .post('/signup', data)
       .then((response) => {
-        // handle success
-        console.log('is success');
-        console.log(response);
+        if (response.data.error) {
+          window.scrollTo(0, 0);
+
+          if (response.data.error === errors.REGISTER_INPUT_VALIDATION_ERROR_MESSAGE) {
+            if (response.data.username_invalid) {
+              usernameInvalid = response.data.username_invalid;
+            }
+
+            if (response.data.realname_invalid) {
+              nameInvalid = response.data.realname_invalid;
+            }
+
+            if (response.data.password_invalid) {
+              passwordInvalid = response.data.password_invalid;
+            }
+          }
+
+          setUsernameInvalidMessage(usernameInvalid);
+          setNameInvalidMessage(nameInvalid);
+          setPasswordInvalidMessage(passwordInvalid);
+          setGlobalErrorMessage(errors.REGISTER_GLOBAL_ERROR_MESSAGE);
+        } else {
+          setIsRegistered(true);
+        }
       })
-      .catch((error) => {
+      .catch(() => {
         // handle error
-        console.log('is error');
-        console.log(error);
+        window.scrollTo(0, 0);
+        setGlobalErrorMessage(errors.REGISTER_GLOBAL_ERROR_MESSAGE);
       });
   };
+
+  if (isRegistered) {
+    return (
+      <Redirect push to="/login?registersuccess=true" />
+    );
+  }
 
   return (
     <div className="container-fluid pt-5">
@@ -72,11 +127,7 @@ export default function RegisterPage() {
                   <a href="/login">here.</a>
                 </p>
               </div>
-              <div className="col-12">
-                <div className="alert alert-danger" role="alert">
-                  Test
-                </div>
-              </div>
+              <GlobalRegisterErrorAlert errorMessage={globalErrorMessage} />
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="userName">
@@ -84,17 +135,18 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="text"
-                  className="
-                    form-control
-                    is-invalid
-                  "
+                  className={
+                    `form-control${
+                      usernameInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                    }`
+                  }
                   id="userName"
                   name="username"
                   placeholder="e.g. chee_kean"
                   value={username}
                   onChange={handleUsernameChange}
                 />
-                <div className="invalid-feedback">Test</div>
+                <div className="invalid-feedback">{usernameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -103,17 +155,18 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="text"
-                  className="
-                    form-control
-                    is-invalid
-                  "
+                  className={
+                    `form-control${
+                      nameInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                    }`
+                  }
                   id="realName"
                   name="realname"
                   placeholder="e.g. Chee Kean"
                   value={realname}
                   onChange={handleRealnameChange}
                 />
-                <div className="invalid-feedback">Test</div>
+                <div className="invalid-feedback">{nameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -122,16 +175,17 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="password"
-                  className="
-                    form-control
-                    is-invalid
-                  "
+                  className={
+                    `form-control${
+                      passwordInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                    }`
+                  }
                   id="password"
                   name="password"
                   value={password}
                   onChange={handlePasswordChange}
                 />
-                <div className="invalid-feedback">Test</div>
+                <div className="invalid-feedback">{passwordInvalidMessage}</div>
               </div>
             </div>
             <hr className="mb-4" />
