@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 
-import { getRandomColor, getRandomInt } from './utils.jsx';
+import { getRandomColor, getRandomInt } from '../../../utils.mjs';
 
 const userColor = getRandomColor();
 
-const movePlayer = (userPosition, x, y) => {
+const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
   let destinationY = userPosition.y;
 
@@ -48,9 +48,25 @@ const isWall = (obj) => {
   }
   return false;
 };
+const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
+  const gridObj = getGridObject(x, y, backgrndArr);
+  // check if player is hitting any walls
+
+  if (!isWall(gridObj)) {
+    setUserPosition({ x, y });
+  } else {
+    // if user is in the wall
+    const currentGrid = getGridObject(oldX, oldY, backgrndArr);
+    if (isWall(currentGrid)) {
+      setUserPosition({ x, y });
+    }
+  }
+};
 export default function PlayersGrid({ playerPositions, backgrndArr }) {
   // to replace with last position from db
   const [userPosition, setUserPosition] = useState({
+    // x: 11,
+    // y: 11,
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
@@ -61,12 +77,20 @@ export default function PlayersGrid({ playerPositions, backgrndArr }) {
     const handleKeyPress = (e) => {
       const [displacementX, displacementY] = getDisplacementFromKey(e.code);
       if (!((displacementX === displacementY) === 0)) {
-        const [x, y] = movePlayer(userPosition, displacementX, displacementY);
-        // check if player is hitting any walls
-        const gridObj = getGridObject(x, y, backgrndArr);
-        if (!isWall(gridObj)) {
-          setUserPosition({ x, y });
-        }
+        const [x, y] = movedPosition(
+          userPosition,
+          displacementX,
+          displacementY
+        );
+        movePlayer(
+          x,
+          y,
+          userPosition.x,
+          userPosition.y,
+          backgrndArr,
+          setUserPosition
+        );
+
         // should send this new position to other users via sockets
       }
     };
@@ -85,7 +109,10 @@ export default function PlayersGrid({ playerPositions, backgrndArr }) {
     <div
       className="cell"
       key={`player${Math.floor(index / numCols)}_${index % numCols}`}
-      style={{ backgroundColor: cell }}
+      style={{
+        backgroundColor: cell,
+        // borderRadius: '45%',
+      }}
     />
   ));
   return (

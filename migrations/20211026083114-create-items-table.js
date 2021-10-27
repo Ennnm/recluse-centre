@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      profile_img: {
+        type: Sequelize.STRING(64),
+
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

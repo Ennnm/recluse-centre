@@ -14,7 +14,7 @@ export default function initSignupController(db) {
       // get the hashed password as output from the SHA object
       const hashedPassword = util.getHash(validatedUserInfo.password);
       const nameFmt = validatedUserInfo.realName.trim().replace(/\s+/g, ' ');
-      const { username } = validatedUserInfo;
+      const { username, profileImg } = validatedUserInfo;
       const user = await db.User.findOne({
         where: {
           username,
@@ -24,11 +24,11 @@ export default function initSignupController(db) {
       if (user) {
         throw new Error(globals.USERNAME_EXISTS_ERROR_MESSAGE);
       }
-
       const newUser = await db.User.create({
         username,
         realName: nameFmt,
         password: hashedPassword,
+        profileImg,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

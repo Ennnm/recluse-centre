@@ -20,6 +20,9 @@ export default function userModel(sequelize, DataTypes) {
       type: DataTypes.STRING,
       is: /^[0-9a-f]{64}$/i,
     },
+    profileImg: {
+      type: DataTypes.STRING(64),
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,

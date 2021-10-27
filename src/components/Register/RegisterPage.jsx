@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getRandomColor } from '../../../utils.mjs';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -34,6 +35,7 @@ export default function RegisterPage() {
       realName: realname,
       username,
       password,
+      profileImg: getRandomColor(),
     };
 
     axios
@@ -55,7 +57,9 @@ export default function RegisterPage() {
       <div className="row w-100 pt-3">
         <div className="col-12 pt-1">
           <p className="mb-0">
-            <a href="/"><small>« Back to Home</small></a>
+            <a href="/">
+              <small>« Back to Home</small>
+            </a>
           </p>
           <hr />
         </div>
@@ -67,9 +71,7 @@ export default function RegisterPage() {
               </div>
               <div className="col-12">
                 <p className="mb-3">
-                  Already have an account? Log in
-                  {' '}
-                  <a href="/login">here.</a>
+                  Already have an account? Log in <a href="/login">here.</a>
                 </p>
               </div>
               <div className="col-12">
@@ -135,7 +137,11 @@ export default function RegisterPage() {
               </div>
             </div>
             <hr className="mb-4" />
-            <button className="btn btn-primary btn-lg btn-block" type="submit" onClick={handleSubmit}>
+            <button
+              className="btn btn-primary btn-lg btn-block"
+              type="submit"
+              onClick={handleSubmit}
+            >
               Register
             </button>
           </form>

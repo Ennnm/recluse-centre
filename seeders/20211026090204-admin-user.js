@@ -773,6 +773,7 @@ module.exports = {
       username: 'admin',
       real_name: 'plato',
       password: getHash('cave'),
+      profile_img: '#20B2AA',
       created_at: new Date(),
       updated_at: new Date(),
 

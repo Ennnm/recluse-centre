@@ -73,7 +73,7 @@ const BuildGrid = ({ items, world, setWorld }) => {
       style={{
         backgroundColor: cell === null ? cell : cell.color,
       }}
-      className="cell"
+      className="cell gridBorder"
       key={`bg${getRow(index)}_${getCol(index)}`}
       value={cell !== null && cell.charFill !== '' ? cell.charFill : ''}
     />
@@ -104,7 +104,7 @@ export default function EditWorld() {
     const { board, activeObjCells, roomCells, wallCells } = worldState;
     worldId.current = id;
     worldName.current = name;
-    // setWorldName(name);
+
     setBackgrndArr(board);
     setWorld(worldState);
   };
