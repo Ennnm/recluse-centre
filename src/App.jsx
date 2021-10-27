@@ -1,5 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import {
+  BrowserRouter as Router, Switch, Route, Redirect,
+} from 'react-router-dom';
+import axios from 'axios';
 
 // component partials
 import Navbar from './components/Navbar/Navbar.jsx';
@@ -24,9 +27,29 @@ function Grid() {
 }
 
 export default function App() {
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+  const handleLogoutSubmit = (event) => {
+    event.preventDefault();
+
+    axios
+      .delete('/logout')
+      .then((response) => {
+        if (response.data.error) {
+          console.log('logout error:', response.data.error);
+        } else {
+          setIsLoggedOut(true);
+        }
+      })
+      .catch((error) => {
+        // handle error
+        console.log('logout error:', error);
+      });
+  };
+
   return (
     <Router>
-      <Navbar />
+      <Navbar handleLogoutSubmit={handleLogoutSubmit} />
       <Switch>
         <Route exact path={['/', '/home', '/main']} component={Grid} />
         <Route path="/edit" component={EditWorld} />
@@ -34,6 +57,7 @@ export default function App() {
         <Route path="/login" component={Login} />
         <Route path="*" component={Error404} />
       </Switch>
+      {isLoggedOut && (<Redirect to="/login" />)}
     </Router>
   );
 }

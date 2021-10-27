@@ -2,37 +2,15 @@ import React, { useState } from 'react';
 import { Offcanvas, CloseButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import {
-  Redirect,
-} from 'react-router-dom';
-import axios from 'axios';
 
-export default function Navbar() {
+// eslint-disable-next-line react/prop-types
+export default function Navbar({ handleLogoutSubmit }) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   const handleCloseOffCanvas = () => setShowOffcanvas(false);
   const handleShowOffCanvas = (e) => {
     e.preventDefault();
     setShowOffcanvas(true);
-  };
-
-  const handleLogoutSubmit = (event) => {
-    event.preventDefault();
-
-    axios
-      .delete('/logout')
-      .then((response) => {
-        if (response.data.error) {
-          console.log('logout error:', response.data.error);
-        } else {
-          setIsLoggedOut(true);
-        }
-      })
-      .catch((error) => {
-        // handle error
-        console.log('logout error:', error);
-      });
   };
 
   return (
@@ -84,7 +62,6 @@ export default function Navbar() {
           </Offcanvas.Body>
         </div>
       </Offcanvas>
-      {isLoggedOut && (<Redirect to="/login" />)}
     </>
   );
 }
