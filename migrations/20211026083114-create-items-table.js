@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      profile_img: {
+        type: Sequelize.STRING(64),
+
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -36,7 +40,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      created_user_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

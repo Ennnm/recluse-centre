@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+// Custom imports
+import { getRandomColor } from '../../../utils.mjs';
 import * as errors from '../../modules/errors.mjs';
 
 // eslint-disable-next-line react/prop-types
@@ -62,6 +64,7 @@ export default function RegisterPage() {
       realName: realname,
       username,
       password,
+      profileImg: getRandomColor(),
     };
 
     axios
@@ -110,7 +113,9 @@ export default function RegisterPage() {
       <div className="row w-100 pt-3">
         <div className="col-12 pt-1">
           <p className="mb-0">
-            <a href="/"><small>« Back to Home</small></a>
+            <a href="/">
+              <small>« Back to Home</small>
+            </a>
           </p>
           <hr />
         </div>
@@ -189,7 +194,11 @@ export default function RegisterPage() {
               </div>
             </div>
             <hr className="mb-4" />
-            <button className="btn btn-primary btn-lg btn-block" type="submit" onClick={handleSubmit}>
+            <button
+              className="btn btn-primary btn-lg btn-block"
+              type="submit"
+              onClick={handleSubmit}
+            >
               Register
             </button>
           </form>

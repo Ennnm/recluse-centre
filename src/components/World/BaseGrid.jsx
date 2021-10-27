@@ -1,21 +1,23 @@
 import React from 'react';
 import { numCols } from './GridConstants.mjs';
 
-export default function BaseGrid({ items, worldState }) {
+export default function BaseGrid({ items, worldState, showText = true }) {
   console.log('rendering base grid');
   const arr1d = [].concat(...items);
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (
     <div
-      className="cell"
+      className="cell gridBorder"
       key={`base${Math.floor(index / numCols)}_${index % numCols}`}
-      style={{ backgroundColor: cell, fontSize: '9px' }}
+      style={{
+        backgroundColor: cell === null ? cell : cell.color,
+      }}
     >
-      {Math.floor(index / numCols)}_{index % numCols}
+      {cell === null || !showText ? '' : cell.charFill}
     </div>
   ));
   return (
-    <div id="baseGrid" className="grid-container position-absolute">
+    <div id="baseGrid" className="grid-container position-absolute ">
       {cells}
     </div>
   );

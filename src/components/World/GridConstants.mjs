@@ -15,10 +15,11 @@ export function Wall(x, y, color, charFill) {
   this.charFill = charFill;
 }
 
-export function Room(x, y, id) {
+export function Room(x, y, id, name) {
   this.x = x;
   this.y = y;
   // use room id or a name, if using a name reference the db
+  this.name = name;
   this.id = id;
 }
 export function ActiveObj(x, y, url, type) {
