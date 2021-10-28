@@ -69,10 +69,7 @@ const server = http.createServer(app);
 
 const io = new Server(server);
 const onConnection= (socket)=>{
-  console.log('===============we are connected!');
-
   registerGridHandlers(io, socket);
-  // can't see server console logs?
 }
 const PORT = process.env.PORT || 3004;
 
