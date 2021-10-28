@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 // Custom imports
 import { getRandomColor } from '../../../utils.mjs';
 import * as errors from '../../modules/errors.mjs';
+import * as cookie from '../../modules/cookie.mjs';
 
 // eslint-disable-next-line react/prop-types
 function GlobalRegisterErrorAlert({ errorMessage }) {
@@ -22,6 +23,7 @@ function GlobalRegisterErrorAlert({ errorMessage }) {
 }
 
 export default function RegisterPage() {
+  const [isLoggedIn] = useState(cookie.hasLoginCookie());
   const [isRegistered, setIsRegistered] = useState(false);
   const [globalErrorMessage, setGlobalErrorMessage] = useState('');
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
@@ -101,6 +103,12 @@ export default function RegisterPage() {
         setGlobalErrorMessage(errors.REGISTER_GLOBAL_ERROR_MESSAGE);
       });
   };
+
+  if (isLoggedIn) {
+    return (
+      <Redirect to="/" />
+    );
+  }
 
   if (isRegistered) {
     return (

@@ -7,6 +7,7 @@ import axios from 'axios';
 // Custom imports
 import * as successes from '../../modules/successes.mjs';
 import * as errors from '../../modules/errors.mjs';
+import * as cookie from '../../modules/cookie.mjs';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -31,7 +32,7 @@ function GlobalLoginErrorAlert({ errorMessage }) {
 // eslint-disable-next-line react/prop-types
 export default function LoginPage({ sessionExpired }) {
   const query = useQuery();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(cookie.hasLoginCookie());
   const [globalErrorMessage, setGlobalErrorMessage] = useState(sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '');
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
   const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');

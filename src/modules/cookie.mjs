@@ -14,4 +14,10 @@ export const getCookie = (cname) => {
   return '';
 };
 
-export default getCookie;
+export const hasLoginCookie = () => {
+  if (getCookie('loggedIn').trim() === '') {
+    return false;
+  }
+
+  return true;
+};
