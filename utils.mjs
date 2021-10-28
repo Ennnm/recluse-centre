@@ -9,3 +9,6 @@ export function getRandomColor() {
 export function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
+export function getUserIdCookie() {
+  return Number(document.cookie.replace(/(?:(?:^|.*;\s*)userId\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
+}
