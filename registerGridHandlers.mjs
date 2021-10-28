@@ -1,7 +1,6 @@
 import { genGridArray } from './src/components/World/GridConstants.mjs';
 
 export default function registerGridHandlers(io, socket) {
-  console.log('heyaaa');
   // payload is the message
   const playerGrid = genGridArray();
 
@@ -13,6 +12,7 @@ export default function registerGridHandlers(io, socket) {
       roomId, userId, x, y,
     } = userObj;
     console.log('server side updateGrid :>> ', userObj);
+    playerGrid[y][x] = userId;
     io.emit('JOIN_REQUEST_ACCEPTED', userObj);
   };
 

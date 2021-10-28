@@ -6,7 +6,7 @@ import ClickGrid from './ClickGrid.jsx';
 
 import { setWorldFromId } from './axiosRequests.jsx';
 
-export default function GridElem({ socket }) {
+export default function GridElem() {
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState(genGridArray());

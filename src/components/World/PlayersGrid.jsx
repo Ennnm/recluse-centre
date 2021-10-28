@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 
@@ -72,8 +72,6 @@ const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
 export default function PlayersGrid({ backgrndArr }) {
   // to replace with last position from db
   const [userPosition, setUserPosition] = useState({
-    // x: 11,
-    // y: 11,
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
@@ -81,25 +79,25 @@ export default function PlayersGrid({ backgrndArr }) {
   // set userId as context?
   const userId = getUserIdCookie();
 
+  const handleJoinWorld = useCallback((obj) => {
+    console.log('join accepted', obj);
+  });
+
   useEffect(() => {
-    console.log('socket in playerGrid :>> ', socket);
+    console.log('socket in player');
     socket.emit('grid:update', {
       roomId: 1,
       userId,
       x: userPosition.x,
       y: userPosition.y,
     });
-    socket.emit('startpage');
     // subscribe to socket events
-    socket.on('JOIN_REQUEST_ACCEPTED', (obj) => {
-      console.log('join accepted', obj);
-    });
+    socket.on('JOIN_REQUEST_ACCEPTED', handleJoinWorld);
+
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
-      socket.off('JOIN_REQUEST_ACCEPTED', () => {
-        console.log('unjoined');
-      });
+      socket.off('JOIN_REQUEST_ACCEPTED', handleJoinWorld);
     };
   }, [socket, userPosition]);
 
