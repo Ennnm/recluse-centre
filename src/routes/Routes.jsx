@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { SocketContext, socket, ContextRoute } from '../contexts/sockets.mjs';
+import { SocketContext, socket } from '../contexts/sockets.mjs';
 
 // auth pages
 import Login from '../components/Login/LoginPage.jsx';
@@ -16,6 +16,19 @@ import GridElem from '../components/World/Grid.jsx';
 import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
+
+export const ContextRoute = ({ contextComponent, component, ...rest }) => {
+  const { Provider } = contextComponent;
+  const Component = component;
+
+  return (
+    <Route {...rest}>
+      <Provider value={socket}>
+        <Component />
+      </Provider>
+    </Route>
+  );
+};
 
 function Grid({ socket }) {
   return (

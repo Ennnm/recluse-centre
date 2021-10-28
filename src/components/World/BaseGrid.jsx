@@ -2,7 +2,6 @@ import React from 'react';
 import { numCols } from './GridConstants.mjs';
 
 export default function BaseGrid({ items, worldState, showText = true }) {
-  console.log('rendering base grid');
   const arr1d = [].concat(...items);
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (

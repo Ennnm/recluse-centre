@@ -10,7 +10,6 @@ const clickOnCell = (index) => {
 
 // click grid for special objects
 export default function ClickGrid({ items }) {
-  console.log('rendering click grid');
   const arr1d = [].concat(...items);
   // on click, if square is empty, fill with new color
   // if not remove color

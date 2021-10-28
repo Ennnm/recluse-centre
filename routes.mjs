@@ -6,6 +6,7 @@ import initSignupController from './controllers/signup.mjs';
 import initLoginController from './controllers/login.mjs';
 
 export default function routes(app) {
+  console.log('test');
   const worldController = initWorldsController(db);
   const SignupController = initSignupController(db);
   const LoginController = initLoginController(db);

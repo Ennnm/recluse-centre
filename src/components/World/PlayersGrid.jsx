@@ -29,7 +29,6 @@ const movedPosition = (userPosition, x, y) => {
 const getDisplacementFromKey = (code) => {
   let displacementX = 0;
   let displacementY = 0;
-  console.log('keydown');
   switch (code) {
     case 'KeyA':
       displacementX = -1;
@@ -79,14 +78,21 @@ export default function PlayersGrid({ backgrndArr }) {
     y: getRandomInt(numRows),
   });
   const socket = useContext(SocketContext);
+  // set userId as context?
+  const userId = getUserIdCookie();
 
-  console.log('socket in playerGird:>> ', socket);
   useEffect(() => {
-    console.log('hey socket in player grid++++++++++++++++++');
-    socket.emit('USER_MOVEMENT', 'we are moving');
+    console.log('socket in playerGrid :>> ', socket);
+    socket.emit('grid:update', {
+      roomId: 1,
+      userId,
+      x: userPosition.x,
+      y: userPosition.y,
+    });
+    socket.emit('startpage');
     // subscribe to socket events
-    socket.on('JOIN_REQUEST_ACCEPTED', () => {
-      console.log('join accepted');
+    socket.on('JOIN_REQUEST_ACCEPTED', (obj) => {
+      console.log('join accepted', obj);
     });
     return () => {
       // before the component is destroyed
@@ -95,7 +101,7 @@ export default function PlayersGrid({ backgrndArr }) {
         console.log('unjoined');
       });
     };
-  }, [socket]);
+  }, [socket, userPosition]);
 
   // socket.on('connect', () => {
   //   console.log('hey! receiving from playerGrid');
@@ -166,7 +172,6 @@ export default function PlayersGrid({ backgrndArr }) {
   console.log('rendering player grid');
   const arr1d = [].concat(...items);
   // TODO: get userId from cookies, how to get cookies of site from react component
-  const userId = getUserIdCookie();
   const profilePic = `https://avatars.dicebear.com/api/personas/${userId}.svg`;
   const cells = arr1d.map((cell, index) => (
     <div
