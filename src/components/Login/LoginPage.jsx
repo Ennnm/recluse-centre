@@ -28,10 +28,11 @@ function GlobalLoginErrorAlert({ errorMessage }) {
   return null;
 }
 
-export default function LoginPage() {
+// eslint-disable-next-line react/prop-types
+export default function LoginPage({ sessionExpired }) {
   const query = useQuery();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [globalErrorMessage, setGlobalErrorMessage] = useState('');
+  const [globalErrorMessage, setGlobalErrorMessage] = useState(sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '');
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
   const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');
 

@@ -1,6 +1,9 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import methodOverride from 'method-override';
+// CUSTOM IMPORTS
+import db from './models/index.mjs';
+import auth from './middleware.mjs';
 import bindRoutes from './routes.mjs';
 
 // Initialise Express instance
@@ -49,6 +52,9 @@ if (env === 'development') {
     heartbeat: 10 * 1000,
   }));
 }
+
+// Auth
+app.use(auth(db));
 
 // Bind route definitions to the Express application
 bindRoutes(app);
