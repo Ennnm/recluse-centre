@@ -4,7 +4,6 @@ export function setWorldFromId(setWorldProperties, id = 1) {
   axios
     .get(`/world/${id}`)
     .then((result) => {
-      console.log('result from world :>> ', result.data);
       const world = result.data;
       setWorldProperties(world);
     })

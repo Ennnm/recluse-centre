@@ -11,9 +11,6 @@ export default function GridElem({ socket }) {
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState(genGridArray());
 
-  // socket.on('connect', () => {
-  //   console.log('hey! receiving from gridElem');
-  // });
   const worldName = useRef();
   const worldId = useRef();
 
@@ -38,7 +35,6 @@ export default function GridElem({ socket }) {
     setWorldFromId();
   });
   // function to add wall, define room, add actionObjects
-  console.log('rendering grid elem');
 
   return (
     <>
