@@ -6,8 +6,13 @@ import db from './models/index.mjs';
 import auth from './middleware.mjs';
 import bindRoutes from './routes.mjs';
 
+import { Server } from 'socket.io';
+import http from 'http';
+import registerGridHandlers from './registerGridHandlers.mjs'
 // Initialise Express instance
+
 const app = express();
+
 // Set the Express view engine to expect EJS templates
 app.set('view engine', 'ejs');
 // Bind cookie parser middleware to parse cookies in requests
@@ -59,6 +64,17 @@ app.use(auth(db));
 // Bind route definitions to the Express application
 bindRoutes(app);
 
+// sockets
+const server = http.createServer(app);
+
+const io = new Server(server);
+const onConnection= (socket)=>{
+  registerGridHandlers(io, socket);
+  // can't see server console logs?
+  console.log('===============we are connected!');
+}
+
+io.on("connection", onConnection);
 // Set Express to listen on the given port
 const PORT = process.env.PORT || 3004;
 app.listen(PORT);

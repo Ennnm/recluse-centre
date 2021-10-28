@@ -6,23 +6,25 @@ import ClickGrid from './ClickGrid.jsx';
 
 import { setWorldFromId } from './axiosRequests.jsx';
 
-export default function GridElem() {
+export default function GridElem({ socket }) {
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
-  const [playerPositions, setPlayerPos] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState(genGridArray());
 
+  // socket.on('connect', () => {
+  //   console.log('hey! receiving from gridElem');
+  // });
   const worldName = useRef();
   const worldId = useRef();
 
-  const setWorldProperties = (world) => {
+  function setWorldProperties(world) {
     const { id, userId, name, worldState } = world;
     const { board, activeObjCells, roomCells, wallCells } = worldState;
     worldId.current = id;
     worldName.current = name;
 
     setBackgrndArr(board);
-  };
+  }
   useEffect(() => {
     setWorldFromId(setWorldProperties);
   }, []);
@@ -36,17 +38,12 @@ export default function GridElem() {
     setWorldFromId();
   });
   // function to add wall, define room, add actionObjects
-  const editWorldState = () => {};
   console.log('rendering grid elem');
-  console.log('playerPos :>> ', playerPositions);
 
   return (
     <>
       <BaseGrid items={backgrndArr} worldState={worldState} />
-      <PlayersGrid
-        playerPositions={playerPositions}
-        backgrndArr={backgrndArr}
-      />
+      <PlayersGrid backgrndArr={backgrndArr} />
       <ClickGrid items={clickableCells} />
     </>
   );

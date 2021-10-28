@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
+import { SocketContext } from '../../contexts/sockets.mjs';
 
-import { getRandomColor, getRandomInt } from '../../../utils.mjs';
+import {
+  getRandomColor,
+  getRandomInt,
+  getUserIdCookie,
+} from '../../../utils.mjs';
+
+// should this be more global at the app level and passed down as a prop
 
 const userColor = getRandomColor();
 
@@ -62,7 +69,8 @@ const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
     }
   }
 };
-export default function PlayersGrid({ playerPositions, backgrndArr }) {
+
+export default function PlayersGrid({ backgrndArr }) {
   // to replace with last position from db
   const [userPosition, setUserPosition] = useState({
     // x: 11,
@@ -70,6 +78,59 @@ export default function PlayersGrid({ playerPositions, backgrndArr }) {
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
+  const socket = useContext(SocketContext);
+
+  console.log('socket in playerGird:>> ', socket);
+  useEffect(() => {
+    console.log('hey socket in player grid++++++++++++++++++');
+    socket.emit('USER_MOVEMENT', 'we are moving');
+    // subscribe to socket events
+    socket.on('JOIN_REQUEST_ACCEPTED', () => {
+      console.log('join accepted');
+    });
+    return () => {
+      // before the component is destroyed
+      // unbind all event handlers used in this component
+      socket.off('JOIN_REQUEST_ACCEPTED', () => {
+        console.log('unjoined');
+      });
+    };
+  }, [socket]);
+
+  // socket.on('connect', () => {
+  //   console.log('hey! receiving from playerGrid');
+  // });
+
+  // get existing state of the world, snap shot from sessions?
+  // right now user only there if user move
+  // unless user sends position every 5s? a persistent world state
+
+  // multiple servers for multiple worlds
+
+  // when client logs into world, pings to server: entered world {roomId, userId, x,y}
+  // server adds client position to playerPostions array [user1, user2...]
+
+  // when client moves, send to specific room of server  {roomId, userId, x, y}
+  // server finds client from the playerPostions array and rewrites X and Y
+  // server compiles 2d array with 1 object per cell
+
+  // server sends out compiled positions to all sockets in the same room, updates db?
+  // add column to worlds? so that it can also be assessed to be sent, may not be needed
+
+  // client listens and received positions
+  // superimpose own position on top, renders it
+
+  // when client disconnects, emits message to server to remove player from
+  // playerPositions array
+
+  // when client changes world, emit message to all other world not the changed world to remove
+  // player from playerPositions Array
+
+  // keeping constant state of room at all time ensure everyone gets the same set of information
+
+  const [playerPositions, setPlayerPos] = useState(genGridArray());
+
+  // TODO: put playerGrids into items, not necessary to take in playerPositions from Grid
   const items = genGridArray();
   items[userPosition.y][userPosition.x] = userColor;
 
@@ -90,8 +151,8 @@ export default function PlayersGrid({ playerPositions, backgrndArr }) {
           backgrndArr,
           setUserPosition
         );
-
-        // should send this new position to other users via sockets
+        // moving player would cause a reset of userPosition which is [x,y]
+        // TODO: should send this new position to other users via sockets
       }
     };
     document.addEventListener('keypress', handleKeyPress);
@@ -104,16 +165,19 @@ export default function PlayersGrid({ playerPositions, backgrndArr }) {
 
   console.log('rendering player grid');
   const arr1d = [].concat(...items);
-  // read arr2d for wall grid, set div style accordigng to color stored in array
+  // TODO: get userId from cookies, how to get cookies of site from react component
+  const userId = getUserIdCookie();
+  const profilePic = `https://avatars.dicebear.com/api/personas/${userId}.svg`;
   const cells = arr1d.map((cell, index) => (
     <div
       className="cell"
       key={`player${Math.floor(index / numCols)}_${index % numCols}`}
-      style={{
-        backgroundColor: cell,
-        // borderRadius: '45%',
-      }}
-    />
+      // style={{
+      //   backgroundColor: cell,
+      // }}
+    >
+      {cell && <img src={profilePic} alt="profile pic" />}
+    </div>
   ));
   return (
     <div
