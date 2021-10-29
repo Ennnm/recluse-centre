@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // component partials
-import { io } from 'socket.io-client';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Routes from './routes/Routes.jsx';
 
 export default function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
-  const [socket, setSocket] = useState();
 
   // need useEffect for this?
-  useEffect(() => {
-    setSocket(io());
-  }, []);
+
   const handleLogoutSubmit = (event) => {
     event.preventDefault();
 
@@ -35,7 +31,7 @@ export default function App() {
   return (
     <>
       <Navbar handleLogoutSubmit={handleLogoutSubmit} />
-      <Routes isLoggedOut={isLoggedOut} socket={socket} />
+      <Routes isLoggedOut={isLoggedOut} />
     </>
   );
 }
