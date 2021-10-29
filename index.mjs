@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import methodOverride from 'method-override';
+import cors from "cors";
 // CUSTOM IMPORTS
 import db from './models/index.mjs';
 import auth from './middleware.mjs';
@@ -19,6 +20,7 @@ app.set('view engine', 'ejs');
 app.use(cookieParser());
 // Bind Express middleware to parse request bodies for POST requests
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 // Bind Express middleware to parse JSON request bodies
 app.use(express.json());
 // Bind method override middleware to parse PUT and DELETE requests sent as POST requests
@@ -67,13 +69,19 @@ bindRoutes(app);
 // sockets
 const server = http.createServer(app);
 
-const io = new Server(server);
+const PORT = process.env.PORT || 3004;
+
+const io = new Server(server, {
+  cors: {
+    origin: `http://localhost:${PORT}`
+  }
+});
+
 const onConnection= (socket)=>{
   registerGridHandlers(io, socket);
 }
-const PORT = process.env.PORT || 3004;
 
-server.listen(PORT);
+server.listen(3001);
 io.on("connection", onConnection);
 
 app.listen(PORT);
