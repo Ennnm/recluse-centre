@@ -70,18 +70,25 @@ bindRoutes(app);
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3004;
+const PORTSOCKET =3001
 
 const io = new Server(server, {
   cors: {
-    origin: `http://localhost:${PORT}`
+    origin: `http://localhost:${PORT}`,
+    credentials: true,
   }
 });
 
 const onConnection= (socket)=>{
+  console.log(`User connected ${socket.id}`);
   registerGridHandlers(io, socket);
+  socket.on("disconnect", ()=>{
+    console.log('user disconnected', socket.id);
+  })
+
 }
 
-server.listen(3001);
+server.listen(PORTSOCKET);
 io.on("connection", onConnection);
 
 app.listen(PORT);

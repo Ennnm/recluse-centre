@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  useLocation,
-  Redirect,
-} from 'react-router-dom';
+import { useLocation, Redirect } from 'react-router-dom';
 import axios from 'axios';
 // Custom imports
 import * as successes from '../../modules/successes.mjs';
@@ -30,10 +27,12 @@ function GlobalLoginErrorAlert({ errorMessage }) {
 }
 
 // eslint-disable-next-line react/prop-types
-export default function LoginPage({ sessionExpired }) {
+export default function LoginPage({ sessionExpired, socket }) {
   const query = useQuery();
   const [isLoggedIn, setIsLoggedIn] = useState(cookie.hasLoginCookie());
-  const [globalErrorMessage, setGlobalErrorMessage] = useState(sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '');
+  const [globalErrorMessage, setGlobalErrorMessage] = useState(
+    sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : ''
+  );
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
   const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');
 
@@ -71,7 +70,9 @@ export default function LoginPage({ sessionExpired }) {
         if (response.data.error) {
           window.scrollTo(0, 0);
 
-          if (response.data.error === errors.LOGIN_INPUT_VALIDATION_ERROR_MESSAGE) {
+          if (
+            response.data.error === errors.LOGIN_INPUT_VALIDATION_ERROR_MESSAGE
+          ) {
             if (response.data.username_invalid) {
               usernameInvalid = response.data.username_invalid;
             }
@@ -96,9 +97,7 @@ export default function LoginPage({ sessionExpired }) {
   };
 
   if (isLoggedIn) {
-    return (
-      <Redirect to="/" />
-    );
+    return <Redirect to="/" />;
   }
 
   return (
@@ -106,7 +105,9 @@ export default function LoginPage({ sessionExpired }) {
       <div className="row w-100 pt-3">
         <div className="col-12 pt-1">
           <p className="mb-0">
-            <a href="/"><small>« Back to Home</small></a>
+            <a href="/">
+              <small>« Back to Home</small>
+            </a>
           </p>
           <hr />
         </div>
@@ -118,12 +119,14 @@ export default function LoginPage({ sessionExpired }) {
               </div>
               <div className="col-12">
                 <p className="mb-3">
-                  Do not have an account yet? Register
-                  {' '}
+                  Do not have an account yet? Register{' '}
                   <a href="/signup">here.</a>
                 </p>
               </div>
-              <RegisterSuccessAlert success={query.get('registersuccess')} error={(globalErrorMessage.trim() !== '')} />
+              <RegisterSuccessAlert
+                success={query.get('registersuccess')}
+                error={globalErrorMessage.trim() !== ''}
+              />
               <GlobalLoginErrorAlert errorMessage={globalErrorMessage} />
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -132,11 +135,9 @@ export default function LoginPage({ sessionExpired }) {
                 </label>
                 <input
                   type="text"
-                  className={
-                    `form-control${
-                      usernameInvalidMessage.trim() !== '' ? ' is-invalid' : ''
-                    }`
-                  }
+                  className={`form-control${
+                    usernameInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                  }`}
                   id="userName"
                   name="username"
                   placeholder="e.g. chee_kean"
@@ -152,11 +153,9 @@ export default function LoginPage({ sessionExpired }) {
                 </label>
                 <input
                   type="password"
-                  className={
-                    `form-control${
-                      passwordInvalidMessage.trim() !== '' ? ' is-invalid' : ''
-                    }`
-                  }
+                  className={`form-control${
+                    passwordInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                  }`}
                   id="password"
                   name="password"
                   value={password}

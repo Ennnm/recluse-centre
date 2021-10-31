@@ -75,32 +75,14 @@ export default function PlayersGrid({ backgrndArr }) {
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
+  const [playersPositions, setPlayersPostitions] = useState(genGridArray());
+  // const [playerPositions, setPlayerPos] = useState(genGridArray());
+
   const socket = useContext(SocketContext);
   // set userId as context?
   const userId = getUserIdCookie();
-
-  const handleJoinWorld = useCallback((obj) => {
-    console.log('join accepted', obj);
-  });
-
-  useEffect(() => {
-    console.log('socket in player');
-    socket.emit('grid:update', {
-      roomId: 1,
-      userId,
-      x: userPosition.x,
-      y: userPosition.y,
-    });
-    // subscribe to socket events
-    socket.on('JOIN_REQUEST_ACCEPTED', handleJoinWorld);
-
-    return () => {
-      // before the component is destroyed
-      // unbind all event handlers used in this component
-      socket.off('JOIN_REQUEST_ACCEPTED', handleJoinWorld);
-    };
-  }, [socket, userPosition]);
-
+  // link with pages/db
+  const worldId = 1;
   // socket.on('connect', () => {
   //   console.log('hey! receiving from playerGrid');
   // });
@@ -132,9 +114,17 @@ export default function PlayersGrid({ backgrndArr }) {
 
   // keeping constant state of room at all time ensure everyone gets the same set of information
 
-  const [playerPositions, setPlayerPos] = useState(genGridArray());
+  const handleJoinWorld = useCallback((obj) => {
+    console.log('join accepted', obj);
+  });
+
+  const handlePlayersPositions = useCallback((playerPositions) => {
+    console.log('playerPostions :>> ', playerPositions);
+    setPlayersPostitions(playerPositions);
+  });
 
   // TODO: put playerGrids into items, not necessary to take in playerPositions from Grid
+
   const items = genGridArray();
   items[userPosition.y][userPosition.x] = userColor;
 
@@ -160,17 +150,31 @@ export default function PlayersGrid({ backgrndArr }) {
       }
     };
     document.addEventListener('keypress', handleKeyPress);
+    socket.emit('grid:update', {
+      worldId,
+      userId,
+      x: userPosition.x,
+      y: userPosition.y,
+    });
+    // subscribe to socket events
+
+    socket.on('PLAYER_POSITIONS', handlePlayersPositions);
+
     return () => {
       // needs to be removed as if its retained, document will have multiple 'keypress' listeners
       // can't use an anonymous function, won't be able to track the exact function
       document.removeEventListener('keypress', handleKeyPress);
+      socket.off('PLAYER_POSITIONS', handlePlayersPositions);
     };
   }, [userPosition]);
 
   console.log('rendering player grid');
-  const arr1d = [].concat(...items);
+  // const arr1d = [].concat(...items);
+  const arr1d = [].concat(...playersPositions);
   // TODO: get userId from cookies, how to get cookies of site from react component
-  const profilePic = `https://avatars.dicebear.com/api/personas/${userId}.svg`;
+  const profilePic = `https://avatars.dicebear.com/api/personas/${
+    userId + 1
+  }.svg`;
   const cells = arr1d.map((cell, index) => (
     <div
       className="cell"
@@ -179,7 +183,12 @@ export default function PlayersGrid({ backgrndArr }) {
       //   backgroundColor: cell,
       // }}
     >
-      {cell && <img src={profilePic} alt="profile pic" />}
+      {cell !== null && (
+        <img
+          src={`https://avatars.dicebear.com/api/personas/${cell + 1}.svg`}
+          alt="profile pic"
+        />
+      )}
     </div>
   ));
   return (

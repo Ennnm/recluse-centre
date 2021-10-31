@@ -5,9 +5,11 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import { SocketContext, socket } from '../contexts/sockets.mjs';
 
 // auth pages
+
 import Login from '../components/Login/LoginPage.jsx';
 import Register from '../components/Register/RegisterPage.jsx';
 // main pages
@@ -30,7 +32,7 @@ export const ContextRoute = ({ contextComponent, component, ...rest }) => {
   );
 };
 
-function Grid({ socket }) {
+function Grid() {
   return (
     <div className="pt-5">
       <h1>Hello Grid</h1>
