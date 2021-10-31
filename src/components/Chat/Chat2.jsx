@@ -8,8 +8,6 @@ export default function Chat({ socket, username, room }) {
 
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
-    socket.emit('chat:join', room);
-    // eslint-disable-next-line react/prop-types
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
       setMessageList((list) => [...list, data]);
@@ -47,6 +45,9 @@ export default function Chat({ socket, username, room }) {
 
   return (
     <div className="chat-window">
+      <div className="chat-header">
+        <p>Live Chat</p>
+      </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
           {messageList.map((messageContent) => (

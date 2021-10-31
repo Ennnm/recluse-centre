@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // CUSTOM IMPORTS
-import Chat from './Chat.jsx';
+import Chat from './Chat2.jsx';
 
 // eslint-disable-next-line react/prop-types
 export default function SelectRoom({ socket }) {

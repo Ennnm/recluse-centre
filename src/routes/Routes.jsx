@@ -18,6 +18,7 @@ import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
 import SelectRoom from '../components/Chat/SelectRoom.jsx';
+import Chat from '../components/Chat/Chat.jsx';
 
 // eslint-disable-next-line react/prop-types
 export const ContextRoute = ({ contextComponent, component, ...rest }) => {
@@ -37,9 +38,17 @@ export const ContextRoute = ({ contextComponent, component, ...rest }) => {
 
 function Grid() {
   return (
-    <div className="pt-5">
-      <h1>Hello Grid</h1>
-      <GridElem socket={{ socket }} />
+    <div className="pt-5 main-wrapper">
+      <div className="mt-1 main-container">
+        <div className="d-flex">
+          <div className="grid-wrapper">
+            <GridElem socket={{ socket }} />
+          </div>
+          <div className="d-flex align-items-stretch chat-wrapper">
+            <Chat socket={socket} username="Some Test" room={1} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
