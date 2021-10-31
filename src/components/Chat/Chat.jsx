@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // eslint-disable-next-line react/prop-types
 export default function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState('');
+
+  useEffect(() => {
+    // eslint-disable-next-line react/prop-types
+    socket.on('chat:receive', (data) => {
+      console.log(data);
+    });
+  }, [socket]);
 
   const sendMessage = async () => {
     if (currentMessage.trim() !== '') {
