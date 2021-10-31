@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// CUSTOM IMPORTS
+import Chat from './Chat.jsx';
 
 // eslint-disable-next-line react/prop-types
 export default function SelectRoom({ socket }) {
@@ -27,6 +29,7 @@ export default function SelectRoom({ socket }) {
         <input type="text" placeholder="John ..." onChange={handleUsernameChange} />
         <input type="text" placeholder="Room ID ..." onChange={handleRoomChange} />
         <button type="button" onClick={joinRoom}>Join a Room</button>
+        <Chat socket={socket} username={username} room={room} />
       </div>
     </div>
   );
