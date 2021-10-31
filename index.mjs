@@ -10,6 +10,7 @@ import bindRoutes from './routes.mjs';
 import { Server } from 'socket.io';
 import http from 'http';
 import registerGridHandlers from './registerGridHandlers.mjs'
+import registerChatHandlers from './registerChatHandlers.mjs'
 // Initialise Express instance
 
 const app = express();
@@ -70,7 +71,7 @@ bindRoutes(app);
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3004;
-const PORTSOCKET =3001
+const PORTSOCKET = 3001;
 
 const io = new Server(server, {
   cors: {
@@ -82,6 +83,7 @@ const io = new Server(server, {
 const onConnection= (socket)=>{
   console.log(`User connected ${socket.id}`);
   registerGridHandlers(io, socket);
+  registerChatHandlers(io, socket);
   socket.on("disconnect", ()=>{
     console.log('user disconnected', socket.id);
   })

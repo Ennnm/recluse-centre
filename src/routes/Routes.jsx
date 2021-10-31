@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import { SocketContext, socket } from '../contexts/sockets.mjs';
 
 // auth pages
@@ -18,12 +17,16 @@ import GridElem from '../components/World/Grid.jsx';
 import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
+import SelectRoom from '../components/Chat/SelectRoom.jsx';
 
+// eslint-disable-next-line react/prop-types
 export const ContextRoute = ({ contextComponent, component, ...rest }) => {
+  // eslint-disable-next-line react/prop-types
   const { Provider } = contextComponent;
   const Component = component;
 
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <Route {...rest}>
       <Provider value={socket}>
         <Component />
@@ -56,6 +59,7 @@ export default function Routes({ isLoggedOut }) {
         <Route path="/signup" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/sessionexpired" render={() => <Login sessionExpired />} />
+        <Route path="/selectroom" render={() => <SelectRoom socket={socket} />} />
         <Route path="*" component={Error404} />
       </Switch>
       {isLoggedOut && <Redirect to="/login" />}
