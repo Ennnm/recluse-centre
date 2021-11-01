@@ -93,8 +93,8 @@ export default function PlayersGrid({ backgrndArr }) {
   const items = genGridArray();
   items[userPosition.y][userPosition.x] = userColor;
   useEffect(() => {
-    // gettinng world data
-    socket.emit('grid:join', worldId);
+    // getting world data
+    socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
     const handleKeyPress = (e) => {

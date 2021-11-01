@@ -1,13 +1,23 @@
+/* eslint-disable no-restricted-syntax */
 import { genGridArray } from './src/components/World/GridConstants.mjs';
 
-// link to db
+// link to db, get number of player grids from there
 // an array for each world
-const playerGrids = [genGridArray()];
-const playerPositions = [];
-const playerSocketId = [];
 
-const gridFromPlayerPositions = (playerPostions) => {
-  // new Grid
+function World(id) {
+  this.id = id;
+  this.playerGrid = genGridArray();
+  this.playerPositions = [];
+  this.playerSocketIds = [];
+}
+function SocketUser(userId, socketId) {
+  this.id = userId,
+  this.socketId = socketId;
+}
+
+const worlds = [new World(1)];
+const WOLRDHEADER = 'world_';
+const gridFromPlayerPositions = (playerPositions) => {
   const playerIdGrid = genGridArray();
   playerPositions.forEach((player) => {
     playerIdGrid[player.y][player.x] = player.userId;
@@ -17,16 +27,26 @@ const gridFromPlayerPositions = (playerPostions) => {
 
 export default function registerGridHandlers(io, socket) {
   // payload is the message
+  let currentRoom;
+  const joinGrid = ({ userId, worldId }) => {
+    const worldFromId = worlds.filter((world) => (world.id === worldId))[0];
+    const { playerGrid, playerSocketIds } = worldFromId;
 
-  const joinGrid = (worldId) => {
-    socket.join(`world_${worldId}`);
-    io.emit('PLAYER_POSITIONS', playerGrids[worldId - 1]);
+    playerSocketIds.push(new SocketUser(userId, socket.id));
+    currentRoom = worldId;
+    socket.join(`${WOLRDHEADER}${worldId}`);
+    io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
   const updateGrid = (userObj) => {
     const {
       worldId, userId, x, y,
     } = userObj;
+
+    const worldFromId = worlds.filter((world) => (world.id === worldId))[0];
+    const { playerPositions } = worldFromId;
+    let { playerGrid } = worldFromId;
+
     // find in list playerPositions, replace x and y
     const player = playerPositions.filter((user) => user.userId === userId);
     if (player.length > 0) {
@@ -37,30 +57,50 @@ export default function registerGridHandlers(io, socket) {
       playerPositions.push({ userId, x, y });
     }
     // server side compilation
-    console.log('playerPositions in updateGrid :>> ', playerPositions);
     const playerIdGrid = gridFromPlayerPositions(playerPositions);
-    playerGrids[worldId - 1] = playerIdGrid;
-    // emit to room with worldId TODO
-    // socket.to(`world_${worldId}`).emit('PLAYER_POSITIONS', playerIdGrid);
-    // socket.to(socket.id).emit('PLAYER_POSITIONS', playerIdGrid);
-    // sending to player but not themselves
-    io.sockets.in(`world_${worldId}`).emit('PLAYER_POSITIONS', playerIdGrid);
-    // io.emit('PLAYER_POSITIONS', playerIdGrid);
+    playerGrid = playerIdGrid;
+    io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
   const disconnectUser = (obj) => {
     console.log('user is disconnected', obj);
+    // const userId =
+    // playerPositions = [];
+    // playerSocketIds = [];
+
+    // find userId from socketId
     // get userId
     // Remove users from all worlds
+  };
+
+  const disconnectingUser = () => {
+    console.log('socket.rooms :>> ', socket.rooms.keys());
+    console.log('currentRoom :>> ', currentRoom);
+    let room = '';
+    let roomId;
+    // find room name from set
+    for (const refRoom of socket.rooms) {
+      if (refRoom.substr(0, WOLRDHEADER.length) === WOLRDHEADER) {
+        room = refRoom;
+        break;
+      }
+    }
+    if (room !== '') {
+      roomId = Number(room.substring(WOLRDHEADER.length));
+      const world = worlds.filter((world) => (world.id === roomId))[0];
+      const playerId = world.playerSocketIds.filter((user) => (user.socketId === socket.id))[0].id;
+      world.playerPositions = world.playerPositions.filter((player) => (player.userId !== playerId));
+      world.playerSocketIds = world.playerSocketIds.filter((player) => (player.id !== playerId));
+      io.sockets.in(`${WOLRDHEADER}${roomId}`).emit('PLAYER_POSITIONS', world.playerGrid);
+    }
   };
   // when client logs into world, pings to server: entered world {roomId, userId, x,y}
   socket.on('grid:enter', updateGrid);
 
-  // when client moves, send to specific room of server  {roomId, userId, x, y}
-  // server finds client from the playerPostions array and rewrites X and Y
-  // server compiles 2d array with 1 object per cell
   socket.on('grid:update', updateGrid);
   socket.on('grid:join', joinGrid);
 
   socket.on('disconnect', disconnectUser);
+
+  socket.on('disconnecting', disconnectingUser);
 }
