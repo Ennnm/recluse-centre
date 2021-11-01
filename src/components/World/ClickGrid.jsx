@@ -2,33 +2,61 @@
 /* eslint-disable no-confusing-arrow */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.mjs';
+import { numCols, numRows, genGridArray, ActiveObj } from './GridConstants.mjs';
 
-const clickOnCell = (index) => {
-  console.log(`cell ${index} clicked`);
+import { getRandomInt } from '../../../utils.mjs';
+
+const clickOnCell = (obj) => {
+  console.log('cell clicked', obj);
+  window.open(obj.url);
+};
+const iconFromObjType = (obj) => {
+  let img = '';
+  switch (obj.type) {
+    case 'zoom':
+      img = 'zoom.png';
+      break;
+    case 'note':
+      img = 'sticky_notes.png';
+      break;
+    case 'lucid':
+      img = 'lucid.png';
+      break;
+    case 'figma':
+      img = 'figma.png';
+    default:
+      break;
+  }
+
+  return img;
 };
 
 // click grid for special objects
 export default function ClickGrid({ items }) {
-  const arr1d = [].concat(...items);
+  const initGrid = genGridArray();
+  items.forEach((item) => {
+    initGrid[item.y][item.x] = item;
+  });
+
+  const arr1d = [].concat(...initGrid);
   // on click, if square is empty, fill with new color
   // if not remove color
 
   const cells = arr1d.map((cell, index) =>
     cell !== null ? (
-      <button
-        type="submit"
+      <input
+        type="image"
+        src={iconFromObjType(cell)}
         onClick={() => {
-          clickOnCell(`cg${Math.floor(index / numCols)}_${index % numCols}`);
+          clickOnCell(cell);
         }}
         className="cell"
-        style={{ border: '0px' }}
         key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
+        alt={cell.type}
       />
     ) : (
       <div
         className="cell"
-        style={{ border: '0px' }}
         key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
       />
     )

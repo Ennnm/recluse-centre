@@ -9,7 +9,7 @@ import { setWorldFromId } from './axiosRequests.jsx';
 export default function GridElem() {
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
-  const [clickableCells, setClickCells] = useState(genGridArray());
+  const [clickableCells, setClickCells] = useState([]);
 
   const worldName = useRef();
   const worldId = useRef();
@@ -21,16 +21,18 @@ export default function GridElem() {
     worldName.current = name;
 
     setBackgrndArr(board);
+    setClickCells(activeObjCells);
   }
   useEffect(() => {
+    // getting background from db, refresh all react worlds on new edit?
     setWorldFromId(setWorldProperties);
   }, []);
   // world state get from db
-  const [worldState, setWorldState] = useState({
-    rooms: [],
-    walls: [],
-    actionObjects: [],
-  });
+  // const [worldState, setWorldState] = useState({
+  //   rooms: [],
+  //   walls: [],
+  //   actionObjects: [],
+  // });
   useEffect(() => {
     setWorldFromId();
   });
@@ -38,7 +40,7 @@ export default function GridElem() {
 
   return (
     <>
-      <BaseGrid items={backgrndArr} worldState={worldState} />
+      <BaseGrid items={backgrndArr} />
       <PlayersGrid backgrndArr={backgrndArr} />
       <ClickGrid items={clickableCells} />
     </>

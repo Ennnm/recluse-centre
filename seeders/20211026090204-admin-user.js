@@ -767,8 +767,22 @@ const blankWorld = {
   roomCells: [],
   activeObjCells: [],
 };
+const zoomObj = {
+  x: 15,
+  y: 10,
+  url: 'https://us02web.zoom.us/j/5082081135?pwd=NVVxWDV4dXBnV1U2TkhEbWtVb0tZQT09',
+  type: 'zoom',
+};
+const noteObj = {
+  x: 11,
+  y: 7,
+  url: 'https://docs.google.com/document/d/1fQhvfqzocZeyBxOy1r0T87QU6TS7LFvhEnjATlzulaQ/edit#heading=h.5o8ftam14jao',
+  type: 'note',
+};
+blankWorld.activeObjCells.push(zoomObj);
+blankWorld.activeObjCells.push(noteObj);
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface) => {
     await queryInterface.bulkInsert('users', [{
       username: 'admin',
       real_name: 'plato',
@@ -787,7 +801,7 @@ module.exports = {
     }]);
   },
   // to create default world json here
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface) => {
     await queryInterface.bulkDelete('worlds', null, {});
     await queryInterface.bulkDelete('users', null, {});
   },
