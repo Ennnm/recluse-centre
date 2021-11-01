@@ -16,7 +16,6 @@ const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
   let destinationY = userPosition.y;
 
-  // check if blocked by wall
   if (destinationX + x >= 0 && destinationX + x < numCols) {
     destinationX += x;
   }
@@ -25,28 +24,39 @@ const movedPosition = (userPosition, x, y) => {
   }
   return [destinationX, destinationY];
 };
+const directionalKeyPresses = ['KeyA', 'KeyW', 'KeyD', 'KeyS'];
+
+const directions = {
+  top: [0, -1],
+  bottom: [0, 1],
+  left: [-1, 0],
+  right: [1, 0],
+};
 
 const getDisplacementFromKey = (code) => {
-  let displacementX = 0;
-  let displacementY = 0;
+  let direction = [];
   switch (code) {
     case 'KeyA':
-      displacementX = -1;
+      direction = directions.left;
       break;
     case 'KeyW':
-      displacementY = -1;
+      direction = directions.top;
       break;
     case 'KeyD':
-      displacementX = 1;
+      direction = directions.right;
       break;
     case 'KeyS':
-      displacementY = 1;
+      direction = directions.bottom;
       break;
     default:
+      direction = [0, 0];
       break;
   }
-  return [displacementX, displacementY];
+  let XY = [0, 0];
+  XY = XY.map((coord, i) => coord + direction[i]);
+  return XY;
 };
+
 const getGridObject = (x, y, grid) => grid[y][x];
 const isWall = (obj) => {
   if (obj !== null && obj.color !== '') {
@@ -54,6 +64,7 @@ const isWall = (obj) => {
   }
   return false;
 };
+
 const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
   const gridObj = getGridObject(x, y, backgrndArr);
   // check if player is hitting any walls
@@ -68,8 +79,26 @@ const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
     }
   }
 };
+const getActiveAdjCells = (userPosition, activeCells) => {
+  const directionValues = Object.values(directions);
+  const adjCells = directionValues.map((dir) =>
+    movedPosition(userPosition, dir[0], dir[1])
+  );
+  const activeAdjCells = [];
+  for (let i = 0; i < activeCells.length; i += 1) {
+    const activeCell = activeCells[i];
 
-export default function PlayersGrid({ backgrndArr }) {
+    for (let j = 0; j < adjCells.length; j += 1) {
+      const adjCell = adjCells[j];
+      console.log('adjCell :>> ', adjCell);
+      if (activeCell.x === adjCell[0] && activeCell.y === adjCell[1]) {
+        activeAdjCells.push(activeCell);
+      }
+    }
+  }
+  return activeAdjCells;
+};
+export default function PlayersGrid({ backgrndArr, activeCells }) {
   // to replace with last position from db
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
@@ -98,8 +127,9 @@ export default function PlayersGrid({ backgrndArr }) {
   }, [socket]);
   useEffect(() => {
     const handleKeyPress = (e) => {
-      const [displacementX, displacementY] = getDisplacementFromKey(e.code);
-      if (!((displacementX === displacementY) === 0)) {
+      if (directionalKeyPresses.includes(e.code)) {
+        const [displacementX, displacementY] = getDisplacementFromKey(e.code);
+
         const [x, y] = movedPosition(
           userPosition,
           displacementX,
@@ -113,8 +143,13 @@ export default function PlayersGrid({ backgrndArr }) {
           backgrndArr,
           setUserPosition
         );
-        // moving player would cause a reset of userPosition which is [x,y]
-        // TODO: should send this new position to other users via sockets
+      } else if (e.code === 'KeyE') {
+        const activeAdjCells = getActiveAdjCells(userPosition, activeCells);
+        console.log('activeAdjCells :>> ', activeAdjCells);
+
+        activeAdjCells.forEach((cell) => {
+          window.open(cell.url);
+        });
       }
     };
     document.addEventListener('keypress', handleKeyPress);
@@ -124,7 +159,6 @@ export default function PlayersGrid({ backgrndArr }) {
       x: userPosition.x,
       y: userPosition.y,
     });
-    // subscribe to socket events
 
     socket.on('PLAYER_POSITIONS', handlePlayersPositions);
 
@@ -142,9 +176,6 @@ export default function PlayersGrid({ backgrndArr }) {
     <div
       className="cell"
       key={`player${Math.floor(index / numCols)}_${index % numCols}`}
-      // style={{
-      //   backgroundColor: cell,
-      // }}
     >
       {cell !== null && (
         <img
