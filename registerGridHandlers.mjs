@@ -4,6 +4,7 @@ import { genGridArray } from './src/components/World/GridConstants.mjs';
 // an array for each world
 const playerGrids = [genGridArray()];
 const playerPositions = [];
+const playerSocketId = [];
 
 const gridFromPlayerPositions = (playerPostions) => {
   // new Grid
@@ -17,7 +18,9 @@ const gridFromPlayerPositions = (playerPostions) => {
 export default function registerGridHandlers(io, socket) {
   // payload is the message
 
-  const readGrid = (worldId, orderId, callback) => { // ...
+  const joinGrid = (worldId) => {
+    socket.join(`world_${worldId}`);
+    io.emit('PLAYER_POSITIONS', playerGrids[worldId - 1]);
   };
 
   const updateGrid = (userObj) => {
@@ -34,14 +37,20 @@ export default function registerGridHandlers(io, socket) {
       playerPositions.push({ userId, x, y });
     }
     // server side compilation
+    console.log('playerPositions in updateGrid :>> ', playerPositions);
     const playerIdGrid = gridFromPlayerPositions(playerPositions);
     playerGrids[worldId - 1] = playerIdGrid;
-    // console.log('server side updateGrid :>> ', userObj);
-    // playerGrid[worldId - 1][y][x] = userId;
-    // io.emit('JOIN_REQUEST_ACCEPTED', userObj);
-    io.emit('PLAYER_POSITIONS', playerIdGrid);
+    // emit to room with worldId TODO
+    // socket.to(`world_${worldId}`).emit('PLAYER_POSITIONS', playerIdGrid);
+    // socket.to(socket.id).emit('PLAYER_POSITIONS', playerIdGrid);
+    // sending to player but not themselves
+    io.sockets.in(`world_${worldId}`).emit('PLAYER_POSITIONS', playerIdGrid);
+    // io.emit('PLAYER_POSITIONS', playerIdGrid);
   };
-  const disconnectUser = () => {
+
+  const disconnectUser = (obj) => {
+    console.log('user is disconnected', obj);
+    // get userId
     // Remove users from all worlds
   };
   // when client logs into world, pings to server: entered world {roomId, userId, x,y}
@@ -51,7 +60,7 @@ export default function registerGridHandlers(io, socket) {
   // server finds client from the playerPostions array and rewrites X and Y
   // server compiles 2d array with 1 object per cell
   socket.on('grid:update', updateGrid);
-  socket.on('grid:read', readGrid);
+  socket.on('grid:join', joinGrid);
 
   socket.on('disconnect', disconnectUser);
 }

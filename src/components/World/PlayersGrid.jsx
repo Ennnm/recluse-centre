@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
+import _ from 'lodash';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
-
 import {
   getRandomColor,
   getRandomInt,
@@ -75,59 +75,27 @@ export default function PlayersGrid({ backgrndArr }) {
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
   });
-  const [playersPositions, setPlayersPostitions] = useState(genGridArray());
-  // const [playerPositions, setPlayerPos] = useState(genGridArray());
+  const [playersPositions, setPlayersPositions] = useState(genGridArray());
 
   const socket = useContext(SocketContext);
   // set userId as context?
   const userId = getUserIdCookie();
   // link with pages/db
   const worldId = 1;
-  // socket.on('connect', () => {
-  //   console.log('hey! receiving from playerGrid');
-  // });
+  console.log('running in playergrid');
 
-  // get existing state of the world, snap shot from sessions?
-  // right now user only there if user move
-  // unless user sends position every 5s? a persistent world state
-
-  // multiple servers for multiple worlds
-
-  // when client logs into world, pings to server: entered world {roomId, userId, x,y}
-  // server adds client position to playerPostions array [user1, user2...]
-
-  // when client moves, send to specific room of server  {roomId, userId, x, y}
-  // server finds client from the playerPostions array and rewrites X and Y
-  // server compiles 2d array with 1 object per cell
-
-  // server sends out compiled positions to all sockets in the same room, updates db?
-  // add column to worlds? so that it can also be assessed to be sent, may not be needed
-
-  // client listens and received positions
-  // superimpose own position on top, renders it
-
-  // when client disconnects, emits message to server to remove player from
-  // playerPositions array
-
-  // when client changes world, emit message to all other world not the changed world to remove
-  // player from playerPositions Array
-
-  // keeping constant state of room at all time ensure everyone gets the same set of information
-
-  const handleJoinWorld = useCallback((obj) => {
-    console.log('join accepted', obj);
+  const handlePlayersPositions = useCallback((playerPos) => {
+    const { x, y } = userPosition;
+    playerPos[y][x] = userId;
+    setPlayersPositions(playerPos);
   });
-
-  const handlePlayersPositions = useCallback((playerPositions) => {
-    console.log('playerPostions :>> ', playerPositions);
-    setPlayersPostitions(playerPositions);
-  });
-
-  // TODO: put playerGrids into items, not necessary to take in playerPositions from Grid
 
   const items = genGridArray();
   items[userPosition.y][userPosition.x] = userColor;
-
+  useEffect(() => {
+    // gettinng world data
+    socket.emit('grid:join', worldId);
+  }, [socket]);
   useEffect(() => {
     const handleKeyPress = (e) => {
       const [displacementX, displacementY] = getDisplacementFromKey(e.code);
@@ -166,15 +134,10 @@ export default function PlayersGrid({ backgrndArr }) {
       document.removeEventListener('keypress', handleKeyPress);
       socket.off('PLAYER_POSITIONS', handlePlayersPositions);
     };
-  }, [userPosition]);
+  }, [socket, userPosition]);
 
   console.log('rendering player grid');
-  // const arr1d = [].concat(...items);
   const arr1d = [].concat(...playersPositions);
-  // TODO: get userId from cookies, how to get cookies of site from react component
-  const profilePic = `https://avatars.dicebear.com/api/personas/${
-    userId + 1
-  }.svg`;
   const cells = arr1d.map((cell, index) => (
     <div
       className="cell"
@@ -185,7 +148,7 @@ export default function PlayersGrid({ backgrndArr }) {
     >
       {cell !== null && (
         <img
-          src={`https://avatars.dicebear.com/api/personas/${cell + 1}.svg`}
+          src={`https://avatars.dicebear.com/api/big-smile/${cell + 1}.svg`}
           alt="profile pic"
         />
       )}

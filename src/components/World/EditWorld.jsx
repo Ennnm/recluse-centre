@@ -122,8 +122,6 @@ export default function EditWorld() {
   return (
     <div className="pt-5">
       <h1>⚒ Editing {worldName.current}</h1>
-      <BaseGrid items={backgrndArr} worldState={world} />
-
       <BuildGrid
         items={backgrndArr}
         setItems={setBackgrndArr}
