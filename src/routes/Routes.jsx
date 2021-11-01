@@ -42,7 +42,7 @@ function Grid() {
       <div className="mt-1 main-container">
         <div className="d-flex">
           <div className="grid-wrapper">
-            <GridElem socket={{ socket }} />
+            <GridElem />
           </div>
           <div className="d-flex align-items-stretch chat-wrapper">
             <Chat socket={socket} username="Some Test" room={1} />
@@ -68,7 +68,10 @@ export default function Routes({ isLoggedOut }) {
         <Route path="/signup" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/sessionexpired" render={() => <Login sessionExpired />} />
-        <Route path="/selectroom" render={() => <SelectRoom socket={socket} />} />
+        <Route
+          path="/selectroom"
+          render={() => <SelectRoom socket={socket} />}
+        />
         <Route path="*" component={Error404} />
       </Switch>
       {isLoggedOut && <Redirect to="/login" />}
