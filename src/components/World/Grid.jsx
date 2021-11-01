@@ -27,12 +27,6 @@ export default function GridElem() {
     // getting background from db, refresh all react worlds on new edit?
     setWorldFromId(setWorldProperties);
   }, []);
-  // world state get from db
-  // const [worldState, setWorldState] = useState({
-  //   rooms: [],
-  //   walls: [],
-  //   actionObjects: [],
-  // });
   useEffect(() => {
     setWorldFromId();
   });
@@ -41,7 +35,7 @@ export default function GridElem() {
   return (
     <>
       <BaseGrid items={backgrndArr} />
-      <PlayersGrid backgrndArr={backgrndArr} />
+      <PlayersGrid backgrndArr={backgrndArr} activeCells={clickableCells} />
       <ClickGrid items={clickableCells} />
     </>
   );
