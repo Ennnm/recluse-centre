@@ -62,20 +62,7 @@ export default function registerGridHandlers(io, socket) {
     io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
-  const disconnectUser = (obj) => {
-    console.log('user is disconnected', obj);
-    // const userId =
-    // playerPositions = [];
-    // playerSocketIds = [];
-
-    // find userId from socketId
-    // get userId
-    // Remove users from all worlds
-  };
-
   const disconnectingUser = () => {
-    console.log('socket.rooms :>> ', socket.rooms.keys());
-    console.log('currentRoom :>> ', currentRoom);
     let room = '';
     let roomId;
     // find room name from set
@@ -99,8 +86,6 @@ export default function registerGridHandlers(io, socket) {
 
   socket.on('grid:update', updateGrid);
   socket.on('grid:join', joinGrid);
-
-  socket.on('disconnect', disconnectUser);
 
   socket.on('disconnecting', disconnectingUser);
 }

@@ -57,7 +57,7 @@ const BuildGrid = ({ items, world, setWorld }) => {
   const cells = arr1d.map((cell, index) => (
     <input
       type="text"
-      maxLength="1"
+      maxLength="2"
       onMouseDown={() => {
         buildWallOnCell(getRow(index), getCol(index), world, setWorld);
       }}
