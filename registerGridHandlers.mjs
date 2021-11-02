@@ -27,7 +27,6 @@ const gridFromPlayerPositions = (playerPositions) => {
 
 export default function registerGridHandlers(io, socket) {
   // payload is the message
-  let currentRoom;
   const joinGrid = ({ userId, worldId }) => {
     console.log('userId :>> ', userId);
     console.log('worldId :>> ', worldId);
@@ -35,7 +34,6 @@ export default function registerGridHandlers(io, socket) {
     const { playerGrid, playerSocketIds } = worldFromId;
 
     playerSocketIds.push(new SocketUser(userId, socket.id));
-    currentRoom = worldId;
     socket.join(`${WOLRDHEADER}${worldId}`);
     io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };

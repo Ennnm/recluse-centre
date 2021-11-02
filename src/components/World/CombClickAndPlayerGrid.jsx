@@ -11,13 +11,16 @@ const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
   let destinationY = userPosition.y;
 
-  if (destinationX + x >= 0 && destinationX + x < numCols) {
+  if (x !== 0 && destinationX + x >= 0 && destinationX + x < numCols) {
     destinationX += x;
+    return [destinationX, destinationY];
   }
-  if (destinationY + y >= 0 && destinationY + y < numRows) {
+  if (y !== 0 && destinationY + y >= 0 && destinationY + y < numRows) {
     destinationY += y;
+    return [destinationX, destinationY];
   }
-  return [destinationX, destinationY];
+
+  return null;
 };
 const directionalKeyPresses = ['KeyA', 'KeyW', 'KeyD', 'KeyS'];
 
@@ -44,12 +47,13 @@ const getDisplacementFromKey = (code) => {
       direction = directions.bottom;
       break;
     default:
-      direction = [0, 0];
+      direction = [];
       break;
   }
-  let XY = [0, 0];
-  XY = XY.map((coord, i) => coord + direction[i]);
-  return XY;
+  return direction;
+  // let XY = [0, 0];
+  // XY = XY.map((coord, i) => coord + direction[i]);
+  // return XY;
 };
 
 const getGridObject = (x, y, grid) => grid[y][x];
@@ -74,24 +78,43 @@ const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
     }
   }
 };
-const getActiveAdjCells = (userPosition, activeCells) => {
+const getAdjCells = (userPosition) => {
   const directionValues = Object.values(directions);
-  const adjCells = directionValues.map((dir) =>
+  return directionValues.map((dir) =>
     movedPosition(userPosition, dir[0], dir[1])
   );
+};
+
+const getActiveAdjCells = (userPosition, activeCells) => {
+  const adjCells = getAdjCells(userPosition).filter((x) => x !== null);
   const activeAdjCells = [];
   for (let i = 0; i < activeCells.length; i += 1) {
     const activeCell = activeCells[i];
 
     for (let j = 0; j < adjCells.length; j += 1) {
       const adjCell = adjCells[j];
-      console.log('adjCell :>> ', adjCell);
       if (activeCell.x === adjCell[0] && activeCell.y === adjCell[1]) {
         activeAdjCells.push(activeCell);
       }
     }
   }
   return activeAdjCells;
+};
+const getAdjacentPlayers = (userPosition, playersPositions) => {
+  const adjCells = getAdjCells(userPosition).filter((x) => x !== null);
+  const adjPlayers = [];
+  for (let j = 0; j < adjCells.length; j += 1) {
+    const adjCell = adjCells[j];
+    const [x, y] = adjCell;
+    const playerCell = playersPositions[y][x];
+
+    if (playerCell !== null) {
+      adjPlayers.push(playerCell);
+    }
+  }
+  console.log('adjPlayers :>> ', adjPlayers);
+
+  return adjPlayers;
 };
 const clickOnCell = (obj) => {
   console.log('cell clicked', obj);
@@ -121,75 +144,54 @@ const iconFromObjType = (obj) => {
 const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
-const Square = ({ backgrnd, player, index }) => {
-  console.log('in squares');
+const Square = ({ player, index }) => {
   let fill = <div className="cell gridBorder" />;
-  // if (backgrnd.color!='' || backgrnd.charFill){
-  if (backgrnd !== null) {
-    if ('url' in backgrnd) {
+  if (player !== null) {
+    if (typeof player === 'object') {
       fill = (
         <input
           className="cell gridBorder"
           type="image"
-          src={iconFromObjType(backgrnd)}
+          src={iconFromObjType(player)}
           onClick={() => {
-            clickOnCell(backgrnd);
+            clickOnCell(player);
           }}
-          key={`active${Math.floor(index / numCols)}_${index % numCols}`}
-          alt={backgrnd.type}
+          key={`active${index}`}
+          alt={player.type}
         />
       );
-    } else if ('color' in backgrnd || 'charFill' in backgrnd) {
+    } else {
       fill = (
-        <div
-          className="cell gridBorder"
-          key={`backgrnd${Math.floor(index / numCols)}_${index % numCols}`}
-          style={{
-            backgroundColor: backgrnd.color,
+        <input
+          onClick={() => {
+            clickOnPlayer(player);
           }}
-        >
-          {backgrnd.charFill}
-        </div>
+          type="image"
+          className="cell gridBorder"
+          src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
+          alt="profile pic"
+        />
       );
     }
-  } else if (player !== null) {
-    fill = (
-      <input
-        onClick={() => {
-          clickOnPlayer(player);
-        }}
-        type="image"
-        className="cell gridBorder"
-        src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
-        alt="profile pic"
-      />
-    );
   }
 
-  return <>{fill}</>;
+  return fill;
 };
 
-const GridSquares = ({ backgrndArr, activeCells, playersPositions }) => {
+const GridSquares = ({ activeCells, playersPositions }) => {
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
       url: activity.url,
     };
-    const backgrndObj = backgrndArr[activity.y][activity.x];
-
-    if (backgrndObj === null) {
-      backgrndArr[activity.y][activity.x] = activityObj;
-    } else {
-      backgrndArr[activity.y][activity.x] = { ...backgrndObj, ...activityObj };
-    }
+    playersPositions[activity.y][activity.x] = {
+      ...activityObj,
+    };
   });
 
-  const backgrndArr1d = [].concat(...backgrndArr);
   const playerPos1d = [].concat(...playersPositions);
-  console.log('playerPos1d :>> ', playerPos1d);
-
-  const squares = backgrndArr1d.map((backgrnd, i) => (
-    <Square index={i} backgrnd={backgrnd} player={playerPos1d[i]} />
+  const squares = playerPos1d.map((player, i) => (
+    <Square index={i} player={player} />
   ));
 
   return (
@@ -198,7 +200,7 @@ const GridSquares = ({ backgrndArr, activeCells, playersPositions }) => {
     </div>
   );
 };
-export default function CombinedGrid({
+export default function CombClickAndPlayerGrid({
   backgrndArr,
   activeCells,
   isChatFocused,
@@ -225,30 +227,40 @@ export default function CombinedGrid({
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
+    console.log('running :>> ');
     const handleKeyPress = (e) => {
       if (!isChatFocused) {
         if (directionalKeyPresses.includes(e.code)) {
-          const [displacementX, displacementY] = getDisplacementFromKey(e.code);
+          const direction = getDisplacementFromKey(e.code);
 
-          const [x, y] = movedPosition(
+          const movedLocation = movedPosition(
             userPosition,
-            displacementX,
-            displacementY
+            direction[0],
+            direction[1]
           );
-          movePlayer(
-            x,
-            y,
-            userPosition.x,
-            userPosition.y,
-            backgrndArr,
-            setUserPosition
-          );
+          if (movedLocation !== null) {
+            movePlayer(
+              movedLocation[0],
+              movedLocation[1],
+              userPosition.x,
+              userPosition.y,
+              backgrndArr,
+              setUserPosition
+            );
+          }
         } else if (e.code === 'KeyE') {
           const activeAdjCells = getActiveAdjCells(userPosition, activeCells);
           // compare with users too
-
+          let adjPlayerCell = getAdjacentPlayers(
+            userPosition,
+            playersPositions
+          );
+          adjPlayerCell = adjPlayerCell.filter((player) => player !== userId);
           activeAdjCells.forEach((cell) => {
             window.open(cell.url);
+          });
+          adjPlayerCell.forEach((player) => {
+            console.log(`adjacent to player ${player}`);
           });
         }
       }
@@ -271,7 +283,7 @@ export default function CombinedGrid({
 
   return (
     <GridSquares
-      backgrndArr={backgrndArr}
+      id="gridSquares"
       activeCells={activeCells}
       playersPositions={playersPositions}
     />

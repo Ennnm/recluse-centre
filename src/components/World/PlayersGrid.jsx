@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import _ from 'lodash';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import {
@@ -98,6 +97,9 @@ const getActiveAdjCells = (userPosition, activeCells) => {
   }
   return activeAdjCells;
 };
+const clickOnPlayer = (player) => {
+  console.log(`This is player ${player}`);
+};
 export default function PlayersGrid({
   backgrndArr,
   activeCells,
@@ -169,8 +171,6 @@ export default function PlayersGrid({
     socket.on('PLAYER_POSITIONS', handlePlayersPositions);
 
     return () => {
-      // needs to be removed as if its retained, document will have multiple 'keypress' listeners
-      // can't use an anonymous function, won't be able to track the exact function
       document.removeEventListener('keypress', handleKeyPress);
       socket.off('PLAYER_POSITIONS', handlePlayersPositions);
     };
@@ -184,7 +184,11 @@ export default function PlayersGrid({
       key={`player${Math.floor(index / numCols)}_${index % numCols}`}
     >
       {cell !== null && (
-        <img
+        <input
+          onClick={() => {
+            clickOnPlayer(cell);
+          }}
+          type="image"
           src={`https://avatars.dicebear.com/api/big-smile/${cell + 1}.svg`}
           alt="profile pic"
         />

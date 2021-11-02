@@ -4,6 +4,7 @@ import BaseGrid from './BaseGrid.jsx';
 import PlayersGrid from './PlayersGrid.jsx';
 import ClickGrid from './ClickGrid.jsx';
 import CombinedGrid from './CombinedGrid.jsx';
+import CombClickAndPlayerGrid from './CombClickAndPlayerGrid.jsx';
 
 import { setWorldFromId } from './axiosRequests.jsx';
 
@@ -29,29 +30,30 @@ export default function GridElem({ isChatFocused, room }) {
     console.log('setting world from id');
     // getting background from db, refresh all react worlds on new edit?
     setWorldFromId(setWorldProperties, room);
-    // setWorldFromId(setWorldProperties, room);
   }, []);
-  // useEffect(() => {
-  //   console.log('room :>> ', room);
-  //   setWorldFromId(room);
-  // });
-  // function to add wall, define room, add actionObjects
 
   return (
     <>
-      {/* <BaseGrid items={backgrndArr} />
-      <PlayersGrid
+      <BaseGrid items={backgrndArr} />
+      {/* <PlayersGrid
         backgrndArr={backgrndArr}
         activeCells={clickableCells}
         isChatFocused={isChatFocused}
       />
       <ClickGrid items={clickableCells} /> */}
-      <CombinedGrid
+      <CombClickAndPlayerGrid
         backgrndArr={backgrndArr}
         activeCells={clickableCells}
         isChatFocused={isChatFocused}
         worldId={room}
       />
+      {/* VERY BAD PERFORMANCE
+       <CombinedGrid
+        backgrndArr={backgrndArr}
+        activeCells={clickableCells}
+        isChatFocused={isChatFocused}
+        worldId={room}
+      /> */}
     </>
   );
 }
