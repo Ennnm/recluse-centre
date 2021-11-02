@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-// eslint-disable-next-line react/prop-types
-export default function Chat({ socket, username, room }) {
+export default function Chat({
+  // eslint-disable-next-line react/prop-types
+  socket, username, room, handleChatFocused, handleChatUnfocused,
+}) {
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
 
@@ -67,7 +69,7 @@ export default function Chat({ socket, username, room }) {
         </ScrollToBottom>
       </div>
       <div className="chat-footer">
-        <input type="text" placeholder="Hey..." value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} />
+        <input type="text" placeholder="Hey..." value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
         <button type="button" onClick={sendMessage}>
           &#9658;
         </button>

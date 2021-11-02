@@ -6,7 +6,7 @@ import ClickGrid from './ClickGrid.jsx';
 
 import { setWorldFromId } from './axiosRequests.jsx';
 
-export default function GridElem() {
+export default function GridElem({ isChatFocused }) {
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState([]);
@@ -15,8 +15,12 @@ export default function GridElem() {
   const worldId = useRef();
 
   function setWorldProperties(world) {
-    const { id, userId, name, worldState } = world;
-    const { board, activeObjCells, roomCells, wallCells } = worldState;
+    const {
+      id, userId, name, worldState,
+    } = world;
+    const {
+      board, activeObjCells, roomCells, wallCells,
+    } = worldState;
     worldId.current = id;
     worldName.current = name;
 
