@@ -1,4 +1,4 @@
-@import '../node_modules/bootstrap/scss/bootstrap';
+@import "../node_modules/bootstrap/scss/bootstrap";
 
 $cell-dim: 30px;
 
@@ -85,7 +85,7 @@ body > div {
   border-radius: 50%;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 
 .chat-wrapper {
   position: fixed;
@@ -97,7 +97,7 @@ body > div {
 
 .join-chat-container {
   color: #212121;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -249,7 +249,7 @@ body > div {
   border-right: 1px dotted #607d8b;
 
   outline: none;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .chat-window .chat-footer button {
@@ -275,20 +275,61 @@ body > div {
 .grid-wrapper {
   flex-basis: 900px;
   align-self: stretch;
+  position: relative;
+}
+
+// Class added to stretch your position: absolute grids
+// width-wise, from left to right. No 'bottom' property,
+// because we don't care about the height of the entire grid.
+// We let height be determined by number of rows X height of
+// cell
+.position-absolute-stretch {
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(30, $cell-dim);
-  grid-template-rows: repeat(20, $cell-dim);
-  grid-template-rows: $cell-dim;
+  /* 
+    Setting all values to 1fr, or 1 fractional unit (width divided by 30).
+    Unfortunately still had to rely on padding-bottom :after CSS hack for 
+    rows, since no way for row heights to follow column widths. But setting
+    then all to 1fr first just for consistency.
+  */
+  grid-template-columns: repeat(30, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  grid-template-rows: 1fr;
 }
 .cell {
-  width: $cell-dim;
-  height: $cell-dim;
+  /* Set width to be 100% of CSS grid column */
+  width: 100%;
+  /* 
+    Relative positioning for absolute .cell-charfill to follow 
+    in setting top, left values against
+  */
+  position: relative;
   background-color: transparent;
   display: inline-block;
   text-align: center;
+
+  .cell-charfill {
+    /* For centerising characters in a cell */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:after {
+    content: "";
+    /* 
+      Next 2 lines are key (CSS hack) for setting width = height, 
+      using padding-bottom 
+    */
+    display: block;
+    padding-bottom: 100%;
+  }
 }
 .gridBorder {
   border: 1px solid rgb(206, 224, 247);

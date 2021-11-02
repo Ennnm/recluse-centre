@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types, react/jsx-props-no-spreading */
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -8,7 +9,6 @@ import {
 import { SocketContext, socket } from '../contexts/sockets.mjs';
 
 // auth pages
-
 import Login from '../components/Login/LoginPage.jsx';
 import Register from '../components/Register/RegisterPage.jsx';
 // main pages
@@ -21,7 +21,6 @@ import SelectRoom from '../components/Chat/SelectRoom.jsx';
 import Chat from '../components/Chat/Chat.jsx';
 
 export const ContextRoute = ({
-  // eslint-disable-next-line react/prop-types
   contextComponent,
   component,
   handleChatFocused,
@@ -29,12 +28,10 @@ export const ContextRoute = ({
   isChatFocused,
   ...rest
 }) => {
-  // eslint-disable-next-line react/prop-types
   const { Provider } = contextComponent;
   const Component = component;
 
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <Route {...rest}>
       <Provider value={socket}>
         <Component
@@ -47,16 +44,14 @@ export const ContextRoute = ({
   );
 };
 
-// eslint-disable-next-line react/prop-types
 function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
   return (
     <div className="pt-5 main-wrapper">
       <div className="mt-1 main-container">
-        <div className="d-flex">
-          <div className="grid-wrapper">
-            <GridElem isChatFocused={isChatFocused} room={1} />
-          </div>
-          <div className="d-flex align-items-stretch chat-wrapper">
+        <div className="grid-wrapper">
+          <GridElem isChatFocused={isChatFocused} room={1} />
+        </div>
+        {/* <div className="d-flex align-items-stretch chat-wrapper">
             <Chat
               handleChatFocused={handleChatFocused}
               handleChatUnfocused={handleChatUnfocused}
@@ -64,15 +59,13 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
               username="Some Test"
               room={1}
             />
-          </div>
-        </div>
+          </div> */}
       </div>
     </div>
   );
 }
 
 export default function Routes({
-  // eslint-disable-next-line react/prop-types
   handleChatFocused,
   handleChatUnfocused,
   isChatFocused,

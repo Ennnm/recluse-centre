@@ -1,8 +1,11 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-confusing-arrow */
-/* eslint-disable jsx-a11y/control-has-associated-label */
+/*
+  eslint-disable jsx-a11y/no-static-element-interactions,
+  no-confusing-arrow, jsx-a11y/control-has-associated-label, react/prop-types
+*/
 import React, { useState, useRef, useEffect } from 'react';
-import { numCols, numRows, genGridArray, ActiveObj } from './GridConstants.mjs';
+import {
+  numCols, numRows, genGridArray, ActiveObj,
+} from './GridConstants.mjs';
 
 import { getRandomInt } from '../../../utils.mjs';
 
@@ -42,32 +45,30 @@ export default function ClickGrid({ items }) {
   // on click, if square is empty, fill with new color
   // if not remove color
 
-  const cells = arr1d.map((cell, index) =>
-    cell !== null ? (
-      <input
-        type="image"
-        src={iconFromObjType(cell)}
-        onClick={() => {
-          clickOnCell(cell);
-        }}
-        className="cell"
-        key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
-        alt={cell.type}
-      />
-    ) : (
-      <div
-        className="cell"
-        key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
-        style={{ pointerEvents: 'none' }}
-      />
-    )
-  );
+  const cells = arr1d.map((cell, index) => cell !== null ? (
+    <input
+      type="image"
+      src={iconFromObjType(cell)}
+      onClick={() => {
+        clickOnCell(cell);
+      }}
+      className="cell"
+      key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
+      alt={cell.type}
+    />
+  ) : (
+    <div
+      className="cell"
+      key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
+      style={{ pointerEvents: 'none' }}
+    />
+  ));
 
   return (
     <div
       id="clickGrid"
       style={{ zIndex: 3 }}
-      className="grid-container position-absolute"
+      className="grid-container position-absolute position-absolute-stretch"
     >
       {cells}
     </div>

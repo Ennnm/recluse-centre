@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { numCols } from './GridConstants.mjs';
 
@@ -12,11 +13,11 @@ export default function BaseGrid({ items, showText = true }) {
         backgroundColor: cell === null ? cell : cell.color,
       }}
     >
-      {cell === null || !showText ? '' : cell.charFill}
+      {cell === null || (!showText ? '' : (<span className="cell-charfill">{cell.charFill}</span>))}
     </div>
   ));
   return (
-    <div id="baseGrid" className="grid-container position-absolute ">
+    <div id="baseGrid" className="grid-container position-absolute position-absolute-stretch">
       {cells}
     </div>
   );
