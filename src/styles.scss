@@ -1,4 +1,4 @@
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import '../node_modules/bootstrap/scss/bootstrap';
 
 $cell-dim: 30px;
 
@@ -85,7 +85,7 @@ body > div {
   border-radius: 50%;
 }
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 
 .chat-wrapper {
   position: fixed;
@@ -97,7 +97,7 @@ body > div {
 
 .join-chat-container {
   color: #212121;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -249,7 +249,7 @@ body > div {
   border-right: 1px dotted #607d8b;
 
   outline: none;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .chat-window .chat-footer button {
@@ -281,8 +281,6 @@ body > div {
   display: grid;
   grid-template-columns: repeat(30, $cell-dim);
   grid-template-rows: repeat(20, $cell-dim);
-  // grid-template-columns: 1fr;
-  // grid-template-columns: $cell-dim;
   grid-template-rows: $cell-dim;
 }
 .cell {
