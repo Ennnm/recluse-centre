@@ -58,6 +58,7 @@ export default function ClickGrid({ items }) {
       <div
         className="cell"
         key={`cg${Math.floor(index / numCols)}_${index % numCols}`}
+        style={{ pointerEvents: 'none' }}
       />
     )
   );
