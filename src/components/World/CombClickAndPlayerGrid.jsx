@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import {
@@ -144,7 +151,14 @@ const iconFromObjType = (obj) => {
 const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
-const Square = ({ player, index }) => {
+
+const ToolsModal = (userSquare) => {
+  const lalala = 5;
+  console.log('userSquare in tools :>> ', userSquare);
+  return <div style={{ display: 'none' }}>hey</div>;
+};
+React.forwardRef(ToolsModal);
+const Square = ({ player, index, userId, userSquare }) => {
   let fill = <div className="cell gridBorder" />;
   if (player !== null) {
     if (typeof player === 'object') {
@@ -159,6 +173,27 @@ const Square = ({ player, index }) => {
           key={`active${index}`}
           alt={player.type}
         />
+      );
+    } else if (player === userId) {
+      fill = (
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+        <div
+          onClick={() => {
+            clickOnPlayer(player);
+          }}
+          ref={userSquare}
+          type="image"
+          className="cell gridBorder"
+          style={{
+            backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+              player + 1
+            }.svg")`,
+            cursor: 'pointer',
+            position: 'relative',
+          }}
+        >
+          <ToolsModal userSquare={userSquare} />
+        </div>
       );
     } else {
       fill = (
@@ -178,7 +213,7 @@ const Square = ({ player, index }) => {
   return fill;
 };
 
-const GridSquares = ({ activeCells, playersPositions }) => {
+const GridSquares = ({ activeCells, playersPositions, userSquare, userId }) => {
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -191,7 +226,7 @@ const GridSquares = ({ activeCells, playersPositions }) => {
 
   const playerPos1d = [].concat(...playersPositions);
   const squares = playerPos1d.map((player, i) => (
-    <Square index={i} player={player} />
+    <Square index={i} player={player} userId={userId} userSquare={userSquare} />
   ));
 
   return (
@@ -240,8 +275,22 @@ const handleInteractKey = (
   openInteractiveObj(userPosition, activeCells);
   interactWPlayer(userPosition, playersPositions, userId);
 };
-const handleBuildKey = (userPosition) => {
-  console.log('hey we are building');
+const handleBuildKey = (userPosition, userSquare, setModalUp) => {
+  // console.log('userSquare.current :>> ', userSquare.current);
+  const userSquareChilds = userSquare.current.childNodes;
+  console.log('userSquareChilds :>> ', userSquareChilds);
+  userSquareChilds.forEach((child) => {
+    const currDisplay = child.style.display;
+    child.style.display = currDisplay === 'none' ? 'block' : 'none';
+  });
+
+  console.log('hey we are building!');
+  const modal = (
+    <div>
+      User at x :{userPosition.x}, y: {userPosition.y}
+    </div>
+  );
+  setModalUp(modal);
 };
 export default function CombClickAndPlayerGrid({
   backgrndArr,
@@ -254,6 +303,8 @@ export default function CombClickAndPlayerGrid({
     y: getRandomInt(numRows),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
+  const [modalPopUp, setModalUp] = useState();
+  const userSquare = useRef('dasda');
 
   const socket = useContext(SocketContext);
   const userId = getUserIdCookie();
@@ -266,10 +317,13 @@ export default function CombClickAndPlayerGrid({
   });
 
   useEffect(() => {
+    // SOCKETS
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
     console.log('running :>> ');
+    console.log('userSquare :>> ', userSquare);
+    // KEY PRESSES
     const handleKeyPress = (e) => {
       if (!isChatFocused) {
         if (directionalKeyPresses.includes(e.code)) {
@@ -282,12 +336,13 @@ export default function CombClickAndPlayerGrid({
             userId
           );
         } else if (e.code === 'KeyB') {
-          handleBuildKey(userPosition);
-          console.log('pressed B');
+          // get square of userPosition
+          handleBuildKey(userPosition, userSquare, setModalUp);
         }
       }
     };
     document.addEventListener('keypress', handleKeyPress);
+    // SOCKETS
     socket.emit('grid:update', {
       worldId,
       userId,
@@ -304,10 +359,15 @@ export default function CombClickAndPlayerGrid({
   }, [socket, userPosition, isChatFocused]);
 
   return (
-    <GridSquares
-      id="gridSquares"
-      activeCells={activeCells}
-      playersPositions={playersPositions}
-    />
+    <>
+      <GridSquares
+        id="gridSquares"
+        activeCells={activeCells}
+        playersPositions={playersPositions}
+        userSquare={userSquare}
+        userId={userId}
+      />
+      {modalPopUp}
+    </>
   );
 }
