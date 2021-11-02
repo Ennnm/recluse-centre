@@ -20,8 +20,10 @@ import EditWorld from '../components/World/EditWorld.jsx';
 import SelectRoom from '../components/Chat/SelectRoom.jsx';
 import Chat from '../components/Chat/Chat.jsx';
 
-// eslint-disable-next-line react/prop-types
-export const ContextRoute = ({ contextComponent, component, ...rest }) => {
+export const ContextRoute = ({
+  // eslint-disable-next-line react/prop-types
+  contextComponent, component, handleChatFocused, handleChatUnfocused, isChatFocused, ...rest
+}) => {
   // eslint-disable-next-line react/prop-types
   const { Provider } = contextComponent;
   const Component = component;
@@ -30,22 +32,33 @@ export const ContextRoute = ({ contextComponent, component, ...rest }) => {
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Route {...rest}>
       <Provider value={socket}>
-        <Component />
+        <Component
+          handleChatFocused={handleChatFocused}
+          handleChatUnfocused={handleChatUnfocused}
+          isChatFocused={isChatFocused}
+        />
       </Provider>
     </Route>
   );
 };
 
-function Grid() {
+// eslint-disable-next-line react/prop-types
+function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
   return (
     <div className="pt-5 main-wrapper">
       <div className="mt-1 main-container">
         <div className="d-flex">
           <div className="grid-wrapper">
-            <GridElem />
+            <GridElem isChatFocused={isChatFocused} />
           </div>
           <div className="d-flex align-items-stretch chat-wrapper">
-            <Chat socket={socket} username="Some Test" room={1} />
+            <Chat
+              handleChatFocused={handleChatFocused}
+              handleChatUnfocused={handleChatUnfocused}
+              socket={socket}
+              username="Some Test"
+              room={1}
+            />
           </div>
         </div>
       </div>
@@ -53,8 +66,10 @@ function Grid() {
   );
 }
 
-// eslint-disable-next-line react/prop-types
-export default function Routes({ isLoggedOut }) {
+export default function Routes({
+  // eslint-disable-next-line react/prop-types
+  handleChatFocused, handleChatUnfocused, isChatFocused, isLoggedOut,
+}) {
   return (
     <Router>
       <Switch>
@@ -63,6 +78,9 @@ export default function Routes({ isLoggedOut }) {
           path={['/', '/home', '/main']}
           contextComponent={SocketContext}
           component={Grid}
+          handleChatFocused={handleChatFocused}
+          handleChatUnfocused={handleChatUnfocused}
+          isChatFocused={isChatFocused}
         />
         <Route path="/edit" component={EditWorld} />
         <Route path="/signup" component={Register} />

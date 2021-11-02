@@ -7,6 +7,7 @@ import Routes from './routes/Routes.jsx';
 
 export default function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [isChatFocused, setIsChatFocused] = useState(false);
 
   // need useEffect for this?
 
@@ -28,10 +29,25 @@ export default function App() {
       });
   };
 
+  const handleChatFocused = () => {
+    console.log('chat is focused');
+    setIsChatFocused(true);
+  };
+
+  const handleChatUnfocused = () => {
+    console.log('chat is unfocused');
+    setIsChatFocused(false);
+  };
+
   return (
     <>
       <Navbar handleLogoutSubmit={handleLogoutSubmit} />
-      <Routes isLoggedOut={isLoggedOut} />
+      <Routes
+        isChatFocused={isChatFocused}
+        handleChatFocused={handleChatFocused}
+        handleChatUnfocused={handleChatUnfocused}
+        isLoggedOut={isLoggedOut}
+      />
     </>
   );
 }
