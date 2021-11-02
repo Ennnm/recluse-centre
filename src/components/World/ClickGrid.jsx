@@ -68,7 +68,7 @@ export default function ClickGrid({ items }) {
     <div
       id="clickGrid"
       style={{ zIndex: 3 }}
-      className="grid-container position-absolute position-absolute-stretch"
+      className="grid-container"
     >
       {cells}
     </div>

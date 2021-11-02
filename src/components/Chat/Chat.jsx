@@ -7,6 +7,7 @@ export default function Chat({
 }) {
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
+  const [showChatBody, setShowChatBody] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
@@ -34,7 +35,12 @@ export default function Chat({
       // set message list also when we SEND / EMIT our own message
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage('');
+      setShowChatBody(true);
     }
+  };
+
+  const handleShowChatBody = () => {
+    setShowChatBody(!showChatBody);
   };
 
   const handleCurrentMessageChange = (event) => {
@@ -49,7 +55,7 @@ export default function Chat({
 
   return (
     <div className="chat-window">
-      <div className="chat-body">
+      <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
         <ScrollToBottom className="message-container">
           {messageList.map((messageContent) => (
             <div className="message" id={(username === messageContent.author ? 'you' : 'other')}>
@@ -69,9 +75,12 @@ export default function Chat({
         </ScrollToBottom>
       </div>
       <div className="chat-footer">
-        <input type="text" placeholder="Hey..." value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
-        <button type="button" onClick={sendMessage}>
-          &#9658;
+        <input type="text" className="chat-input" placeholder="Hey..." value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
+        <button type="button" className="chat-submit-button" onClick={sendMessage}>
+          &#x27A4;
+        </button>
+        <button type="button" className="chat-expand-button" onClick={handleShowChatBody}>
+          {(showChatBody ? (<span>&#9660;</span>) : (<span>&#9650;</span>))}
         </button>
       </div>
     </div>

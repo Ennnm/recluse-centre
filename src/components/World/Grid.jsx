@@ -18,8 +18,12 @@ export default function GridElem({ isChatFocused, room }) {
   const worldId = useRef();
 
   function setWorldProperties(world) {
-    const { id, userId, name, worldState } = world;
-    const { board, activeObjCells, roomCells, wallCells } = worldState;
+    const {
+      id, userId, name, worldState,
+    } = world;
+    const {
+      board, activeObjCells, roomCells, wallCells,
+    } = worldState;
     worldId.current = id;
     worldName.current = name;
 
@@ -35,6 +39,12 @@ export default function GridElem({ isChatFocused, room }) {
   return (
     <>
       <BaseGrid items={backgrndArr} />
+      {/*
+        this invisible grid is necessary for setting the height of page, because
+        parent elements can't follow the height of absolute positioned children.
+        it will be required for me to set a padding to the bottom of invisible base grid
+      */}
+      <BaseGrid items={backgrndArr} visibility={false} />
       {/* <PlayersGrid
         backgrndArr={backgrndArr}
         activeCells={clickableCells}

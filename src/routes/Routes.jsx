@@ -51,15 +51,15 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
         <div className="grid-wrapper">
           <GridElem isChatFocused={isChatFocused} room={1} />
         </div>
-        {/* <div className="d-flex align-items-stretch chat-wrapper">
-            <Chat
-              handleChatFocused={handleChatFocused}
-              handleChatUnfocused={handleChatUnfocused}
-              socket={socket}
-              username="Some Test"
-              room={1}
-            />
-          </div> */}
+        <div className="chat-wrapper">
+          <Chat
+            handleChatFocused={handleChatFocused}
+            handleChatUnfocused={handleChatUnfocused}
+            socket={socket}
+            username="Some Test"
+            room={1}
+          />
+        </div>
       </div>
     </div>
   );
