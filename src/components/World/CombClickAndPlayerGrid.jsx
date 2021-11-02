@@ -200,6 +200,49 @@ const GridSquares = ({ activeCells, playersPositions }) => {
     </div>
   );
 };
+
+const handleDirKeys = (key, userPosition, backgrndArr, setUserPosition) => {
+  const direction = getDisplacementFromKey(key);
+
+  const movedLocation = movedPosition(userPosition, direction[0], direction[1]);
+  if (movedLocation !== null) {
+    movePlayer(
+      movedLocation[0],
+      movedLocation[1],
+      userPosition.x,
+      userPosition.y,
+      backgrndArr,
+      setUserPosition
+    );
+  }
+};
+const openInteractiveObj = (userPosition, activeCells) => {
+  const activeAdjCells = getActiveAdjCells(userPosition, activeCells);
+
+  activeAdjCells.forEach((cell) => {
+    window.open(cell.url);
+  });
+};
+const interactWPlayer = (userPosition, playersPositions, userId) => {
+  let adjPlayerCell = getAdjacentPlayers(userPosition, playersPositions);
+  adjPlayerCell = adjPlayerCell.filter((player) => player !== userId);
+
+  adjPlayerCell.forEach((player) => {
+    console.log(`adjacent to player ${player}`);
+  });
+};
+const handleInteractKey = (
+  userPosition,
+  activeCells,
+  playersPositions,
+  userId
+) => {
+  openInteractiveObj(userPosition, activeCells);
+  interactWPlayer(userPosition, playersPositions, userId);
+};
+const handleBuildKey = (userPosition) => {
+  console.log('hey we are building');
+};
 export default function CombClickAndPlayerGrid({
   backgrndArr,
   activeCells,
@@ -223,7 +266,6 @@ export default function CombClickAndPlayerGrid({
   });
 
   useEffect(() => {
-    // getting world data of players
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
@@ -231,37 +273,17 @@ export default function CombClickAndPlayerGrid({
     const handleKeyPress = (e) => {
       if (!isChatFocused) {
         if (directionalKeyPresses.includes(e.code)) {
-          const direction = getDisplacementFromKey(e.code);
-
-          const movedLocation = movedPosition(
-            userPosition,
-            direction[0],
-            direction[1]
-          );
-          if (movedLocation !== null) {
-            movePlayer(
-              movedLocation[0],
-              movedLocation[1],
-              userPosition.x,
-              userPosition.y,
-              backgrndArr,
-              setUserPosition
-            );
-          }
+          handleDirKeys(e.code, userPosition, backgrndArr, setUserPosition);
         } else if (e.code === 'KeyE') {
-          const activeAdjCells = getActiveAdjCells(userPosition, activeCells);
-          // compare with users too
-          let adjPlayerCell = getAdjacentPlayers(
+          handleInteractKey(
             userPosition,
-            playersPositions
+            activeCells,
+            playersPositions,
+            userId
           );
-          adjPlayerCell = adjPlayerCell.filter((player) => player !== userId);
-          activeAdjCells.forEach((cell) => {
-            window.open(cell.url);
-          });
-          adjPlayerCell.forEach((player) => {
-            console.log(`adjacent to player ${player}`);
-          });
+        } else if (e.code === 'KeyB') {
+          handleBuildKey(userPosition);
+          console.log('pressed B');
         }
       }
     };
