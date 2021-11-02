@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
-import _ from 'lodash';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { numCols, numRows, genGridArray } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import {
@@ -7,10 +6,6 @@ import {
   getRandomInt,
   getUserIdCookie,
 } from '../../../utils.mjs';
-
-// should this be more global at the app level and passed down as a prop
-
-const userColor = getRandomColor();
 
 const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
@@ -98,12 +93,122 @@ const getActiveAdjCells = (userPosition, activeCells) => {
   }
   return activeAdjCells;
 };
-export default function PlayersGrid({
+const clickOnCell = (obj) => {
+  console.log('cell clicked', obj);
+  window.open(obj.url);
+};
+const iconFromObjType = (obj) => {
+  let img = '';
+  switch (obj.type) {
+    case 'zoom':
+      img = 'zoom.png';
+      break;
+    case 'note':
+      img = 'sticky_notes.png';
+      break;
+    case 'lucid':
+      img = 'lucid.png';
+      break;
+    case 'figma':
+      img = 'figma.png';
+      break;
+    default:
+      break;
+  }
+
+  return img;
+};
+const clickOnPlayer = (player) => {
+  console.log(`This is player ${player}`);
+};
+const Square = ({ backgrnd, player, index }) => {
+  console.log('in squares');
+  let fill = <div className="cell gridBorder" />;
+  // if (backgrnd.color!='' || backgrnd.charFill){
+  if (backgrnd !== null) {
+    if ('url' in backgrnd) {
+      fill = (
+        <input
+          className="cell gridBorder"
+          type="image"
+          src={iconFromObjType(backgrnd)}
+          onClick={() => {
+            clickOnCell(backgrnd);
+          }}
+          key={`active${Math.floor(index / numCols)}_${index % numCols}`}
+          alt={backgrnd.type}
+        />
+      );
+    } else if ('color' in backgrnd || 'charFill' in backgrnd) {
+      fill = (
+        <div
+          className="cell gridBorder"
+          key={`backgrnd${Math.floor(index / numCols)}_${index % numCols}`}
+          style={{
+            backgroundColor: backgrnd.color,
+          }}
+        >
+          {backgrnd.charFill}
+        </div>
+      );
+    }
+  } else if (player !== null) {
+    fill = (
+      <input
+        onClick={() => {
+          clickOnPlayer(player);
+        }}
+        type="image"
+        className="cell gridBorder"
+        src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
+        alt="profile pic"
+      />
+    );
+  }
+
+  return <>{fill}</>;
+};
+
+const GridSquares = ({ backgrndArr, activeCells, playersPositions }) => {
+  console.log('in gridsquares');
+  console.log('activeCells :>> ', activeCells);
+  console.log('backgrndArr :>> ', backgrndArr[0]);
+  activeCells.forEach((activity) => {
+    const activityObj = {
+      type: activity.type,
+      url: activity.url,
+    };
+    const backgrndObj = backgrndArr[activity.y][activity.x];
+
+    if (backgrndObj === null) {
+      backgrndArr[activity.y][activity.x] = activityObj;
+    } else {
+      backgrndArr[activity.y][activity.x] = { ...backgrndObj, ...activityObj };
+    }
+  });
+
+  const backgrndArr1d = [].concat(...backgrndArr);
+  const playerPos1d = [].concat(...playersPositions);
+  console.log('playerPos1d :>> ', playerPos1d);
+
+  const squares = backgrndArr1d.map((backgrnd, i) => (
+    <Square index={i} backgrnd={backgrnd} player={playerPos1d[i]} />
+  ));
+
+  return (
+    <div id="baseGrid" className="grid-container position-absolute ">
+      {squares}
+    </div>
+  );
+};
+export default function CombinedGrid({
   backgrndArr,
   activeCells,
   isChatFocused,
+  worldId,
 }) {
-  // to replace with last position from db
+  console.log('in combined grid');
+  console.log('worldId :>> ', worldId);
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows),
@@ -111,11 +216,8 @@ export default function PlayersGrid({
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
 
   const socket = useContext(SocketContext);
-  // set userId as context?
   const userId = getUserIdCookie();
   // link with pages/db
-  const worldId = 1;
-  console.log('running in playergrid');
 
   const handlePlayersPositions = useCallback((playerPos) => {
     const { x, y } = userPosition;
@@ -123,10 +225,8 @@ export default function PlayersGrid({
     setPlayersPositions(playerPos);
   });
 
-  const items = genGridArray();
-  items[userPosition.y][userPosition.x] = userColor;
   useEffect(() => {
-    // getting world data
+    // getting world data of players
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
@@ -150,7 +250,7 @@ export default function PlayersGrid({
           );
         } else if (e.code === 'KeyE') {
           const activeAdjCells = getActiveAdjCells(userPosition, activeCells);
-          console.log('activeAdjCells :>> ', activeAdjCells);
+          // compare with users too
 
           activeAdjCells.forEach((cell) => {
             window.open(cell.url);
@@ -169,35 +269,21 @@ export default function PlayersGrid({
     socket.on('PLAYER_POSITIONS', handlePlayersPositions);
 
     return () => {
-      // needs to be removed as if its retained, document will have multiple 'keypress' listeners
-      // can't use an anonymous function, won't be able to track the exact function
       document.removeEventListener('keypress', handleKeyPress);
       socket.off('PLAYER_POSITIONS', handlePlayersPositions);
     };
   }, [socket, userPosition, isChatFocused]);
 
-  console.log('rendering player grid');
-  const arr1d = [].concat(...playersPositions);
-  const cells = arr1d.map((cell, index) => (
-    <div
-      className="cell"
-      key={`player${Math.floor(index / numCols)}_${index % numCols}`}
-    >
-      {cell !== null && (
-        <img
-          src={`https://avatars.dicebear.com/api/big-smile/${cell + 1}.svg`}
-          alt="profile pic"
-        />
-      )}
-    </div>
-  ));
   return (
-    <div
-      id="playerGrid"
-      style={{ zIndex: 2 }}
-      className="grid-container position-absolute"
-    >
-      {cells}
-    </div>
+    <GridSquares
+      backgrndArr={backgrndArr}
+      activeCells={activeCells}
+      playersPositions={playersPositions}
+    />
   );
+  // return (
+  //   <div id="baseGrid" className="grid-container position-absolute ">
+  //     {cells}
+  //   </div>
+  // );
 }

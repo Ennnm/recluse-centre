@@ -22,7 +22,12 @@ import Chat from '../components/Chat/Chat.jsx';
 
 export const ContextRoute = ({
   // eslint-disable-next-line react/prop-types
-  contextComponent, component, handleChatFocused, handleChatUnfocused, isChatFocused, ...rest
+  contextComponent,
+  component,
+  handleChatFocused,
+  handleChatUnfocused,
+  isChatFocused,
+  ...rest
 }) => {
   // eslint-disable-next-line react/prop-types
   const { Provider } = contextComponent;
@@ -49,7 +54,7 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
       <div className="mt-1 main-container">
         <div className="d-flex">
           <div className="grid-wrapper">
-            <GridElem isChatFocused={isChatFocused} />
+            <GridElem isChatFocused={isChatFocused} room={1} />
           </div>
           <div className="d-flex align-items-stretch chat-wrapper">
             <Chat
@@ -68,7 +73,10 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
 
 export default function Routes({
   // eslint-disable-next-line react/prop-types
-  handleChatFocused, handleChatUnfocused, isChatFocused, isLoggedOut,
+  handleChatFocused,
+  handleChatUnfocused,
+  isChatFocused,
+  isLoggedOut,
 }) {
   return (
     <Router>
