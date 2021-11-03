@@ -87,7 +87,9 @@ const movePlayer = (x, y, oldX, oldY, backgrndArr, setUserPosition) => {
 };
 const getAdjCells = (userPosition) => {
   const directionValues = Object.values(directions);
-  return directionValues.map((dir) => movedPosition(userPosition, dir[0], dir[1]));
+  return directionValues.map((dir) =>
+    movedPosition(userPosition, dir[0], dir[1])
+  );
 };
 
 const getActiveAdjCells = (userPosition, activeCells) => {
@@ -156,9 +158,7 @@ const ToolsModal = (userSquare) => {
   return <div style={{ display: 'none' }}>hey</div>;
 };
 React.forwardRef(ToolsModal);
-const Square = ({
-  player, index, userId, userSquare,
-}) => {
+const Square = ({ player, index, userId, userSquare }) => {
   let fill = <div className="cell gridBorder" />;
   if (player !== null) {
     if (typeof player === 'object') {
@@ -213,9 +213,7 @@ const Square = ({
   return fill;
 };
 
-const GridSquares = ({
-  activeCells, playersPositions, userSquare, userId,
-}) => {
+const GridSquares = ({ activeCells, playersPositions, userSquare, userId }) => {
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -232,7 +230,10 @@ const GridSquares = ({
   ));
 
   return (
-    <div id="baseGrid" className="grid-container position-absolute position-absolute-stretch">
+    <div
+      id="baseGrid"
+      className="grid-container position-absolute position-absolute-stretch"
+    >
       {squares}
     </div>
   );
@@ -249,7 +250,7 @@ const handleDirKeys = (key, userPosition, backgrndArr, setUserPosition) => {
       userPosition.x,
       userPosition.y,
       backgrndArr,
-      setUserPosition,
+      setUserPosition
     );
   }
 };
@@ -272,7 +273,7 @@ const handleInteractKey = (
   userPosition,
   activeCells,
   playersPositions,
-  userId,
+  userId
 ) => {
   openInteractiveObj(userPosition, activeCells);
   interactWPlayer(userPosition, playersPositions, userId);
@@ -289,11 +290,7 @@ const handleBuildKey = (userPosition, userSquare, setModalUp) => {
   console.log('hey we are building!');
   const modal = (
     <div>
-      User at x :
-      {userPosition.x}
-      , y:
-      {' '}
-      {userPosition.y}
+      User at x :{userPosition.x}, y: {userPosition.y}
     </div>
   );
   setModalUp(modal);
@@ -306,7 +303,7 @@ export default function CombClickAndPlayerGrid({
 }) {
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
-    y: getRandomInt(numRows),
+    y: getRandomInt(numRows / 2),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
   const [modalPopUp, setModalUp] = useState();
@@ -339,7 +336,7 @@ export default function CombClickAndPlayerGrid({
             userPosition,
             activeCells,
             playersPositions,
-            userId,
+            userId
           );
         } else if (e.code === 'KeyB') {
           // get square of userPosition

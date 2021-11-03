@@ -55,6 +55,7 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
   console.log('arr1d :>> ', arr1d);
   const cells = arr1d.map((cell, index) => (
     <input
+      className="cell"
       type="text"
       maxLength="2"
       onMouseDown={() => {
@@ -83,7 +84,7 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
       <div
         id="BuildGrid"
         style={{ zIndex: 4, cursor: 'grab' }}
-        className="grid-container "
+        className="grid-container position-absolute position-absolute-stretch"
       >
         {cells}
       </div>
@@ -230,7 +231,7 @@ export default function EditWorld() {
     }
   }, [world]);
   return (
-    <div className="pt-5 ">
+    <div>
       <BuildGrid
         items={backgrndArr}
         setItems={setBackgrndArr}
@@ -239,10 +240,10 @@ export default function EditWorld() {
         activeObjs={activeObjs}
         buildTool={buildTool}
       />
-      <BuildingTools
+      {/* <BuildingTools
         setBuildTool={setBuildTool}
         worldName={worldName.current}
-      />
+      /> */}
     </div>
   );
 }

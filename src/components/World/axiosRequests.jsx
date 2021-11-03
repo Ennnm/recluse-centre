@@ -13,6 +13,7 @@ export function setWorldFromId(setWorldProperties, id = 1) {
 }
 
 export function updateWorldInDb(id, worldState) {
+  console.log('worldState :>> ', worldState);
   axios
     .put(`/world/${id}/edit`, { worldState })
     .then((result) => {

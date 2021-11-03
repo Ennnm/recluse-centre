@@ -1,4 +1,4 @@
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import '../node_modules/bootstrap/scss/bootstrap';
 
 $cell-dim: 30px;
 
@@ -80,7 +80,7 @@ body > div {
   border-radius: 50%;
 }
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 
 .chat-wrapper {
   position: fixed;
@@ -91,7 +91,7 @@ body > div {
 
 .join-chat-container {
   color: #212121;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -244,7 +244,7 @@ body > div {
   background: rgba(38, 50, 56, 0.85);
   outline: none;
   color: #fff;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 
   &::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
@@ -323,8 +323,10 @@ body > div {
     rows, since no way for row heights to follow column widths. But setting
     then all to 1fr first just for consistency.
   */
-  grid-template-columns: repeat(30, 1fr);
-  grid-template-rows: repeat(20, 1fr);
+  // grid-template-columns: repeat(30, 1fr);
+  // grid-template-rows: repeat(20, 1fr);
+  grid-template-columns: repeat(40, 1fr);
+  grid-template-rows: repeat(30, 1fr);
   grid-template-rows: 1fr;
 }
 .cell {
@@ -348,7 +350,7 @@ body > div {
   }
 
   &:after {
-    content: "";
+    content: '';
     /* 
       Next 2 lines are key (CSS hack) for setting width = height, 
       using padding-bottom 

@@ -1,5 +1,5 @@
-export const numCols = 30;
-export const numRows = 20;
+export const numCols = 40;
+export const numRows = 30;
 
 export const Tile = {
   empty: 0,
