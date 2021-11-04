@@ -193,8 +193,8 @@ const Square = ({
     // eslint-disable-next-line jsx-a11y/control-has-associated-label
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      role={buildToolType !== '' ? 'button' : 'none'}
-      tabIndex="0"
+      // role={buildToolType !== '' ? 'button' : 'none'}
+      // tabIndex="0"
       className="cell gridBorder"
       onClick={() => {
         if (buildToolType !== '') {
@@ -228,8 +228,6 @@ const Square = ({
           onClick={() => {
             if (buildToolType === '') {
               clickOnPlayer(player);
-            } else {
-              buildOnCell(index, world, setWorld, buildTool);
             }
           }}
           ref={userSquare}
