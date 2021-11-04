@@ -52,10 +52,8 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
 
   // different click modes for wall, room and activeObject creation
   // wall creation
-  console.log('arr1d :>> ', arr1d);
   const cells = arr1d.map((cell, index) => (
     <input
-      className="cell"
       type="text"
       maxLength="2"
       onMouseDown={() => {
@@ -240,10 +238,6 @@ export default function EditWorld() {
         activeObjs={activeObjs}
         buildTool={buildTool}
       />
-      {/* <BuildingTools
-        setBuildTool={setBuildTool}
-        worldName={worldName.current}
-      /> */}
     </div>
   );
 }

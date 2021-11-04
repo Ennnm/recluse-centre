@@ -1,20 +1,27 @@
-import React from 'react';
-import { Card } from 'react-bootstrap';
+import React, { useState } from 'react';
 import '../../styles.scss';
 import 'tailwindcss/tailwind.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-  faFillDrip,
   faChessRook,
   faStickyNote,
   faThLarge,
   faIcons,
 } from '@fortawesome/free-solid-svg-icons';
 
-const WallTool = () => (
+const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
-    <button className="h-12 w-12 border-1 m-2">
+    <button
+      className="h-12 w-12 border-1 m-2"
+      type="button"
+      onClick={() => {
+        // open wall palette
+        console.log('click on walltool');
+
+        setToolSetting({ ...toolSetting, tool: 'wall' });
+      }}
+    >
       <FontAwesomeIcon
         className="text-3xl m-2 text-purple-700"
         icon={faChessRook}
@@ -23,9 +30,15 @@ const WallTool = () => (
     Wall
   </div>
 );
-const RoomTool = () => (
+const RoomTool = ({ toolSetting, setToolSetting }) => (
   <div>
-    <button className="h-12 w-12 border-1 m-2">
+    <button
+      className="h-12 w-12 border-1 m-2"
+      type="button"
+      onClick={() => {
+        setToolSetting({ ...toolSetting, tool: 'room' });
+      }}
+    >
       <FontAwesomeIcon
         className="text-3xl  m-2 text-red-200"
         icon={faThLarge}
@@ -34,9 +47,15 @@ const RoomTool = () => (
     Room
   </div>
 );
-const CharFiller = () => (
+const CharFiller = ({ toolSetting, setToolSetting }) => (
   <div>
-    <button className="h-12 w-12 border-1 m-2">
+    <button
+      className="h-12 w-12 border-1 m-2"
+      type="button"
+      onClick={() => {
+        setToolSetting({ ...toolSetting, tool: 'charFill' });
+      }}
+    >
       <FontAwesomeIcon
         className="text-3xl  m-2 text-green-700"
         w
@@ -46,9 +65,15 @@ const CharFiller = () => (
     Char
   </div>
 );
-const WidgetTool = () => (
+const WidgetTool = ({ toolSetting, setToolSetting }) => (
   <div>
-    <button className="h-12 w-12 border-1 m-2 ">
+    <button
+      className="h-12 w-12 border-1 m-2 "
+      type="button"
+      onClick={() => {
+        setToolSetting({ ...toolSetting, tool: 'widget' });
+      }}
+    >
       <FontAwesomeIcon
         className="text-3xl m-2 text-yellow-400"
         icon={faStickyNote}
@@ -57,23 +82,62 @@ const WidgetTool = () => (
     Widget
   </div>
 );
-const ToolsModal = () => {
+const ToolsModal = ({ toolSetting, setToolSetting, setBuildTool }) => {
   const placement = 'top';
   return (
-    <div className="p-4 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4z-10">
+    <div className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10">
       <div className="flex">
-        <WallTool />
-        <RoomTool />
-        <CharFiller />
-        <WidgetTool />
+        <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <WidgetTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
       </div>
     </div>
   );
 };
+const WallPalette = ({ toolSetting, setToolSetting }) => {
+  const placement = 'top';
+  return (
+    <div className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10">
+      <div className="flex">
+        <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+      </div>
+    </div>
+  );
+};
+const Modal = ({ setBuildTool, toolSetting, setToolSetting }) => {
+  // when tool change, rerun happens
+  console.log('toolSetting.tool :>> ', toolSetting.tool);
+  let elem = <>/</>;
+  const currentTool = toolSetting.tool;
+  if (currentTool === '') {
+    elem = (
+      <ToolsModal
+        setBuildTool={setBuildTool}
+        toolSetting={toolSetting}
+        setToolSetting={setToolSetting}
+      />
+    );
+  }
+  if (currentTool === 'wall') {
+    elem = (
+      <WallPalette toolSetting={toolSetting} setToolSetting={setToolSetting} />
+    );
+  }
+  return elem;
+};
 
-export default function UserModal(userSquare) {
-  const lalala = 5;
+export default function UserModal(userSquare, setBuildTool) {
   console.log('userSquare in tools :>> ', userSquare);
+  const [toolSetting, setToolSetting] = useState({
+    tool: '',
+    color: '',
+    roomId: 0,
+    charFill: '',
+    activeObjType: '',
+    url: '',
+  });
+  console.log('setToolSetting :>> ', setToolSetting);
   return (
     <div
       className="translate-y-16"
@@ -83,7 +147,11 @@ export default function UserModal(userSquare) {
         top: '-300%',
       }}
     >
-      <ToolsModal />
+      <Modal
+        setBuildTool={setBuildTool}
+        toolSetting={toolSetting}
+        setToolSetting={setToolSetting}
+      />
     </div>
   );
 }

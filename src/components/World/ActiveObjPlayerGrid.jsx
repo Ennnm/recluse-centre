@@ -6,7 +6,13 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.mjs';
+import {
+  numCols,
+  numRows,
+  genGridArray,
+  rowFromIndex,
+  colFromIndex,
+} from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import {
   getRandomColor,
@@ -59,9 +65,6 @@ const getDisplacementFromKey = (code) => {
       break;
   }
   return direction;
-  // let XY = [0, 0];
-  // XY = XY.map((coord, i) => coord + direction[i]);
-  // return XY;
 };
 
 const getGridObject = (x, y, grid) => grid[y][x];
@@ -154,7 +157,18 @@ const clickOnPlayer = (player) => {
 };
 
 React.forwardRef(UserModal);
-const Square = ({ player, index, userId, userSquare }) => {
+const Square = ({
+  player,
+  index,
+  userId,
+  userSquare,
+  world,
+  setWorld,
+  buildTool,
+  setBuildTool,
+}) => {
+  const buildToolType = buildTool.type;
+  // need to get x and y coordinate to update world board
   let fill = <div className="cell gridBorder" />;
   if (player !== null) {
     if (typeof player === 'object') {
@@ -209,7 +223,56 @@ const Square = ({ player, index, userId, userSquare }) => {
   return fill;
 };
 
-const GridSquares = ({ activeCells, playersPositions, userSquare, userId }) => {
+const GridSquares = ({
+  activeCells,
+  playersPositions,
+  userSquare,
+  userId,
+  world,
+  setWorld,
+  buildTool,
+  setBuildTool,
+}) => {
+  activeCells.forEach((activity) => {
+    const activityObj = {
+      type: activity.type,
+      url: activity.url,
+    };
+    playersPositions[activity.y][activity.x] = {
+      ...activityObj,
+    };
+  });
+
+  const playerPos1d = [].concat(...playersPositions);
+  const squares = playerPos1d.map((player, i) => (
+    <Square
+      index={i}
+      player={player}
+      userId={userId}
+      userSquare={userSquare}
+      world={world}
+      setWorld={setWorld}
+      buildTool={buildTool}
+      setBuildTool={setBuildTool}
+    />
+  ));
+
+  return (
+    <div
+      id="baseGrid"
+      className="grid-container position-absolute position-absolute-stretch"
+    >
+      {squares}
+    </div>
+  );
+};
+
+const BuildSquares = ({
+  activeCells,
+  playersPositions,
+  userSquare,
+  userId,
+}) => {
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -291,17 +354,27 @@ const handleBuildKey = (userPosition, userSquare, setModalUp) => {
   );
   setModalUp(modal);
 };
-export default function CombClickAndPlayerGrid({
+export default function ActiveObjPlayerGrid({
   backgrndArr,
   activeCells,
   isChatFocused,
   worldId,
+  world,
+  setWorld,
 }) {
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows / 2),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
+  const [buildTool, setBuildTool] = useState({
+    tool: '',
+    color: '',
+    roomId: 0,
+    charFill: '',
+    activeObjType: '',
+    url: '',
+  });
   const [modalPopUp, setModalUp] = useState();
   const userSquare = useRef('dasda');
 
@@ -365,8 +438,19 @@ export default function CombClickAndPlayerGrid({
         playersPositions={playersPositions}
         userSquare={userSquare}
         userId={userId}
+        world={world}
+        setWorld={setWorld}
+        buildTool={buildTool}
+        setBuildTool={setBuildTool}
       />
-      {modalPopUp}
+      {/* //useGridSquares for this
+      <BuildSquares
+        id="buildSquares"
+        activeCells={activeCells}
+        playersPositions={playersPositions}
+        userSquare={userSquare}
+        userId={userId}
+      /> */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 export const numCols = 40;
-export const numRows = 30;
+export const numRows = 60;
 
 export const Tile = {
   empty: 0,
@@ -42,4 +42,10 @@ export function WorldState() {
   this.wallCells = [];
   this.roomCells = [];
   this.activeObjCells = [];
+}
+export function rowFromIndex(i) {
+  return Math.floor(i / numCols);
+}
+export function colFromIndex(i) {
+  return i % numCols;
 }

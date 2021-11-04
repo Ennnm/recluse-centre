@@ -4,7 +4,7 @@ import BaseGrid from './BaseGrid.jsx';
 import PlayersGrid from './PlayersGrid.jsx';
 import ClickGrid from './ClickGrid.jsx';
 import CombinedGrid from './CombinedGrid.jsx';
-import CombClickAndPlayerGrid from './CombClickAndPlayerGrid.jsx';
+import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';
 
 import { setWorldFromId } from './axiosRequests.jsx';
 
@@ -13,17 +13,15 @@ export default function GridElem({ isChatFocused, room }) {
   // to read from db
   const [backgrndArr, setBackgrndArr] = useState(genGridArray());
   const [clickableCells, setClickCells] = useState([]);
+  // db world
+  const [world, setWorld] = useState();
 
   const worldName = useRef();
   const worldId = useRef();
 
   function setWorldProperties(world) {
-    const {
-      id, userId, name, worldState,
-    } = world;
-    const {
-      board, activeObjCells, roomCells, wallCells,
-    } = worldState;
+    const { id, userId, name, worldState } = world;
+    const { board, activeObjCells, roomCells, wallCells } = worldState;
     worldId.current = id;
     worldName.current = name;
 
@@ -34,7 +32,7 @@ export default function GridElem({ isChatFocused, room }) {
     console.log('setting world from id');
     // getting background from db, refresh all react worlds on new edit?
     setWorldFromId(setWorldProperties, room);
-  }, []);
+  }, [world]);
 
   return (
     <>
@@ -51,11 +49,15 @@ export default function GridElem({ isChatFocused, room }) {
         isChatFocused={isChatFocused}
       />
       <ClickGrid items={clickableCells} /> */}
-      <CombClickAndPlayerGrid
+      <ActiveObjPlayerGrid
         backgrndArr={backgrndArr}
         activeCells={clickableCells}
         isChatFocused={isChatFocused}
         worldId={room}
+        setBackgrndArr={setBackgrndArr}
+        setClickCells={setClickCells}
+        world={world}
+        setWorld={setWorld}
       />
       {/* VERY BAD PERFORMANCE
        <CombinedGrid
