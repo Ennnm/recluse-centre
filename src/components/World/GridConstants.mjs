@@ -43,9 +43,43 @@ export function WorldState() {
   this.roomCells = [];
   this.activeObjCells = [];
 }
+export function World() {
+  this.id = 0;
+  this.createdAt = '';
+  this.name = '';
+  this.updatedAt = '';
+  this.userId = 0;
+  this.worldState = new WorldState();
+}
 export function rowFromIndex(i) {
   return Math.floor(i / numCols);
 }
 export function colFromIndex(i) {
   return i % numCols;
 }
+
+export function hslToHex(h, s, l) {
+  l /= 100;
+  const a = (s * Math.min(l, 1 - l)) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, '0'); // convert to Hex and prefix "0" if needed
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+export function hexPalette(numColors, saturation, lightness) {
+  const colors = [];
+  const hueInteval = Math.floor(360 / numColors);
+  for (let i = 0; i < numColors; i += 1) {
+    const hue = hueInteval * i;
+    colors.push(hslToHex(hue, saturation, lightness));
+  }
+  return colors;
+}
+export const tailWindCol400 = ['#9CA3AF', '#F87171', '#FBBF24', '#34D399', '#60A5FA', '#818CF8', '#A78BFA', '#F472B6'];
+
+export const tailWindCol200 = ['#E5E7EB', '#FECACA', '#FDE68A', '#A7F3D0', '#BFDBFE', '#C7D2FE', '#DDD6FE', '#FBCFE8'];

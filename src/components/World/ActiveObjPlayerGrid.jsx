@@ -14,11 +14,7 @@ import {
   colFromIndex,
 } from './GridConstants.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
-import {
-  getRandomColor,
-  getRandomInt,
-  getUserIdCookie,
-} from '../../../utils.mjs';
+import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
 import UserModal from './UserModal.jsx';
 
 const movedPosition = (userPosition, x, y) => {
@@ -123,12 +119,10 @@ const getAdjacentPlayers = (userPosition, playersPositions) => {
       adjPlayers.push(playerCell);
     }
   }
-  console.log('adjPlayers :>> ', adjPlayers);
 
   return adjPlayers;
 };
 const clickOnCell = (obj) => {
-  console.log('cell clicked', obj);
   window.open(obj.url);
 };
 const iconFromObjType = (obj) => {
@@ -156,7 +150,25 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-React.forwardRef(UserModal);
+const buildOnCell = (index, world, setWorld, buildTool) => {
+  const row = rowFromIndex(index);
+  const col = colFromIndex(index);
+  // what is the world?
+  const { board } = world.worldState;
+  if (buildTool.tool === 'wall') {
+    board[row][col];
+  }
+  // build tool
+  // {
+  //   tool: '',
+  //   color: '',
+  //   roomId: 0,
+  //   charFill: '',
+  //   activeObjType: '',
+  //   url: '',
+  // }
+};
+
 const Square = ({
   player,
   index,
@@ -169,7 +181,19 @@ const Square = ({
 }) => {
   const buildToolType = buildTool.type;
   // need to get x and y coordinate to update world board
-  let fill = <div className="cell gridBorder" />;
+  let fill = (
+    // eslint-disable-next-line jsx-a11y/control-has-associated-label
+    <div
+      role="button"
+      tabIndex="0"
+      className="cell gridBorder"
+      onClick={() => {
+        if (buildToolType !== '') {
+          buildOnCell(index, world, setWorld, buildTool);
+        }
+      }}
+    />
+  );
   if (player !== null) {
     if (typeof player === 'object') {
       fill = (
@@ -178,7 +202,11 @@ const Square = ({
           type="image"
           src={iconFromObjType(player)}
           onClick={() => {
-            clickOnCell(player);
+            if (buildToolType === '') {
+              clickOnCell(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           key={`active${index}`}
           alt={player.type}
@@ -189,7 +217,11 @@ const Square = ({
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
           onClick={() => {
-            clickOnPlayer(player);
+            if (buildToolType === '') {
+              clickOnPlayer(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           ref={userSquare}
           type="image"
@@ -202,14 +234,18 @@ const Square = ({
             position: 'relative',
           }}
         >
-          <UserModal userSquare={userSquare} />
+          <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
         </div>
       );
     } else {
       fill = (
         <input
           onClick={() => {
-            clickOnPlayer(player);
+            if (buildToolType === '') {
+              clickOnPlayer(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           type="image"
           className="cell gridBorder"
@@ -246,6 +282,7 @@ const GridSquares = ({
   const playerPos1d = [].concat(...playersPositions);
   const squares = playerPos1d.map((player, i) => (
     <Square
+      key={`sq_${i.toString()}`}
       index={i}
       player={player}
       userId={userId}
@@ -255,37 +292,6 @@ const GridSquares = ({
       buildTool={buildTool}
       setBuildTool={setBuildTool}
     />
-  ));
-
-  return (
-    <div
-      id="baseGrid"
-      className="grid-container position-absolute position-absolute-stretch"
-    >
-      {squares}
-    </div>
-  );
-};
-
-const BuildSquares = ({
-  activeCells,
-  playersPositions,
-  userSquare,
-  userId,
-}) => {
-  activeCells.forEach((activity) => {
-    const activityObj = {
-      type: activity.type,
-      url: activity.url,
-    };
-    playersPositions[activity.y][activity.x] = {
-      ...activityObj,
-    };
-  });
-
-  const playerPos1d = [].concat(...playersPositions);
-  const squares = playerPos1d.map((player, i) => (
-    <Square index={i} player={player} userId={userId} userSquare={userSquare} />
   ));
 
   return (
@@ -337,16 +343,19 @@ const handleInteractKey = (
   openInteractiveObj(userPosition, activeCells);
   interactWPlayer(userPosition, playersPositions, userId);
 };
-const handleBuildKey = (userPosition, userSquare, setModalUp) => {
-  // console.log('userSquare.current :>> ', userSquare.current);
+const handleBuildKey = (
+  userPosition,
+  userSquare,
+  setModalUp,
+  buildTool,
+  setBuildTool
+) => {
   const userSquareChilds = userSquare.current.childNodes;
-  console.log('userSquareChilds :>> ', userSquareChilds);
   userSquareChilds.forEach((child) => {
     const currDisplay = child.style.display;
     child.style.display = currDisplay === 'none' ? 'block' : 'none';
   });
 
-  console.log('hey we are building!');
   const modal = (
     <div>
       User at x :{userPosition.x}, y: {userPosition.y}
@@ -355,13 +364,16 @@ const handleBuildKey = (userPosition, userSquare, setModalUp) => {
   setModalUp(modal);
 };
 export default function ActiveObjPlayerGrid({
-  backgrndArr,
-  activeCells,
+  // backgrndArr,
+  // activeCells,
   isChatFocused,
   worldId,
   world,
   setWorld,
 }) {
+  const backgrndArr = world.worldState.board;
+  const activeCells = world.worldState.activeObjCells;
+  console.log('in active obj');
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows / 2),
@@ -375,6 +387,8 @@ export default function ActiveObjPlayerGrid({
     activeObjType: '',
     url: '',
   });
+  console.log('buildTool :>> ', buildTool);
+
   const [modalPopUp, setModalUp] = useState();
   const userSquare = useRef('dasda');
 
@@ -393,13 +407,19 @@ export default function ActiveObjPlayerGrid({
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
-    console.log('running :>> ');
-    console.log('userSquare :>> ', userSquare);
     // KEY PRESSES
     const handleKeyPress = (e) => {
       if (!isChatFocused) {
         if (directionalKeyPresses.includes(e.code)) {
           handleDirKeys(e.code, userPosition, backgrndArr, setUserPosition);
+          setBuildTool({
+            tool: '',
+            color: '',
+            roomId: 0,
+            charFill: '',
+            activeObjType: '',
+            url: '',
+          });
         } else if (e.code === 'KeyE') {
           handleInteractKey(
             userPosition,
@@ -409,7 +429,13 @@ export default function ActiveObjPlayerGrid({
           );
         } else if (e.code === 'KeyB') {
           // get square of userPosition
-          handleBuildKey(userPosition, userSquare, setModalUp);
+          handleBuildKey(
+            userPosition,
+            userSquare,
+            setModalUp,
+            buildTool,
+            setBuildTool
+          );
         }
       }
     };
@@ -443,14 +469,6 @@ export default function ActiveObjPlayerGrid({
         buildTool={buildTool}
         setBuildTool={setBuildTool}
       />
-      {/* //useGridSquares for this
-      <BuildSquares
-        id="buildSquares"
-        activeCells={activeCells}
-        playersPositions={playersPositions}
-        userSquare={userSquare}
-        userId={userId}
-      /> */}
     </>
   );
 }

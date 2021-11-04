@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles.scss';
 import 'tailwindcss/tailwind.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import {
   faChessRook,
   faStickyNote,
   faThLarge,
   faIcons,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  hexPalette,
+  tailWindCol400,
+  tailWindCol200,
+} from './GridConstants.mjs';
 
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
@@ -58,7 +62,6 @@ const CharFiller = ({ toolSetting, setToolSetting }) => (
     >
       <FontAwesomeIcon
         className="text-3xl  m-2 text-green-700"
-        w
         icon={faIcons}
       />
     </button>
@@ -95,17 +98,38 @@ const ToolsModal = ({ toolSetting, setToolSetting, setBuildTool }) => {
     </div>
   );
 };
-const WallPalette = ({ toolSetting, setToolSetting }) => {
-  const placement = 'top';
+
+const ColorButton = ({ color, toolSetting, setToolSetting, setBuildTool }) => (
+  // eslint-disable-next-line jsx-a11y/control-has-associated-label
+  <button
+    className="h-12 w-12 border-1 m-2"
+    type="button"
+    onClick={() => {
+      // open wall palette
+      setToolSetting({ ...toolSetting, color });
+      setBuildTool({ ...toolSetting, color });
+    }}
+    style={{ backgroundColor: color }}
+  />
+);
+const WallPalette = ({ toolSetting, setToolSetting, setBuildTool }) => {
+  const colors = tailWindCol400;
+  const colorButtons = colors.map((color, i) => (
+    <ColorButton
+      key={`col_${i.toString()}`}
+      color={color}
+      toolSetting={toolSetting}
+      setToolSetting={setToolSetting}
+      setBuildTool={setBuildTool}
+    />
+  ));
   return (
-    <div className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10">
-      <div className="flex">
-        <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
-      </div>
+    <div className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex">
+      {colorButtons}
     </div>
   );
 };
-const Modal = ({ setBuildTool, toolSetting, setToolSetting }) => {
+const Modal = ({ toolSetting, setToolSetting, setBuildTool }) => {
   // when tool change, rerun happens
   console.log('toolSetting.tool :>> ', toolSetting.tool);
   let elem = <>/</>;
@@ -121,14 +145,17 @@ const Modal = ({ setBuildTool, toolSetting, setToolSetting }) => {
   }
   if (currentTool === 'wall') {
     elem = (
-      <WallPalette toolSetting={toolSetting} setToolSetting={setToolSetting} />
+      <WallPalette
+        setBuildTool={setBuildTool}
+        toolSetting={toolSetting}
+        setToolSetting={setToolSetting}
+      />
     );
   }
   return elem;
 };
 
-export default function UserModal(userSquare, setBuildTool) {
-  console.log('userSquare in tools :>> ', userSquare);
+export default function UserModal({ userSquare, setBuildTool }) {
   const [toolSetting, setToolSetting] = useState({
     tool: '',
     color: '',
@@ -137,7 +164,7 @@ export default function UserModal(userSquare, setBuildTool) {
     activeObjType: '',
     url: '',
   });
-  console.log('setToolSetting :>> ', setToolSetting);
+  console.log('toolSetting :>> ', toolSetting);
   return (
     <div
       className="translate-y-16"
