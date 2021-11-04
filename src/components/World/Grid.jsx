@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { World } from './GridConstants.mjs';
 import BaseGrid from './BaseGrid.jsx';
+import DummyGrid from './DummyGrid.jsx';
 import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';
 import { SocketContext } from '../../contexts/sockets.mjs';
 
@@ -45,7 +46,7 @@ export default function GridElem({ isChatFocused, room }) {
         parent elements can't follow the height of absolute positioned children.
         it will be required for me to set a padding to the bottom of invisible base grid
       */}
-      <BaseGrid world={world} visibility={false} />
+      <DummyGrid />
       <ActiveObjPlayerGrid
         isChatFocused={isChatFocused}
         worldId={room}
