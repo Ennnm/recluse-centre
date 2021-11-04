@@ -1,11 +1,13 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-
+import '../../styles.scss';
+import 'tailwindcss/tailwind.css';
+// src / components / World / UserModal.jsx;
 const ToolsModal = () => {
   const placement = 'top';
 
   return (
-    <Card>
+    <Card className="z-10">
       <Card.Body>This is some text within a card body.</Card.Body>
     </Card>
   );

@@ -13,6 +13,7 @@ import {
   getRandomInt,
   getUserIdCookie,
 } from '../../../utils.mjs';
+import UserModal from './UserModal.jsx';
 
 const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
@@ -152,12 +153,7 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-const ToolsModal = (userSquare) => {
-  const lalala = 5;
-  console.log('userSquare in tools :>> ', userSquare);
-  return <div style={{ display: 'none' }}>hey</div>;
-};
-React.forwardRef(ToolsModal);
+React.forwardRef(UserModal);
 const Square = ({ player, index, userId, userSquare }) => {
   let fill = <div className="cell gridBorder" />;
   if (player !== null) {
@@ -192,7 +188,7 @@ const Square = ({ player, index, userId, userSquare }) => {
             position: 'relative',
           }}
         >
-          <ToolsModal userSquare={userSquare} />
+          <UserModal userSquare={userSquare} />
         </div>
       );
     } else {

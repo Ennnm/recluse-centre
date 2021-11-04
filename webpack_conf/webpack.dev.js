@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
@@ -27,6 +28,13 @@ module.exports = merge(common, {
           },
         },
       },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader', 'postcss-loader',
+        ],
+      },
     ],
   },
   plugins: [
@@ -35,6 +43,10 @@ module.exports = merge(common, {
       overlay: {
         sockIntegration: 'whm',
       },
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+      chunkFilename: 'styles.css',
     }),
     new HtmlWebpackPlugin({
       // name this file main, so that it does not get automatically requested as a static file
