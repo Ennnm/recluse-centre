@@ -16,6 +16,7 @@ import {
 import { SocketContext } from '../../contexts/sockets.mjs';
 import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
 import UserModal from './UserModal.jsx';
+import { updateWorldInDb } from './axiosRequests.jsx';
 
 const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
@@ -150,20 +151,22 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-const buildOnCell = (index, world, setWorld, buildTool) => {
+const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
   const { board } = world.worldState;
-  console.log('cell is clicked');
   if (buildTool.tool === 'wall') {
-    console.log('row :>> ', row);
-    console.log('col :>> ', col);
     world.worldState.board[row][col] = {
       ...board[row][col],
       color: buildTool.color,
     };
     world.worldState.board = board;
     // why not working?
+
+    console.log('world.worldStates going into db :>> ', world);
+    updateWorldInDb(world.id, world.worldState);
+    socket.emit('grid:update:world', { worldId: world.id });
+
     setWorld({ ...world });
   }
   // build tool
@@ -186,6 +189,7 @@ const Square = ({
   setWorld,
   buildTool,
   setBuildTool,
+  socket,
 }) => {
   const buildToolType = buildTool.type;
   // need to get x and y coordinate to update world board
@@ -193,12 +197,10 @@ const Square = ({
     // eslint-disable-next-line jsx-a11y/control-has-associated-label
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      // role={buildToolType !== '' ? 'button' : 'none'}
-      // tabIndex="0"
       className="cell gridBorder"
       onClick={() => {
         if (buildToolType !== '') {
-          buildOnCell(index, world, setWorld, buildTool);
+          buildOnCell(index, world, setWorld, buildTool, socket);
         }
       }}
     />
@@ -275,6 +277,7 @@ const GridSquares = ({
   setWorld,
   buildTool,
   setBuildTool,
+  socket,
 }) => {
   activeCells.forEach((activity) => {
     const activityObj = {
@@ -298,6 +301,7 @@ const GridSquares = ({
       setWorld={setWorld}
       buildTool={buildTool}
       setBuildTool={setBuildTool}
+      socket={socket}
     />
   ));
 
@@ -350,13 +354,7 @@ const handleInteractKey = (
   openInteractiveObj(userPosition, activeCells);
   interactWPlayer(userPosition, playersPositions, userId);
 };
-const handleBuildKey = (
-  userPosition,
-  userSquare,
-  setModalUp,
-  buildTool,
-  setBuildTool
-) => {
+const handleBuildKey = (userPosition, userSquare, buildTool, setBuildTool) => {
   const userSquareChilds = userSquare.current.childNodes;
   userSquareChilds.forEach((child) => {
     const currDisplay = child.style.display;
@@ -368,11 +366,8 @@ const handleBuildKey = (
       User at x :{userPosition.x}, y: {userPosition.y}
     </div>
   );
-  setModalUp(modal);
 };
 export default function ActiveObjPlayerGrid({
-  // backgrndArr,
-  // activeCells,
   isChatFocused,
   worldId,
   world,
@@ -383,7 +378,8 @@ export default function ActiveObjPlayerGrid({
   console.log('in active obj');
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
-    y: getRandomInt(numRows / 2),
+    y: 0,
+    // y: getRandomInt(numRows / 2),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
   const [buildTool, setBuildTool] = useState({
@@ -394,10 +390,7 @@ export default function ActiveObjPlayerGrid({
     activeObjType: '',
     url: '',
   });
-  console.log('buildTool :>> ', buildTool);
-  console.log('world in active :>> ', world);
-  const [modalPopUp, setModalUp] = useState();
-  const userSquare = useRef('dasda');
+  const userSquare = useRef('');
 
   const socket = useContext(SocketContext);
   const userId = getUserIdCookie();
@@ -408,13 +401,12 @@ export default function ActiveObjPlayerGrid({
     playerPos[y][x] = userId;
     setPlayersPositions(playerPos);
   });
-  useEffect(() => {
-    console.log('world in active has changed');
-  }, [world]);
+
   useEffect(() => {
     // SOCKETS
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
+
   useEffect(() => {
     // KEY PRESSES
     const handleKeyPress = (e) => {
@@ -438,13 +430,7 @@ export default function ActiveObjPlayerGrid({
           );
         } else if (e.code === 'KeyB') {
           // get square of userPosition
-          handleBuildKey(
-            userPosition,
-            userSquare,
-            setModalUp,
-            buildTool,
-            setBuildTool
-          );
+          handleBuildKey(userPosition, userSquare, buildTool, setBuildTool);
         }
       }
     };
@@ -477,6 +463,7 @@ export default function ActiveObjPlayerGrid({
         setWorld={setWorld}
         buildTool={buildTool}
         setBuildTool={setBuildTool}
+        socket={socket}
       />
     </>
   );

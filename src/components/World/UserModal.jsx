@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../../styles.scss';
 import 'tailwindcss/tailwind.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import {
   faStickyNote,
   faThLarge,
   faIcons,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   hexPalette,
@@ -85,15 +86,28 @@ const WidgetTool = ({ toolSetting, setToolSetting }) => (
     Widget
   </div>
 );
-const ToolsModal = ({ toolSetting, setToolSetting, setBuildTool }) => {
+const ToolsModal = ({
+  toolSetting,
+  setToolSetting,
+  setBuildTool,
+  modalRef,
+}) => {
   const placement = 'top';
   return (
-    <div className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10">
+    <div
+      ref={modalRef}
+      className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10"
+    >
       <div className="flex">
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <WidgetTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <CloseButton
+          setBuildTool={setBuildTool}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
       </div>
     </div>
   );
@@ -112,7 +126,28 @@ const ColorButton = ({ color, toolSetting, setToolSetting, setBuildTool }) => (
     style={{ backgroundColor: color }}
   />
 );
-const WallPalette = ({ toolSetting, setToolSetting, setBuildTool }) => {
+const CloseButton = ({ setBuildTool, setToolSetting, modalRef }) => (
+  // eslint-disable-next-line jsx-a11y/control-has-associated-label
+  <button
+    className="h-12 w-12 border-2 m-2"
+    type="button"
+    onClick={() => {
+      // open wall palette
+      // setToolSetting({ ...toolSetting, color });
+      modalRef.current.style.display = 'none';
+      setBuildTool({ tool: '' });
+      setToolSetting({ tool: '' });
+    }}
+  >
+    <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faTimes} />
+  </button>
+);
+const WallPalette = ({
+  toolSetting,
+  setToolSetting,
+  setBuildTool,
+  modalRef,
+}) => {
   const colors = tailWindCol400;
   const colorButtons = colors.map((color, i) => (
     <ColorButton
@@ -124,14 +159,23 @@ const WallPalette = ({ toolSetting, setToolSetting, setBuildTool }) => {
     />
   ));
   return (
-    <div className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex">
+    <div
+      ref={modalRef}
+      className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+    >
       {colorButtons}
+      <CloseButton
+        setBuildTool={setBuildTool}
+        setToolSetting={setToolSetting}
+        modalRef={modalRef}
+      />
     </div>
   );
 };
 const Modal = ({ toolSetting, setToolSetting, setBuildTool }) => {
   // when tool change, rerun happens
   console.log('toolSetting.tool :>> ', toolSetting.tool);
+  const modalRef = useRef(null);
   let elem = <>/</>;
   const currentTool = toolSetting.tool;
   if (currentTool === '') {
@@ -140,6 +184,7 @@ const Modal = ({ toolSetting, setToolSetting, setBuildTool }) => {
         setBuildTool={setBuildTool}
         toolSetting={toolSetting}
         setToolSetting={setToolSetting}
+        modalRef={modalRef}
       />
     );
   }
@@ -149,6 +194,7 @@ const Modal = ({ toolSetting, setToolSetting, setBuildTool }) => {
         setBuildTool={setBuildTool}
         toolSetting={toolSetting}
         setToolSetting={setToolSetting}
+        modalRef={modalRef}
       />
     );
   }
@@ -164,7 +210,6 @@ export default function UserModal({ userSquare, setBuildTool }) {
     activeObjType: '',
     url: '',
   });
-  console.log('toolSetting :>> ', toolSetting);
   return (
     <div
       className="translate-y-16"

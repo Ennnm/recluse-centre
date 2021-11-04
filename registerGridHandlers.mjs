@@ -35,9 +35,12 @@ export default function registerGridHandlers(io, socket) {
 
     playerSocketIds.push(new SocketUser(userId, socket.id));
     socket.join(`${WOLRDHEADER}${worldId}`);
-    io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
+    io.to(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
-
+  const updateWorld = ({ worldId }) => {
+    console.log('request to update world', worldId);
+    io.to(`${WOLRDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
+  };
   const updateGrid = (userObj) => {
     const {
       worldId, userId, x, y,
@@ -83,7 +86,7 @@ export default function registerGridHandlers(io, socket) {
   };
   // when client logs into world, pings to server: entered world {roomId, userId, x,y}
   socket.on('grid:enter', updateGrid);
-
+  socket.on('grid:update:world', updateWorld);
   socket.on('grid:update', updateGrid);
   socket.on('grid:join', joinGrid);
 

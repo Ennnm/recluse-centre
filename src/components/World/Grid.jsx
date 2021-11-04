@@ -1,42 +1,47 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { genGridArray, WorldState, World } from './GridConstants.mjs';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
+import { World } from './GridConstants.mjs';
 import BaseGrid from './BaseGrid.jsx';
-import PlayersGrid from './PlayersGrid.jsx';
-import ClickGrid from './ClickGrid.jsx';
-import CombinedGrid from './CombinedGrid.jsx';
 import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';
+import { SocketContext } from '../../contexts/sockets.mjs';
 
-import { setWorldFromId, updateWorldInDb } from './axiosRequests.jsx';
+import { setWorldFromId } from './axiosRequests.jsx';
 
 export default function GridElem({ isChatFocused, room }) {
-  console.log('room in GridElem :>> ', room);
+  console.log('gridElem update');
   // to read from db
   // db world
-  const [world, setWorld] = useState(new World());
+  const [world, setWorld] = useState(new World(room));
 
-  const worldName = useRef();
-  const worldId = useRef();
-  console.log('setWorld :>> ', setWorld);
+  const socket = useContext(SocketContext);
 
   function setWorldProperties(world) {
     console.log('world from setWorld :>> ', world);
-    worldId.current = world.id;
-    worldName.current = world.name;
     // rerendeering three times?
     setWorld(world);
   }
+
+  const handleUpdateWorld = useCallback(() => {
+    console.log('handling update  of world', world.id);
+    setWorldFromId(setWorldProperties, world.id);
+  });
   useEffect(() => {
-    console.log('setting world from id');
     // getting background from db, refresh all react worlds on new edit?
-    setWorldFromId(setWorldProperties, room);
+    handleUpdateWorld();
   }, []);
 
   useEffect(() => {
-    console.log('the world has changed');
-    if (world !== undefined) {
-      updateWorldInDb(worldId.current, world.worldState);
-    }
-  }, [world]);
+    console.log('running because of  socket');
+    socket.on('UPDATE_BASEGRID', handleUpdateWorld);
+    return () => {
+      socket.off('UPDATE_BASEGRID', handleUpdateWorld);
+    };
+  }, [socket]);
 
   return (
     <>

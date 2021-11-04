@@ -9,8 +9,6 @@ export default function BaseGrid({
 }) {
   const { board } = world.worldState;
   const arr1d = [].concat(...board);
-  console.log('world :>> ', world);
-  console.log('board in BaseGrid :>> ', board);
   // read arr2d for wall grid, set div style accordigng to color stored in array
   const cells = arr1d.map((cell, index) => (
     <div
