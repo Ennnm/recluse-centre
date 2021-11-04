@@ -90,29 +90,6 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
   );
 };
 
-const hslToHex = (h, s, l) => {
-  l /= 100;
-  const a = (s * Math.min(l, 1 - l)) / 100;
-  const f = (n) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, '0'); // convert to Hex and prefix "0" if needed
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-};
-
-const hslPalette = (numColors, saturation, lightness) => {
-  const colors = [];
-  const hueInteval = Math.floor(360 / numColors);
-  for (let i = 0; i < numColors; i += 1) {
-    const hue = hueInteval * i;
-    colors.push(hslToHex(hue, saturation, lightness));
-  }
-  return colors;
-};
-
 const WallTools = ({ setBuildTool }) => {
   const hexColors = hslPalette(10, 100, 70);
   const palettePicker = hexColors.map((color) => (

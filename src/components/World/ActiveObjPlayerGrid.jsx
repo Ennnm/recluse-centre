@@ -153,10 +153,18 @@ const clickOnPlayer = (player) => {
 const buildOnCell = (index, world, setWorld, buildTool) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
-  // what is the world?
   const { board } = world.worldState;
+  console.log('cell is clicked');
   if (buildTool.tool === 'wall') {
-    board[row][col];
+    console.log('row :>> ', row);
+    console.log('col :>> ', col);
+    world.worldState.board[row][col] = {
+      ...board[row][col],
+      color: buildTool.color,
+    };
+    world.worldState.board = board;
+    // why not working?
+    setWorld({ ...world });
   }
   // build tool
   // {
@@ -183,8 +191,9 @@ const Square = ({
   // need to get x and y coordinate to update world board
   let fill = (
     // eslint-disable-next-line jsx-a11y/control-has-associated-label
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      role="button"
+      role={buildToolType !== '' ? 'button' : 'none'}
       tabIndex="0"
       className="cell gridBorder"
       onClick={() => {
@@ -388,7 +397,7 @@ export default function ActiveObjPlayerGrid({
     url: '',
   });
   console.log('buildTool :>> ', buildTool);
-
+  console.log('world in active :>> ', world);
   const [modalPopUp, setModalUp] = useState();
   const userSquare = useRef('dasda');
 
@@ -401,7 +410,9 @@ export default function ActiveObjPlayerGrid({
     playerPos[y][x] = userId;
     setPlayersPositions(playerPos);
   });
-
+  useEffect(() => {
+    console.log('world in active has changed');
+  }, [world]);
   useEffect(() => {
     // SOCKETS
     socket.emit('grid:join', { userId, worldId });

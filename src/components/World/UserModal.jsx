@@ -106,7 +106,7 @@ const ColorButton = ({ color, toolSetting, setToolSetting, setBuildTool }) => (
     type="button"
     onClick={() => {
       // open wall palette
-      setToolSetting({ ...toolSetting, color });
+      // setToolSetting({ ...toolSetting, color });
       setBuildTool({ ...toolSetting, color });
     }}
     style={{ backgroundColor: color }}
@@ -171,7 +171,7 @@ export default function UserModal({ userSquare, setBuildTool }) {
       style={{
         display: 'none',
         position: 'absolute',
-        top: '-300%',
+        top: '-200%',
       }}
     >
       <Modal

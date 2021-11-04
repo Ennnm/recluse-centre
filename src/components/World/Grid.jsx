@@ -6,7 +6,7 @@ import ClickGrid from './ClickGrid.jsx';
 import CombinedGrid from './CombinedGrid.jsx';
 import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';
 
-import { setWorldFromId } from './axiosRequests.jsx';
+import { setWorldFromId, updateWorldInDb } from './axiosRequests.jsx';
 
 export default function GridElem({ isChatFocused, room }) {
   console.log('room in GridElem :>> ', room);
@@ -16,6 +16,7 @@ export default function GridElem({ isChatFocused, room }) {
 
   const worldName = useRef();
   const worldId = useRef();
+  console.log('setWorld :>> ', setWorld);
 
   function setWorldProperties(world) {
     console.log('world from setWorld :>> ', world);
@@ -29,6 +30,13 @@ export default function GridElem({ isChatFocused, room }) {
     // getting background from db, refresh all react worlds on new edit?
     setWorldFromId(setWorldProperties, room);
   }, []);
+
+  useEffect(() => {
+    console.log('the world has changed');
+    if (world !== undefined) {
+      updateWorldInDb(worldId.current, world.worldState);
+    }
+  }, [world]);
 
   return (
     <>
