@@ -6,13 +6,16 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.mjs';
-import { SocketContext } from '../../contexts/sockets.mjs';
 import {
-  getRandomColor,
-  getRandomInt,
-  getUserIdCookie,
-} from '../../../utils.mjs';
+  numCols,
+  numRows,
+  genGridArray,
+  rowFromIndex,
+  colFromIndex,
+} from './GridConstants.mjs';
+import { SocketContext } from '../../contexts/sockets.mjs';
+import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
+import UserModal from './UserModal.jsx';
 
 const movedPosition = (userPosition, x, y) => {
   let destinationX = userPosition.x;
@@ -58,9 +61,6 @@ const getDisplacementFromKey = (code) => {
       break;
   }
   return direction;
-  // let XY = [0, 0];
-  // XY = XY.map((coord, i) => coord + direction[i]);
-  // return XY;
 };
 
 const getGridObject = (x, y, grid) => grid[y][x];
@@ -119,12 +119,10 @@ const getAdjacentPlayers = (userPosition, playersPositions) => {
       adjPlayers.push(playerCell);
     }
   }
-  console.log('adjPlayers :>> ', adjPlayers);
 
   return adjPlayers;
 };
 const clickOnCell = (obj) => {
-  console.log('cell clicked', obj);
   window.open(obj.url);
 };
 const iconFromObjType = (obj) => {
@@ -152,14 +150,59 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-const ToolsModal = (userSquare) => {
-  const lalala = 5;
-  console.log('userSquare in tools :>> ', userSquare);
-  return <div style={{ display: 'none' }}>hey</div>;
+const buildOnCell = (index, world, setWorld, buildTool) => {
+  const row = rowFromIndex(index);
+  const col = colFromIndex(index);
+  const { board } = world.worldState;
+  console.log('cell is clicked');
+  if (buildTool.tool === 'wall') {
+    console.log('row :>> ', row);
+    console.log('col :>> ', col);
+    world.worldState.board[row][col] = {
+      ...board[row][col],
+      color: buildTool.color,
+    };
+    world.worldState.board = board;
+    // why not working?
+    setWorld({ ...world });
+  }
+  // build tool
+  // {
+  //   tool: '',
+  //   color: '',
+  //   roomId: 0,
+  //   charFill: '',
+  //   activeObjType: '',
+  //   url: '',
+  // }
 };
-React.forwardRef(ToolsModal);
-const Square = ({ player, index, userId, userSquare }) => {
-  let fill = <div className="cell gridBorder" />;
+
+const Square = ({
+  player,
+  index,
+  userId,
+  userSquare,
+  world,
+  setWorld,
+  buildTool,
+  setBuildTool,
+}) => {
+  const buildToolType = buildTool.type;
+  // need to get x and y coordinate to update world board
+  let fill = (
+    // eslint-disable-next-line jsx-a11y/control-has-associated-label
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      role={buildToolType !== '' ? 'button' : 'none'}
+      tabIndex="0"
+      className="cell gridBorder"
+      onClick={() => {
+        if (buildToolType !== '') {
+          buildOnCell(index, world, setWorld, buildTool);
+        }
+      }}
+    />
+  );
   if (player !== null) {
     if (typeof player === 'object') {
       fill = (
@@ -168,7 +211,11 @@ const Square = ({ player, index, userId, userSquare }) => {
           type="image"
           src={iconFromObjType(player)}
           onClick={() => {
-            clickOnCell(player);
+            if (buildToolType === '') {
+              clickOnCell(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           key={`active${index}`}
           alt={player.type}
@@ -179,7 +226,11 @@ const Square = ({ player, index, userId, userSquare }) => {
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
           onClick={() => {
-            clickOnPlayer(player);
+            if (buildToolType === '') {
+              clickOnPlayer(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           ref={userSquare}
           type="image"
@@ -192,14 +243,18 @@ const Square = ({ player, index, userId, userSquare }) => {
             position: 'relative',
           }}
         >
-          <ToolsModal userSquare={userSquare} />
+          <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
         </div>
       );
     } else {
       fill = (
         <input
           onClick={() => {
-            clickOnPlayer(player);
+            if (buildToolType === '') {
+              clickOnPlayer(player);
+            } else {
+              buildOnCell(index, world, setWorld, buildTool);
+            }
           }}
           type="image"
           className="cell gridBorder"
@@ -213,7 +268,16 @@ const Square = ({ player, index, userId, userSquare }) => {
   return fill;
 };
 
-const GridSquares = ({ activeCells, playersPositions, userSquare, userId }) => {
+const GridSquares = ({
+  activeCells,
+  playersPositions,
+  userSquare,
+  userId,
+  world,
+  setWorld,
+  buildTool,
+  setBuildTool,
+}) => {
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -226,7 +290,17 @@ const GridSquares = ({ activeCells, playersPositions, userSquare, userId }) => {
 
   const playerPos1d = [].concat(...playersPositions);
   const squares = playerPos1d.map((player, i) => (
-    <Square index={i} player={player} userId={userId} userSquare={userSquare} />
+    <Square
+      key={`sq_${i.toString()}`}
+      index={i}
+      player={player}
+      userId={userId}
+      userSquare={userSquare}
+      world={world}
+      setWorld={setWorld}
+      buildTool={buildTool}
+      setBuildTool={setBuildTool}
+    />
   ));
 
   return (
@@ -278,16 +352,19 @@ const handleInteractKey = (
   openInteractiveObj(userPosition, activeCells);
   interactWPlayer(userPosition, playersPositions, userId);
 };
-const handleBuildKey = (userPosition, userSquare, setModalUp) => {
-  // console.log('userSquare.current :>> ', userSquare.current);
+const handleBuildKey = (
+  userPosition,
+  userSquare,
+  setModalUp,
+  buildTool,
+  setBuildTool
+) => {
   const userSquareChilds = userSquare.current.childNodes;
-  console.log('userSquareChilds :>> ', userSquareChilds);
   userSquareChilds.forEach((child) => {
     const currDisplay = child.style.display;
     child.style.display = currDisplay === 'none' ? 'block' : 'none';
   });
 
-  console.log('hey we are building!');
   const modal = (
     <div>
       User at x :{userPosition.x}, y: {userPosition.y}
@@ -295,17 +372,32 @@ const handleBuildKey = (userPosition, userSquare, setModalUp) => {
   );
   setModalUp(modal);
 };
-export default function CombClickAndPlayerGrid({
-  backgrndArr,
-  activeCells,
+export default function ActiveObjPlayerGrid({
+  // backgrndArr,
+  // activeCells,
   isChatFocused,
   worldId,
+  world,
+  setWorld,
 }) {
+  const backgrndArr = world.worldState.board;
+  const activeCells = world.worldState.activeObjCells;
+  console.log('in active obj');
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: getRandomInt(numRows / 2),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
+  const [buildTool, setBuildTool] = useState({
+    tool: '',
+    color: '',
+    roomId: 0,
+    charFill: '',
+    activeObjType: '',
+    url: '',
+  });
+  console.log('buildTool :>> ', buildTool);
+  console.log('world in active :>> ', world);
   const [modalPopUp, setModalUp] = useState();
   const userSquare = useRef('dasda');
 
@@ -318,19 +410,27 @@ export default function CombClickAndPlayerGrid({
     playerPos[y][x] = userId;
     setPlayersPositions(playerPos);
   });
-
+  useEffect(() => {
+    console.log('world in active has changed');
+  }, [world]);
   useEffect(() => {
     // SOCKETS
     socket.emit('grid:join', { userId, worldId });
   }, [socket]);
   useEffect(() => {
-    console.log('running :>> ');
-    console.log('userSquare :>> ', userSquare);
     // KEY PRESSES
     const handleKeyPress = (e) => {
       if (!isChatFocused) {
         if (directionalKeyPresses.includes(e.code)) {
           handleDirKeys(e.code, userPosition, backgrndArr, setUserPosition);
+          setBuildTool({
+            tool: '',
+            color: '',
+            roomId: 0,
+            charFill: '',
+            activeObjType: '',
+            url: '',
+          });
         } else if (e.code === 'KeyE') {
           handleInteractKey(
             userPosition,
@@ -340,7 +440,13 @@ export default function CombClickAndPlayerGrid({
           );
         } else if (e.code === 'KeyB') {
           // get square of userPosition
-          handleBuildKey(userPosition, userSquare, setModalUp);
+          handleBuildKey(
+            userPosition,
+            userSquare,
+            setModalUp,
+            buildTool,
+            setBuildTool
+          );
         }
       }
     };
@@ -369,8 +475,11 @@ export default function CombClickAndPlayerGrid({
         playersPositions={playersPositions}
         userSquare={userSquare}
         userId={userId}
+        world={world}
+        setWorld={setWorld}
+        buildTool={buildTool}
+        setBuildTool={setBuildTool}
       />
-      {modalPopUp}
     </>
   );
 }

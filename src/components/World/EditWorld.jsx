@@ -52,10 +52,8 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
 
   // different click modes for wall, room and activeObject creation
   // wall creation
-  console.log('arr1d :>> ', arr1d);
   const cells = arr1d.map((cell, index) => (
     <input
-      className="cell"
       type="text"
       maxLength="2"
       onMouseDown={() => {
@@ -90,29 +88,6 @@ const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
       </div>
     </>
   );
-};
-
-const hslToHex = (h, s, l) => {
-  l /= 100;
-  const a = (s * Math.min(l, 1 - l)) / 100;
-  const f = (n) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, '0'); // convert to Hex and prefix "0" if needed
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-};
-
-const hslPalette = (numColors, saturation, lightness) => {
-  const colors = [];
-  const hueInteval = Math.floor(360 / numColors);
-  for (let i = 0; i < numColors; i += 1) {
-    const hue = hueInteval * i;
-    colors.push(hslToHex(hue, saturation, lightness));
-  }
-  return colors;
 };
 
 const WallTools = ({ setBuildTool }) => {
@@ -240,10 +215,6 @@ export default function EditWorld() {
         activeObjs={activeObjs}
         buildTool={buildTool}
       />
-      {/* <BuildingTools
-        setBuildTool={setBuildTool}
-        worldName={worldName.current}
-      /> */}
     </div>
   );
 }
