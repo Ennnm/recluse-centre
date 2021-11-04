@@ -216,7 +216,7 @@ const Square = ({
             if (buildToolType === '') {
               clickOnCell(player);
             } else {
-              buildOnCell(index, world, setWorld, buildTool);
+              buildOnCell(index, world, setWorld, buildTool, socket);
             }
           }}
           key={`active${index}`}
@@ -253,7 +253,7 @@ const Square = ({
             if (buildToolType === '') {
               clickOnPlayer(player);
             } else {
-              buildOnCell(index, world, setWorld, buildTool);
+              buildOnCell(index, world, setWorld, buildTool, socket);
             }
           }}
           type="image"
