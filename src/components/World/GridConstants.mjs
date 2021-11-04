@@ -43,8 +43,8 @@ export function WorldState() {
   this.roomCells = [];
   this.activeObjCells = [];
 }
-export function World() {
-  this.id = 0;
+export function World(id = 0) {
+  this.id = id;
   this.createdAt = '';
   this.name = '';
   this.updatedAt = '';
