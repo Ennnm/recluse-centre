@@ -39,19 +39,24 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   const col = colFromIndex(index);
 
   const { board } = world.worldState;
+  console.log(
+    'world.worldState.board[row][col] :>> before ',
+    world.worldState.board[row][col]
+  );
   if (buildTool.tool === 'wall') {
     world.worldState.board[row][col] = {
       ...board[row][col],
       color: buildTool.color,
     };
-    world.worldState.board = board;
-    // why not working?
-
-    console.log('world.worldStates going into db :>> ', world);
-    updateWorldInDb(world.id, world.worldState);
-    socket.emit('grid:update:world', { worldId: world.id });
-
-    setWorld({ ...world });
+  } else if (buildTool.tool === 'charFill') {
+    world.worldState.board[row][col] = {
+      ...board[row][col],
+      charFill: buildTool.charFill,
+    };
+    console.log(
+      'world.worldState.board[row][col] :>> ',
+      world.worldState.board[row][col]
+    );
   }
   // build tool
   // {
@@ -62,6 +67,9 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   //   activeObjType: '',
   //   url: '',
   // }
+  updateWorldInDb(world.id, world.worldState);
+  socket.emit('grid:update:world', { worldId: world.id });
+  setWorld({ ...world });
 };
 const BlankSquare = ({
   index,
@@ -106,7 +114,13 @@ const ObjectSquare = ({
     alt={obj.type}
   />
 );
-const UserSquare = ({ buildToolType, userSquare, player, setBuildTool }) => (
+const UserSquare = ({
+  buildToolType,
+  userSquare,
+  player,
+  setBuildTool,
+  setInputTxtFocused,
+}) => (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
   <div
     onClick={() => {
@@ -125,7 +139,11 @@ const UserSquare = ({ buildToolType, userSquare, player, setBuildTool }) => (
       position: 'relative',
     }}
   >
-    <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
+    <UserModal
+      userSquare={userSquare}
+      setBuildTool={setBuildTool}
+      setInputTxtFocused={setInputTxtFocused}
+    />
   </div>
 );
 const PlayerSquare = ({
@@ -161,6 +179,7 @@ export default function Square({
   setWorld,
   buildTool,
   setBuildTool,
+  setInputTxtFocused,
 }) {
   const buildToolType = buildTool.tool;
   const socket = useContext(SocketContext);
@@ -196,6 +215,7 @@ export default function Square({
           userSquare={userSquare}
           player={player}
           setBuildTool={setBuildTool}
+          setInputTxtFocused={setInputTxtFocused}
         />
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       );

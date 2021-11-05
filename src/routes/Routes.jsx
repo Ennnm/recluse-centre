@@ -26,6 +26,7 @@ export const ContextRoute = ({
   handleChatFocused,
   handleChatUnfocused,
   isChatFocused,
+
   ...rest
 }) => {
   const { Provider } = contextComponent;
