@@ -2,14 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import {
-  Wall,
-  Room,
-  ActiveObj,
-  WorldState,
-  numCols,
-  genGridArray,
-} from './GridConstants.mjs';
+import { numCols, genGridArray } from './utils.mjs';
 
 import { setWorldFromId, updateWorldInDb } from './axiosRequests.jsx';
 
@@ -46,12 +39,6 @@ const addCharToCell = (value, row, col, world, setWorld) => {
 const BuildGrid = ({ items, world, setWorld, activeObjs }) => {
   console.log('rendering click grid');
   const arr1d = [].concat(...items);
-  // const arr1d = [].concat(...world.board);
-  // on click, if square is empty, fill with new color
-  // if not remove color
-
-  // different click modes for wall, room and activeObject creation
-  // wall creation
   const cells = arr1d.map((cell, index) => (
     <input
       type="text"

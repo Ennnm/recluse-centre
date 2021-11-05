@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import { genGridArray } from './src/components/World/GridConstants.mjs';
+import { genGridArray } from './src/components/World/utils.mjs';
 
 // link to db, get number of player grids from there
 // an array for each world

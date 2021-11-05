@@ -10,12 +10,10 @@ import {
   faIcons,
   faTimes,
   faFont,
+  faBookDead,
+  faWindowMaximize,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  hexPalette,
-  tailWindCol400,
-  tailWindCol200,
-} from './GridConstants.mjs';
+import { tailWindCol400, faviconFromSite } from './utils.mjs';
 
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
@@ -71,13 +69,13 @@ const CharFiller = ({ toolSetting, setToolSetting }) => (
     Char
   </div>
 );
-const WidgetTool = ({ toolSetting, setToolSetting }) => (
+const UrlTool = ({ toolSetting, setToolSetting }) => (
   <div>
     <button
       className="h-12 w-12 border-1 m-2 "
       type="button"
       onClick={() => {
-        setToolSetting({ ...toolSetting, tool: 'widget' });
+        setToolSetting({ ...toolSetting, tool: 'url' });
       }}
     >
       <FontAwesomeIcon
@@ -85,7 +83,7 @@ const WidgetTool = ({ toolSetting, setToolSetting }) => (
         icon={faStickyNote}
       />
     </button>
-    Widget
+    Url
   </div>
 );
 const ToolsModal = ({
@@ -104,7 +102,7 @@ const ToolsModal = ({
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
-        <WidgetTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <UrlTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <CloseButton
           setBuildTool={setBuildTool}
           setToolSetting={setToolSetting}
@@ -179,7 +177,6 @@ const CharFillForm = ({
   setInputTxtFocused,
 }) => {
   const colors = tailWindCol400;
-
   return (
     <div
       ref={modalRef}
@@ -193,17 +190,55 @@ const CharFillForm = ({
         maxLength="2"
         className="appearance-none bg-transparent border-b-2 w-12 text-2xl border-gray-500 text-gray-900 mr-3 py-1 px-2 mx-2 leading-tight focus:outline-none text-center font-semibold"
         onFocus={() => {
-          console.log('infocus');
           setInputTxtFocused(true);
         }}
         onBlur={() => {
-          console.log('outof focus');
           setInputTxtFocused(false);
         }}
         onChange={(e) => {
           e.preventDefault();
-          console.log('e.target.value :>> ', e.target.value);
           setBuildTool({ ...toolSetting, charFill: e.target.value });
+        }}
+      />
+      <CloseButton
+        setBuildTool={setBuildTool}
+        setToolSetting={setToolSetting}
+        modalRef={modalRef}
+      />
+    </div>
+  );
+};
+const UrlFillForm = ({
+  toolSetting,
+  setToolSetting,
+  setBuildTool,
+  modalRef,
+  setInputTxtFocused,
+}) => {
+  const label = useRef();
+
+  return (
+    <div
+      ref={modalRef}
+      className="p-2   text-2xl mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+    >
+      {/* <FontAwesomeIcon
+          className="text-3xl m-2 text-gray-600"
+          icon={faWindowMaximize}
+        /> */}
+      <p ref={label}>url:</p>
+      <input
+        type="text"
+        className="appearance-none bg-transparent border-b-2  text-2xl border-gray-500 text-gray-900 mr-3 py-1 px-2 mx-2 leading-tight focus:outline-none  font-semibold"
+        onFocus={() => {
+          setInputTxtFocused(true);
+        }}
+        onBlur={() => {
+          setInputTxtFocused(false);
+        }}
+        onChange={(e) => {
+          e.preventDefault();
+          setBuildTool({ ...toolSetting, url: e.target.value });
         }}
       />
       <CloseButton
@@ -254,9 +289,17 @@ const Modal = ({
         setInputTxtFocused={setInputTxtFocused}
       />
     );
-  } else if (currentTool === 'widget') {
-    console.log('widget tool');
-    elem = <></>;
+  } else if (currentTool === 'url') {
+    console.log('url tool');
+    elem = (
+      <UrlFillForm
+        setBuildTool={setBuildTool}
+        toolSetting={toolSetting}
+        setToolSetting={setToolSetting}
+        modalRef={modalRef}
+        setInputTxtFocused={setInputTxtFocused}
+      />
+    );
   }
 
   return elem;

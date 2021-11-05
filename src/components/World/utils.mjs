@@ -22,12 +22,11 @@ export function Room(x, y, id, name) {
   this.name = name;
   this.id = id;
 }
-export function ActiveObj(x, y, url, type) {
+export function ActiveObj(x, y, url, title = '') {
   this.x = x;
   this.y = y;
   this.url = url;
-  this.type = type;
-  // render different icons based on type
+  this.title = title;
 }
 
 export function genGridArray(fill = null) {
@@ -83,3 +82,7 @@ export function hexPalette(numColors, saturation, lightness) {
 export const tailWindCol400 = ['#9CA3AF', '#F87171', '#FBBF24', '#34D399', '#60A5FA', '#818CF8', '#A78BFA', '#F472B6', ''];
 
 export const tailWindCol200 = ['#E5E7EB', '#FECACA', '#FDE68A', '#A7F3D0', '#BFDBFE', '#C7D2FE', '#DDD6FE', '#FBCFE8', ''];
+
+export function faviconFromSite(url) {
+  return `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`;
+}

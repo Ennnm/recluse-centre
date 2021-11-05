@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { numCols } from './GridConstants.mjs';
+import { numCols } from './utils.mjs';
 
 export default function BaseGrid({
   world,
@@ -22,7 +22,7 @@ export default function BaseGrid({
         (!showText ? (
           ''
         ) : (
-          <span className="cell-charfill">{cell.charFill}</span>
+          <span className="cell-charfill ">{cell.charFill}</span>
         ))}
     </div>
   ));

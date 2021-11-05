@@ -1,7 +1,7 @@
 // import pkg from 'sequelize';
 import {
   WorldState,
-} from '../src/components/World/GridConstants.mjs';
+} from '../src/components/World/utils.mjs';
 import { checkError } from './utils.mjs';
 
 // const { Op } = pkg;

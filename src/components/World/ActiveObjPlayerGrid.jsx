@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, react/prop-types */
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { numCols, numRows, genGridArray } from './GridConstants.mjs';
+import { numCols, numRows, genGridArray } from './utils.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
 import GridSquares from './GridSquares.jsx';
@@ -63,8 +63,6 @@ export default function ActiveObjPlayerGrid({
   setWorld,
 }) {
   const backgrndArr = world.worldState.board;
-  const activeCells = world.worldState.activeObjCells;
-  console.log('in active obj');
   const [userPosition, setUserPosition] = useState({
     x: getRandomInt(numCols),
     y: 0,
@@ -79,8 +77,8 @@ export default function ActiveObjPlayerGrid({
     activeObjType: '',
     url: '',
   });
-
   const [isInputTxtFocused, setInputTxtFocused] = useState(false);
+  const [activeCells, setActiveCells] = useState([]);
   const userSquare = useRef('');
 
   const socket = useContext(SocketContext);
@@ -245,7 +243,9 @@ export default function ActiveObjPlayerGrid({
       socket.off('PLAYER_POSITIONS', handlePlayersPositions);
     };
   }, [socket, userPosition]);
-
+  useEffect(() => {
+    setActiveCells(world.worldState.activeObjCells);
+  }, [world]);
   return (
     <>
       <GridSquares

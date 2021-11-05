@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { World } from './GridConstants.mjs';
+import { World } from './utils.mjs';
 import BaseGrid from './BaseGrid.jsx';
 import DummyGrid from './DummyGrid.jsx';
 import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';

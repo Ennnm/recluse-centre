@@ -2,34 +2,19 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext } from 'react';
 import { updateWorldInDb } from './axiosRequests.jsx';
-import { rowFromIndex, colFromIndex } from './GridConstants.mjs';
+import {
+  rowFromIndex,
+  colFromIndex,
+  faviconFromSite,
+  ActiveObj,
+} from './utils.mjs';
 import UserModal from './UserModal.jsx';
 import { SocketContext } from '../../contexts/sockets.mjs';
 
 const clickOnCell = (obj) => {
   window.open(obj.url);
 };
-const iconFromObjType = (obj) => {
-  let img = '';
-  switch (obj.type) {
-    case 'zoom':
-      img = 'zoom.png';
-      break;
-    case 'note':
-      img = 'sticky_notes.png';
-      break;
-    case 'lucid':
-      img = 'lucid.png';
-      break;
-    case 'figma':
-      img = 'figma.png';
-      break;
-    default:
-      break;
-  }
 
-  return img;
-};
 const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
@@ -57,6 +42,12 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
       'world.worldState.board[row][col] :>> ',
       world.worldState.board[row][col]
     );
+  } else if (buildTool.tool === 'url') {
+    // add to active cell not here
+    const activeObj = new ActiveObj(col, row, buildTool.url);
+    world.worldState.activeObjCells.push(activeObj);
+  } else if (buildTool.tool === 'removeUrl') {
+    console.log('remove url');
   }
   // build tool
   // {
@@ -78,6 +69,8 @@ const BlankSquare = ({
   buildTool,
   buildToolType,
   socket,
+  activeCells,
+  setActiveCells,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
 
@@ -102,7 +95,8 @@ const ObjectSquare = ({
   <input
     className="cell gridBorder"
     type="image"
-    src={iconFromObjType(obj)}
+    src={faviconFromSite(obj.url)}
+    // src={iconFromObjType(obj)}
     onClick={() => {
       if (buildToolType === '') {
         clickOnCell(obj);
@@ -154,13 +148,23 @@ const PlayerSquare = ({
   setWorld,
   buildTool,
   socket,
+  activeCells,
+  setActiveCells,
 }) => (
   <input
     onClick={() => {
       if (buildToolType === '' || buildToolType !== undefined) {
         clickOnPlayer(player);
       } else {
-        buildOnCell(index, world, setWorld, buildTool, socket);
+        buildOnCell(
+          index,
+          world,
+          setWorld,
+          buildTool,
+          socket,
+          activeCells,
+          setActiveCells
+        );
       }
     }}
     type="image"
