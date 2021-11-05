@@ -174,7 +174,6 @@ const WallPalette = ({
 };
 const Modal = ({ toolSetting, setToolSetting, setBuildTool }) => {
   // when tool change, rerun happens
-  console.log('toolSetting.tool :>> ', toolSetting.tool);
   const modalRef = useRef(null);
   let elem = <>/</>;
   const currentTool = toolSetting.tool;
