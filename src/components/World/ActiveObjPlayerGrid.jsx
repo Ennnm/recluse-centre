@@ -83,7 +83,6 @@ export default function ActiveObjPlayerGrid({
 
   const socket = useContext(SocketContext);
   const userId = getUserIdCookie();
-  // link with pages/db
   // ======================START OF FUNCTIONS===============================
 
   const movePlayer = (x, y, oldX, oldY) => {

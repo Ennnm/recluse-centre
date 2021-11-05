@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import Square from './Square.jsx';
-import { SocketContext } from '../../contexts/sockets.mjs';
 
 export default function GridSquares({
   activeCells,
@@ -12,8 +11,6 @@ export default function GridSquares({
   buildTool,
   setBuildTool,
 }) {
-  const socket = useContext(SocketContext);
-
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -24,19 +21,18 @@ export default function GridSquares({
     };
   });
 
-  const playerPos1d = [].concat(...playersPositions);
-  const squares = playerPos1d.map((player, i) => (
+  const activeObjOnGrid = [].concat(...playersPositions);
+  const squares = activeObjOnGrid.map((actObj, i) => (
     <Square
       key={`sq_${i.toString()}`}
       index={i}
-      player={player}
+      player={actObj}
       userId={userId}
       userSquare={userSquare}
       world={world}
       setWorld={setWorld}
       buildTool={buildTool}
       setBuildTool={setBuildTool}
-      socket={socket}
     />
   ));
 

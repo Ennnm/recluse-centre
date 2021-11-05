@@ -1,7 +1,10 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useContext } from 'react';
 import { updateWorldInDb } from './axiosRequests.jsx';
 import { rowFromIndex, colFromIndex } from './GridConstants.mjs';
 import UserModal from './UserModal.jsx';
+import { SocketContext } from '../../contexts/sockets.mjs';
 
 const clickOnCell = (obj) => {
   window.open(obj.url);
@@ -34,6 +37,7 @@ const clickOnPlayer = (player) => {
 const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
+
   const { board } = world.worldState;
   if (buildTool.tool === 'wall') {
     world.worldState.board[row][col] = {
@@ -59,6 +63,94 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   //   url: '',
   // }
 };
+const BlankSquare = ({
+  index,
+  world,
+  setWorld,
+  buildTool,
+  buildToolType,
+  socket,
+}) => (
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+
+  <div
+    className="cell gridBorder"
+    onClick={() => {
+      if (buildToolType !== '') {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+  />
+);
+const ObjectSquare = ({
+  obj,
+  index,
+  world,
+  setWorld,
+  buildTool,
+  buildToolType,
+  socket,
+}) => (
+  <input
+    className="cell gridBorder"
+    type="image"
+    src={iconFromObjType(obj)}
+    onClick={() => {
+      if (buildToolType === '') {
+        clickOnCell(obj);
+      } else {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+    key={`active${index}`}
+    alt={obj.type}
+  />
+);
+const UserSquare = ({ buildToolType, userSquare, player, setBuildTool }) => (
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <div
+    onClick={() => {
+      if (buildToolType === '') {
+        clickOnPlayer(player);
+      }
+    }}
+    ref={userSquare}
+    type="image"
+    className="cell gridBorder"
+    style={{
+      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+        player + 1
+      }.svg")`,
+      cursor: 'pointer',
+      position: 'relative',
+    }}
+  >
+    <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
+  </div>
+);
+const PlayerSquare = ({
+  buildToolType,
+  player,
+  index,
+  world,
+  setWorld,
+  buildTool,
+  socket,
+}) => (
+  <input
+    onClick={() => {
+      if (buildToolType === '' || buildToolType !== undefined) {
+        clickOnPlayer(player);
+      } else {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+    type="image"
+    className="cell gridBorder"
+    src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
+    alt="profile pic"
+  />
+);
 
 export default function Square({
   player,
@@ -69,77 +161,54 @@ export default function Square({
   setWorld,
   buildTool,
   setBuildTool,
-  socket,
 }) {
-  const buildToolType = buildTool.type;
+  const buildToolType = buildTool.tool;
+  const socket = useContext(SocketContext);
+
   // need to get x and y coordinate to update world board
   let fill = (
-    // eslint-disable-next-line jsx-a11y/control-has-associated-label
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      className="cell gridBorder"
-      onClick={() => {
-        if (buildToolType !== '') {
-          buildOnCell(index, world, setWorld, buildTool, socket);
-        }
-      }}
+    <BlankSquare
+      index={index}
+      world={world}
+      setWorld={setWorld}
+      buildTool={buildTool}
+      buildToolType={buildToolType}
+      socket={socket}
     />
   );
   if (player !== null) {
     if (typeof player === 'object') {
       fill = (
-        <input
-          className="cell gridBorder"
-          type="image"
-          src={iconFromObjType(player)}
-          onClick={() => {
-            if (buildToolType === '') {
-              clickOnCell(player);
-            } else {
-              buildOnCell(index, world, setWorld, buildTool, socket);
-            }
-          }}
-          key={`active${index}`}
-          alt={player.type}
+        <ObjectSquare
+          obj={player}
+          index={index}
+          world={world}
+          setWorld={setWorld}
+          buildTool={buildTool}
+          buildToolType={buildToolType}
+          socket={socket}
         />
       );
     } else if (player === userId) {
       fill = (
+        <UserSquare
+          buildToolType={buildToolType}
+          userSquare={userSquare}
+          player={player}
+          setBuildTool={setBuildTool}
+        />
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-        <div
-          onClick={() => {
-            if (buildToolType === '') {
-              clickOnPlayer(player);
-            }
-          }}
-          ref={userSquare}
-          type="image"
-          className="cell gridBorder"
-          style={{
-            backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-              player + 1
-            }.svg")`,
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-        >
-          <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
-        </div>
       );
     } else {
       fill = (
-        <input
-          onClick={() => {
-            if (buildToolType === '') {
-              clickOnPlayer(player);
-            } else {
-              buildOnCell(index, world, setWorld, buildTool, socket);
-            }
-          }}
-          type="image"
-          className="cell gridBorder"
-          src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
-          alt="profile pic"
+        <PlayerSquare
+          buildToolType={buildToolType}
+          player={player}
+          index={index}
+          world={world}
+          setWorld={setWorld}
+          buildTool={buildTool}
+          socket={socket}
         />
       );
     }
