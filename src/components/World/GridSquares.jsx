@@ -10,6 +10,7 @@ export default function GridSquares({
   setWorld,
   buildTool,
   setBuildTool,
+  setInputTxtFocused,
 }) {
   activeCells.forEach((activity) => {
     const activityObj = {
@@ -33,6 +34,7 @@ export default function GridSquares({
       setWorld={setWorld}
       buildTool={buildTool}
       setBuildTool={setBuildTool}
+      setInputTxtFocused={setInputTxtFocused}
     />
   ));
 

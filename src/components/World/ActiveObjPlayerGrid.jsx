@@ -35,10 +35,10 @@ const directions = getDirectionVectors();
 
 const getGridObject = (x, y, grid) => grid[y][x];
 const isWall = (obj) => {
-  if (obj !== null && obj.color !== '') {
-    return true;
+  if (obj === null || obj.color === undefined || obj.color === '') {
+    return false;
   }
-  return false;
+  return true;
 };
 
 const movedPosition = (userPosition, x, y) => {
@@ -79,10 +79,13 @@ export default function ActiveObjPlayerGrid({
     activeObjType: '',
     url: '',
   });
+
+  const [isInputTxtFocused, setInputTxtFocused] = useState(false);
   const userSquare = useRef('');
 
   const socket = useContext(SocketContext);
   const userId = getUserIdCookie();
+
   // ======================START OF FUNCTIONS===============================
 
   const movePlayer = (x, y, oldX, oldY) => {
@@ -199,7 +202,7 @@ export default function ActiveObjPlayerGrid({
     console.log('in use effect key press handler');
     // KEY PRESSES
     const handleKeyPress = (e) => {
-      if (!isChatFocused) {
+      if (!isChatFocused && !isInputTxtFocused) {
         if (Object.keys(directionalKeys).includes(e.code)) {
           handleDirKeys(e.code);
           if (buildTool.tool !== '') {
@@ -224,7 +227,7 @@ export default function ActiveObjPlayerGrid({
     return () => {
       document.removeEventListener('keypress', handleKeyPress);
     };
-  }, [socket, userPosition, isChatFocused]);
+  }, [socket, userPosition, isChatFocused, isInputTxtFocused]);
 
   useEffect(() => {
     console.log('in use effect emitting and listening');
@@ -255,6 +258,7 @@ export default function ActiveObjPlayerGrid({
         setWorld={setWorld}
         buildTool={buildTool}
         setBuildTool={setBuildTool}
+        setInputTxtFocused={setInputTxtFocused}
       />
     </>
   );
