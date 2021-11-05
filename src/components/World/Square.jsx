@@ -1,0 +1,218 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useContext } from 'react';
+import { updateWorldInDb } from './axiosRequests.jsx';
+import { rowFromIndex, colFromIndex } from './GridConstants.mjs';
+import UserModal from './UserModal.jsx';
+import { SocketContext } from '../../contexts/sockets.mjs';
+
+const clickOnCell = (obj) => {
+  window.open(obj.url);
+};
+const iconFromObjType = (obj) => {
+  let img = '';
+  switch (obj.type) {
+    case 'zoom':
+      img = 'zoom.png';
+      break;
+    case 'note':
+      img = 'sticky_notes.png';
+      break;
+    case 'lucid':
+      img = 'lucid.png';
+      break;
+    case 'figma':
+      img = 'figma.png';
+      break;
+    default:
+      break;
+  }
+
+  return img;
+};
+const clickOnPlayer = (player) => {
+  console.log(`This is player ${player}`);
+};
+
+const buildOnCell = (index, world, setWorld, buildTool, socket) => {
+  const row = rowFromIndex(index);
+  const col = colFromIndex(index);
+
+  const { board } = world.worldState;
+  if (buildTool.tool === 'wall') {
+    world.worldState.board[row][col] = {
+      ...board[row][col],
+      color: buildTool.color,
+    };
+    world.worldState.board = board;
+    // why not working?
+
+    console.log('world.worldStates going into db :>> ', world);
+    updateWorldInDb(world.id, world.worldState);
+    socket.emit('grid:update:world', { worldId: world.id });
+
+    setWorld({ ...world });
+  }
+  // build tool
+  // {
+  //   tool: '',
+  //   color: '',
+  //   roomId: 0,
+  //   charFill: '',
+  //   activeObjType: '',
+  //   url: '',
+  // }
+};
+const BlankSquare = ({
+  index,
+  world,
+  setWorld,
+  buildTool,
+  buildToolType,
+  socket,
+}) => (
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+
+  <div
+    className="cell gridBorder"
+    onClick={() => {
+      if (buildToolType !== '') {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+  />
+);
+const ObjectSquare = ({
+  obj,
+  index,
+  world,
+  setWorld,
+  buildTool,
+  buildToolType,
+  socket,
+}) => (
+  <input
+    className="cell gridBorder"
+    type="image"
+    src={iconFromObjType(obj)}
+    onClick={() => {
+      if (buildToolType === '') {
+        clickOnCell(obj);
+      } else {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+    key={`active${index}`}
+    alt={obj.type}
+  />
+);
+const UserSquare = ({ buildToolType, userSquare, player, setBuildTool }) => (
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <div
+    onClick={() => {
+      if (buildToolType === '') {
+        clickOnPlayer(player);
+      }
+    }}
+    ref={userSquare}
+    type="image"
+    className="cell gridBorder"
+    style={{
+      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+        player + 1
+      }.svg")`,
+      cursor: 'pointer',
+      position: 'relative',
+    }}
+  >
+    <UserModal userSquare={userSquare} setBuildTool={setBuildTool} />
+  </div>
+);
+const PlayerSquare = ({
+  buildToolType,
+  player,
+  index,
+  world,
+  setWorld,
+  buildTool,
+  socket,
+}) => (
+  <input
+    onClick={() => {
+      if (buildToolType === '' || buildToolType !== undefined) {
+        clickOnPlayer(player);
+      } else {
+        buildOnCell(index, world, setWorld, buildTool, socket);
+      }
+    }}
+    type="image"
+    className="cell gridBorder"
+    src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
+    alt="profile pic"
+  />
+);
+
+export default function Square({
+  player,
+  index,
+  userId,
+  userSquare,
+  world,
+  setWorld,
+  buildTool,
+  setBuildTool,
+}) {
+  const buildToolType = buildTool.tool;
+  const socket = useContext(SocketContext);
+
+  // need to get x and y coordinate to update world board
+  let fill = (
+    <BlankSquare
+      index={index}
+      world={world}
+      setWorld={setWorld}
+      buildTool={buildTool}
+      buildToolType={buildToolType}
+      socket={socket}
+    />
+  );
+  if (player !== null) {
+    if (typeof player === 'object') {
+      fill = (
+        <ObjectSquare
+          obj={player}
+          index={index}
+          world={world}
+          setWorld={setWorld}
+          buildTool={buildTool}
+          buildToolType={buildToolType}
+          socket={socket}
+        />
+      );
+    } else if (player === userId) {
+      fill = (
+        <UserSquare
+          buildToolType={buildToolType}
+          userSquare={userSquare}
+          player={player}
+          setBuildTool={setBuildTool}
+        />
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      );
+    } else {
+      fill = (
+        <PlayerSquare
+          buildToolType={buildToolType}
+          player={player}
+          index={index}
+          world={world}
+          setWorld={setWorld}
+          buildTool={buildTool}
+          socket={socket}
+        />
+      );
+    }
+  }
+
+  return fill;
+}

@@ -16,7 +16,7 @@ function SocketUser(userId, socketId) {
 }
 
 const worlds = [new World(1)];
-const WOLRDHEADER = 'world_';
+const WORLDHEADER = 'world_';
 const gridFromPlayerPositions = (playerPositions) => {
   const playerIdGrid = genGridArray();
   playerPositions.forEach((player) => {
@@ -27,25 +27,27 @@ const gridFromPlayerPositions = (playerPositions) => {
 
 export default function registerGridHandlers(io, socket) {
   // payload is the message
-  const joinGrid = ({ userId, worldId }) => {
-    console.log('userId :>> ', userId);
+  const joinGrid = ({ userId, worldId, userPosition }) => {
+    console.log('JoinuserId :>> ', userId);
     console.log('worldId :>> ', worldId);
     const worldFromId = worlds.filter((world) => (world.id === worldId))[0];
     const { playerGrid, playerSocketIds } = worldFromId;
-
+    console.log('userPosition :>> ', userPosition);
+    playerGrid[userPosition.y][userPosition.x] = userId;
     playerSocketIds.push(new SocketUser(userId, socket.id));
-    socket.join(`${WOLRDHEADER}${worldId}`);
-    io.to(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
+    socket.join(`${WORLDHEADER}${worldId}`);
+    io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
+    // io.sockets.in(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
   const updateWorld = ({ worldId }) => {
     console.log('request to update world', worldId);
-    io.to(`${WOLRDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
+    io.to(`${WORLDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
   };
   const updateGrid = (userObj) => {
     const {
       worldId, userId, x, y,
     } = userObj;
-
+    console.log('request to update player grid', userObj);
     const worldFromId = worlds.filter((world) => (world.id === worldId))[0];
     const { playerPositions } = worldFromId;
     let { playerGrid } = worldFromId;
@@ -62,7 +64,8 @@ export default function registerGridHandlers(io, socket) {
     // server side compilation
     const playerIdGrid = gridFromPlayerPositions(playerPositions);
     playerGrid = playerIdGrid;
-    io.sockets.in(`${WOLRDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
+    io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
+    // io.sockets.in(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
   const disconnectingUser = () => {
@@ -70,18 +73,23 @@ export default function registerGridHandlers(io, socket) {
     let roomId;
     // find room name from set
     for (const refRoom of socket.rooms) {
-      if (refRoom.substr(0, WOLRDHEADER.length) === WOLRDHEADER) {
+      if (refRoom.substr(0, WORLDHEADER.length) === WORLDHEADER) {
         room = refRoom;
         break;
       }
     }
     if (room !== '') {
-      roomId = Number(room.substring(WOLRDHEADER.length));
+      roomId = Number(room.substring(WORLDHEADER.length));
       const world = worlds.filter((world) => (world.id === roomId))[0];
-      const playerId = world.playerSocketIds.filter((user) => (user.socketId === socket.id))[0].id;
-      world.playerPositions = world.playerPositions.filter((player) => (player.userId !== playerId));
-      world.playerSocketIds = world.playerSocketIds.filter((player) => (player.id !== playerId));
-      io.sockets.in(`${WOLRDHEADER}${roomId}`).emit('PLAYER_POSITIONS', world.playerGrid);
+      const socketPlayer = world.playerSocketIds.filter((user) => (user.socketId === socket.id))[0];
+      if (socketPlayer !== undefined)
+      {
+        const playerId = socketPlayer.id;
+
+        world.playerPositions = world.playerPositions.filter((player) => (player.userId !== playerId));
+        world.playerSocketIds = world.playerSocketIds.filter((player) => (player.id !== playerId));
+        io.sockets.in(`${WORLDHEADER}${roomId}`).emit('PLAYER_POSITIONS', world.playerGrid);
+      }
     }
   };
   // when client logs into world, pings to server: entered world {roomId, userId, x,y}

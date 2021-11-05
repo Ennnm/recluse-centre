@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { World } from './GridConstants.mjs';
 import BaseGrid from './BaseGrid.jsx';
 import DummyGrid from './DummyGrid.jsx';
@@ -15,17 +15,12 @@ export default function GridElem({ isChatFocused, room }) {
 
   const socket = useContext(SocketContext);
 
-  function setWorldProperties(world) {
-    console.log('world from setWorld :>> ', world);
-    // rerendeering three times?
-    setWorld(world);
-  }
-
-  const handleUpdateWorld = useCallback(() => {
+  const handleUpdateWorld = () => {
     console.log('handling update  of world', world.id);
-    setWorldFromId(setWorldProperties, world.id);
-  });
+    setWorldFromId(setWorld, world.id);
+  };
   useEffect(() => {
+    console.log('use effecting getting world from db');
     // getting background from db, refresh all react worlds on new edit?
     handleUpdateWorld();
   }, []);

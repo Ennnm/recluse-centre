@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-export function setWorldFromId(setWorldProperties, id = 1) {
+export function setWorldFromId(setWorld, id = 1) {
   console.log('id :>> ', id);
   axios
     .get(`/world/${id}`)
     .then((result) => {
       const world = result.data;
-      setWorldProperties(world);
+      setWorld(world);
     })
     .catch((e) => {
       console.log(`error getting world: ${id}`, e);
