@@ -347,6 +347,7 @@ body > div {
   .cell-charfill {
     /* For centerising characters in a cell */
     position: absolute;
+    font-size: 1.8em;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

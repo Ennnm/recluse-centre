@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { numRows, numCols } from './GridConstants.mjs';
+import { numRows, numCols } from './utils.mjs';
 
 export default function DummyGrid({}) {
   const arr1d = [];

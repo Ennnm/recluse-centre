@@ -3,6 +3,7 @@ import Square from './Square.jsx';
 
 export default function GridSquares({
   activeCells,
+  setActiveCells,
   playersPositions,
   userSquare,
   userId,
