@@ -5,8 +5,6 @@ import { SocketContext } from '../../contexts/sockets.mjs';
 import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
 import GridSquares from './GridSquares.jsx';
 
-// const directionalKeyPresses = ['KeyA', 'KeyW', 'KeyD', 'KeyS'];
-
 const directionalKeys = {
   KeyW: {
     vector: [0, -1],
@@ -76,9 +74,11 @@ export default function ActiveObjPlayerGrid({
     charFill: '',
     activeObjType: '',
     url: '',
+    title: '',
   });
   const [isInputTxtFocused, setInputTxtFocused] = useState(false);
   const [activeCells, setActiveCells] = useState([]);
+
   const userSquare = useRef('');
 
   const socket = useContext(SocketContext);
@@ -244,8 +244,9 @@ export default function ActiveObjPlayerGrid({
     };
   }, [socket, userPosition]);
   useEffect(() => {
-    setActiveCells(world.worldState.activeObjCells);
-  }, [world]);
+    console.log('activeObjCells :>> ', world.worldState.activeObjCells);
+    setActiveCells([...world.worldState.activeObjCells]);
+  }, [socket, world]);
   return (
     <>
       <GridSquares

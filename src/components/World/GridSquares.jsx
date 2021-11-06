@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from 'react';
 import Square from './Square.jsx';
+import { genGridArray } from './utils.mjs';
 
 export default function GridSquares({
   activeCells,
-  setActiveCells,
   playersPositions,
   userSquare,
   userId,
@@ -13,22 +14,22 @@ export default function GridSquares({
   setBuildTool,
   setInputTxtFocused,
 }) {
+  const activeObjGrid = playersPositions.map((arr) => arr.slice());
+
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
       url: activity.url,
     };
-    playersPositions[activity.y][activity.x] = {
+    activeObjGrid[activity.y][activity.x] = {
       ...activityObj,
     };
   });
-
-  const activeObjOnGrid = [].concat(...playersPositions);
-  const squares = activeObjOnGrid.map((actObj, i) => (
+  const active1dArr = [].concat(...activeObjGrid);
+  const squares = active1dArr.map((actObj, i) => (
     <Square
-      key={`sq_${i.toString()}`}
       index={i}
-      player={actObj}
+      actObj={actObj}
       userId={userId}
       userSquare={userSquare}
       world={world}
@@ -38,7 +39,6 @@ export default function GridSquares({
       setInputTxtFocused={setInputTxtFocused}
     />
   ));
-
   return (
     <div
       id="baseGrid"

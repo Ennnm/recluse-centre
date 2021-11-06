@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { updateWorldInDb } from './axiosRequests.jsx';
 import {
   rowFromIndex,
@@ -19,15 +19,18 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-const buildOnCell = (index, world, setWorld, buildTool, socket) => {
+const buildOnCell = (
+  index,
+  world,
+  setWorld,
+  buildTool,
+  socket,
+  objToDelete = null
+) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
 
   const { board } = world.worldState;
-  console.log(
-    'world.worldState.board[row][col] :>> before ',
-    world.worldState.board[row][col]
-  );
   if (buildTool.tool === 'wall') {
     world.worldState.board[row][col] = {
       ...board[row][col],
@@ -38,26 +41,28 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
       ...board[row][col],
       charFill: buildTool.charFill,
     };
-    console.log(
-      'world.worldState.board[row][col] :>> ',
-      world.worldState.board[row][col]
-    );
   } else if (buildTool.tool === 'url') {
     // add to active cell not here
-    const activeObj = new ActiveObj(col, row, buildTool.url);
-    world.worldState.activeObjCells.push(activeObj);
-  } else if (buildTool.tool === 'removeUrl') {
-    console.log('remove url');
+    if (buildTool.url.length > 0) {
+      const activeObj = new ActiveObj(col, row, buildTool.url, buildTool.title);
+      world.worldState.activeObjCells.push(activeObj);
+    }
+  } else if (buildTool.tool === 'erase') {
+    world.worldState.board[row][col] = null;
+    const filterActiveObj = world.worldState.activeObjCells.filter((obj) => {
+      if (obj.x === col && obj.y === row) {
+        return false;
+      }
+      return true;
+    });
+    world.worldState.activeObjCells = filterActiveObj;
+    if (objToDelete !== null) {
+      // objToDelete.current.style.visibility = 'hidden';
+      objToDelete.current.key = Date.now();
+      console.log('objToDelete.current.key :>> ', objToDelete.current.key);
+    }
   }
-  // build tool
-  // {
-  //   tool: '',
-  //   color: '',
-  //   roomId: 0,
-  //   charFill: '',
-  //   activeObjType: '',
-  //   url: '',
-  // }
+
   updateWorldInDb(world.id, world.worldState);
   socket.emit('grid:update:world', { worldId: world.id });
   setWorld({ ...world });
@@ -69,11 +74,8 @@ const BlankSquare = ({
   buildTool,
   buildToolType,
   socket,
-  activeCells,
-  setActiveCells,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-
   <div
     className="cell gridBorder"
     onClick={() => {
@@ -91,23 +93,27 @@ const ObjectSquare = ({
   buildTool,
   buildToolType,
   socket,
-}) => (
-  <input
-    className="cell gridBorder"
-    type="image"
-    src={faviconFromSite(obj.url)}
-    // src={iconFromObjType(obj)}
-    onClick={() => {
-      if (buildToolType === '') {
-        clickOnCell(obj);
-      } else {
-        buildOnCell(index, world, setWorld, buildTool, socket);
-      }
-    }}
-    key={`active${index}`}
-    alt={obj.type}
-  />
-);
+}) => {
+  console.log('rendering objsq');
+  const objToDelete = useRef(null);
+  return (
+    <input
+      ref={objToDelete}
+      className="cell gridBorder"
+      type="image"
+      src={faviconFromSite(obj.url)}
+      onClick={() => {
+        if (buildToolType === '') {
+          clickOnCell(obj);
+        } else {
+          buildOnCell(index, world, setWorld, buildTool, socket, objToDelete);
+        }
+      }}
+      key={`active${index}`}
+      alt={obj.type}
+    />
+  );
+};
 const UserSquare = ({
   buildToolType,
   userSquare,
@@ -148,23 +154,13 @@ const PlayerSquare = ({
   setWorld,
   buildTool,
   socket,
-  activeCells,
-  setActiveCells,
 }) => (
   <input
     onClick={() => {
       if (buildToolType === '' || buildToolType !== undefined) {
         clickOnPlayer(player);
       } else {
-        buildOnCell(
-          index,
-          world,
-          setWorld,
-          buildTool,
-          socket,
-          activeCells,
-          setActiveCells
-        );
+        buildOnCell(index, world, setWorld, buildTool, socket);
       }
     }}
     type="image"
@@ -175,7 +171,7 @@ const PlayerSquare = ({
 );
 
 export default function Square({
-  player,
+  actObj,
   index,
   userId,
   userSquare,
@@ -199,11 +195,11 @@ export default function Square({
       socket={socket}
     />
   );
-  if (player !== null) {
-    if (typeof player === 'object') {
+  if (actObj !== null) {
+    if (typeof actObj === 'object') {
       fill = (
         <ObjectSquare
-          obj={player}
+          obj={actObj}
           index={index}
           world={world}
           setWorld={setWorld}
@@ -212,12 +208,12 @@ export default function Square({
           socket={socket}
         />
       );
-    } else if (player === userId) {
+    } else if (actObj === userId) {
       fill = (
         <UserSquare
           buildToolType={buildToolType}
           userSquare={userSquare}
-          player={player}
+          player={actObj}
           setBuildTool={setBuildTool}
           setInputTxtFocused={setInputTxtFocused}
         />
@@ -227,7 +223,7 @@ export default function Square({
       fill = (
         <PlayerSquare
           buildToolType={buildToolType}
-          player={player}
+          player={actObj}
           index={index}
           world={world}
           setWorld={setWorld}

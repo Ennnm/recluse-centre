@@ -48,13 +48,6 @@ export default function GridElem({ isChatFocused, room }) {
         world={world}
         setWorld={setWorld}
       />
-      {/* VERY BAD PERFORMANCE
-       <CombinedGrid
-        backgrndArr={backgrndArr}
-        activeCells={clickableCells}
-        isChatFocused={isChatFocused}
-        worldId={room}
-      /> */}
     </>
   );
 }
