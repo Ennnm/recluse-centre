@@ -1,4 +1,4 @@
-@import '../node_modules/bootstrap/scss/bootstrap';
+@import "../node_modules/bootstrap/scss/bootstrap";
 // @import '../node_modules/tailwindcss/base';
 // @import '../node_modules/tailwindcss/components';
 // @import '../node_modules/tailwindcss/utilities';
@@ -85,7 +85,7 @@ body > div {
   border-radius: 50%;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 
 .chat-wrapper {
   position: fixed;
@@ -96,7 +96,7 @@ body > div {
 
 .join-chat-container {
   color: #212121;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -249,7 +249,7 @@ body > div {
   background: rgba(38, 50, 56, 0.85);
   outline: none;
   color: #fff;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 
   &::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
@@ -334,6 +334,11 @@ body > div {
   grid-template-rows: repeat(30, 1fr);
   grid-template-rows: 1fr;
 }
+
+.index-grid-container {
+  @extend .grid-container;
+  grid-template-columns: repeat(34, 1fr);
+}
 .cell {
   /* Set width to be 100% of CSS grid column */
   width: 100%;
@@ -358,7 +363,7 @@ body > div {
   }
 
   &:after {
-    content: '';
+    content: "";
     /* 
       Next 2 lines are key (CSS hack) for setting width = height, 
       using padding-bottom 
