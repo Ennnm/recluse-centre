@@ -47,21 +47,19 @@ export default function Navbar({ hasNavbar, handleLogoutSubmit }) {
           </div>
         </nav>
         <Offcanvas className="text-white bg-dark" show={showOffcanvas} onHide={handleCloseOffCanvas}>
-          <div className="d-flex flex-column flex-shrink-0">
-            <Offcanvas.Header>
-              <Offcanvas.Title>The Recluse Centre</Offcanvas.Title>
-              <CloseButton variant="white" onClick={handleCloseOffCanvas} />
-            </Offcanvas.Header>
-            <Offcanvas.Body>
-              <ul className="nav nav-pills flex-column mb-auto">
-                <li className="nav-item">
-                  <a href="/" className="nav-link text-white" aria-current="page">
-                    Home
-                  </a>
-                </li>
-              </ul>
-            </Offcanvas.Body>
-          </div>
+          <Offcanvas.Header>
+            <Offcanvas.Title>The Recluse Centre</Offcanvas.Title>
+            <CloseButton variant="white" onClick={handleCloseOffCanvas} />
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <ul className="nav nav-pills flex-column mb-auto">
+              <li className="nav-item">
+                <a href="/" className="nav-link text-white" aria-current="page">
+                  Home
+                </a>
+              </li>
+            </ul>
+          </Offcanvas.Body>
         </Offcanvas>
       </>
     );

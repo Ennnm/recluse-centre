@@ -19,7 +19,8 @@ export default function IndexPage() {
 
   return (
     <>
-      <IndexBaseGrid world={world} />
+      <div>Test</div>
+      {/* <IndexBaseGrid world={world} /> */}
     </>
   );
 }
