@@ -42,21 +42,21 @@ export default function registerGridHandlers(io, socket) {
 
     playerSocketIds.push(new SocketUser(userId, realName, socket.id));
 
-    console.log('playerGrid :>> ', playerGrid[0]);
     socket.join(`${WORLDHEADER}${worldId}`);
     io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
   const updateWorld = ({ worldId }) => {
     console.log('request to update world', worldId);
-    io.sockets.in(`${WORLDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
+    io.to(`${WORLDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
+    // io.sockets.in(`${WORLDHEADER}${worldId}`).emit('UPDATE_BASEGRID');
   };
 
   const updateGrid = (userObj) => {
     const {
       worldId, user, x, y,
     } = userObj;
-    console.log('request to update player grid', userObj);
+    console.log('request to update player grid');
     const worldFromId = worlds.filter((world) => (world.id === worldId))[0];
     const { playerPositions } = worldFromId;
     let { playerGrid } = worldFromId;
@@ -76,9 +76,7 @@ export default function registerGridHandlers(io, socket) {
     }
     // server side compilation
     const playerIdGrid = gridFromPlayerPositions(playerPositions);
-    console.log('playerPostions :>> ', playerPositions[0]);
     playerGrid = playerIdGrid;
-    console.log('${WORLDHEADER}${worldId} :>> ', `${WORLDHEADER}${worldId}`);
     io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
   };
 
@@ -105,6 +103,8 @@ export default function registerGridHandlers(io, socket) {
 
         world.playerPositions = world.playerPositions.filter((player) => (player.id !== playerId));
         world.playerSocketIds = world.playerSocketIds.filter((player) => (player.id !== playerId));
+        world.playerGrid = gridFromPlayerPositions(world.playerPositions);
+
         io.sockets.in(`${WORLDHEADER}${roomId}`).emit('PLAYER_POSITIONS', world.playerGrid);
       }
     }

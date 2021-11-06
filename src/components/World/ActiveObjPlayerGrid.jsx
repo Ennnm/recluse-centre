@@ -177,11 +177,18 @@ export default function ActiveObjPlayerGrid({
     interactWPlayer();
   };
   const handleBuildKey = () => {
-    const userSquareChilds = userSquare.current.childNodes;
-    userSquareChilds.forEach((child) => {
-      const currDisplay = child.style.display;
-      child.style.display = currDisplay === 'none' ? 'block' : 'none';
-    });
+    // const userSquareChilds = userSquare.current.childNodes;
+    // userSquareChilds.forEach((child) => {
+    //   const currDisplay = child.style.display;
+    //   child.style.display = currDisplay === 'none' ? 'block' : 'none';
+    // });
+    const userSqDisplay = userSquare.current.style.visibility;
+    userSquare.current.style.visibility =
+      userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+    // userSquareChilds.forEach((child) => {
+    //   const currDisplay = child.style.display;
+    //   child.style.display = currDisplay === 'none' ? 'block' : 'none';
+    // });
   };
 
   const handlePlayersPositions = (playerPos) => {

@@ -115,7 +115,7 @@ const UserSquare = ({
         clickOnPlayer(player);
       }
     }}
-    ref={userSquare}
+    // ref={userSquare}
     type="image"
     className="cell gridBorder"
     style={{
@@ -130,6 +130,7 @@ const UserSquare = ({
       userSquare={userSquare}
       setBuildTool={setBuildTool}
       setInputTxtFocused={setInputTxtFocused}
+      userSquare={userSquare}
     />
     <NameTag name={player.realName} />
   </div>
@@ -138,15 +139,16 @@ const UserSquare = ({
 const NameTag = ({ name }) => {
   console.log('in name tag', name);
   return (
-    <span
-      className="text-center"
+    <div
+      className="absolute  z-10 font-sans font-semibold bg-white px-2 rounded-full border-2"
       style={{
-        position: 'absolute',
         top: '100%',
+        left: '50%',
+        transform: 'translate(-50%, 0%)',
       }}
     >
       {name}
-    </span>
+    </div>
   );
 };
 const PlayerSquare = ({
