@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, react/prop-types */
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import axios from 'axios';
 import { numCols, numRows, genGridArray } from './utils.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
 import { getRandomInt, getUserIdCookie } from '../../../utils.mjs';
@@ -78,11 +79,16 @@ export default function ActiveObjPlayerGrid({
   });
   const [isInputTxtFocused, setInputTxtFocused] = useState(false);
   const [activeCells, setActiveCells] = useState([]);
+  const userId = getUserIdCookie();
 
+  const [userObj, setUserObj] = useState({
+    id: userId,
+    username: '',
+    realName: '',
+  });
   const userSquare = useRef('');
 
   const socket = useContext(SocketContext);
-  const userId = getUserIdCookie();
 
   // ======================START OF FUNCTIONS===============================
 
@@ -182,19 +188,38 @@ export default function ActiveObjPlayerGrid({
     console.log('hanndling playing positions');
     // console.log('playerPos :>> ', playerPos);
     // remove existing copy
-    playerPos = playerPos.map((row) =>
-      row.map((cell) => (cell === userId ? null : cell))
-    );
-    const { x, y } = userPosition;
-    playerPos[y][x] = userId;
+    // console.log('playerPos :>> ', playerPos);
+    // playerPos = playerPos.map((row) =>
+    //   row.map((cell) => (cell !== null && cell.id === userId ? null : cell))
+    // );
+    // const { x, y } = userPosition;
+    // console.log('userObj :>> ', userObj);
+    // playerPos[y][x] = userObj;
     setPlayersPositions(playerPos);
   };
+
   // ======================END OF FUNCTIONS===============================
   useEffect(() => {
-    // SOCKETS
-    console.log('userPosition :>> ', userPosition);
-    socket.emit('grid:join', { userId, worldId, userPosition });
-  }, [socket]);
+    axios
+      .get(`/user/${userId}`)
+      .then((response) => {
+        const user = response.data;
+        const { realName } = user;
+        setUserObj(user);
+        // SOCKETS
+        console.log('realName :>> ', realName);
+        console.log('userPosition :>> ', userPosition);
+        socket.emit('grid:join', {
+          userId,
+          realName,
+          worldId,
+          userPosition,
+        });
+      })
+      .catch((e) => {
+        console.log('error in getting user', e);
+      });
+  }, []);
 
   useEffect(() => {
     console.log('in use effect key press handler');
@@ -232,7 +257,7 @@ export default function ActiveObjPlayerGrid({
     // SOCKETS
     socket.emit('grid:update', {
       worldId,
-      userId,
+      user: userObj,
       x: userPosition.x,
       y: userPosition.y,
     });

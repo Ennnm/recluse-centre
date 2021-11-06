@@ -14,7 +14,7 @@ export default function GridSquares({
   setInputTxtFocused,
 }) {
   const activeObjGrid = playersPositions.map((arr) => arr.slice());
-
+  console.log('playersPositions :>> ', playersPositions);
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -24,6 +24,7 @@ export default function GridSquares({
       ...activityObj,
     };
   });
+  console.log('activeObjGrid :>> ', activeObjGrid);
   const active1dArr = [].concat(...activeObjGrid);
   const squares = active1dArr.map((actObj, i) => (
     <Square

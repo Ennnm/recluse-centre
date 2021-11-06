@@ -23,6 +23,9 @@ export default function userModel(sequelize, DataTypes) {
     profileImg: {
       type: DataTypes.STRING(64),
     },
+    description: {
+      type: DataTypes.STRING,
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,

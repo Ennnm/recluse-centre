@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useRef } from 'react';
-import { updateWorldInDb } from './axiosRequests.jsx';
+import { updateWorldInDb } from './axiosRequests.mjs';
 import {
   rowFromIndex,
   colFromIndex,
@@ -16,7 +16,7 @@ const clickOnCell = (obj) => {
 };
 
 const clickOnPlayer = (player) => {
-  console.log(`This is player ${player}`);
+  console.log(`This is player ${player.id}: ${player.realName}`);
 };
 
 const buildOnCell = (index, world, setWorld, buildTool, socket) => {
@@ -120,7 +120,7 @@ const UserSquare = ({
     className="cell gridBorder"
     style={{
       backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-        player + 1
+        player.id + 1
       }.svg")`,
       cursor: 'pointer',
       position: 'relative',
@@ -131,12 +131,12 @@ const UserSquare = ({
       setBuildTool={setBuildTool}
       setInputTxtFocused={setInputTxtFocused}
     />
-    <NameTag id={player} />
+    <NameTag name={player.realName} />
   </div>
 );
 
-const NameTag = ({ id }) => {
-  console.log('in name tag', id);
+const NameTag = ({ name }) => {
+  console.log('in name tag', name);
   return (
     <span
       className="text-center"
@@ -145,7 +145,7 @@ const NameTag = ({ id }) => {
         top: '100%',
       }}
     >
-      {id}
+      {name}
     </span>
   );
 };
@@ -168,15 +168,15 @@ const PlayerSquare = ({
       }
     }}
     type="image"
-    className="cell gridBorder relative justify-items-center "
+    className="cell gridBorder relative  "
     style={{
       backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-        player + 1
+        player.id + 1
       }.svg")`,
       cursor: 'pointer',
     }}
   >
-    <NameTag id={player} />
+    <NameTag name={player.realName} />
   </div>
 );
 
@@ -206,7 +206,7 @@ export default function Square({
     />
   );
   if (actObj !== null) {
-    if (typeof actObj === 'object') {
+    if ('url' in actObj) {
       fill = (
         <ObjectSquare
           obj={actObj}
@@ -218,7 +218,7 @@ export default function Square({
           socket={socket}
         />
       );
-    } else if (actObj === userId) {
+    } else if ('id' in actObj && actObj.id === userId) {
       fill = (
         <UserSquare
           buildToolType={buildToolType}
@@ -243,6 +243,43 @@ export default function Square({
       );
     }
   }
+  // if (typeof actObj === 'object') {
+  //   fill = (
+  //     <ObjectSquare
+  //       obj={actObj}
+  //       index={index}
+  //       world={world}
+  //       setWorld={setWorld}
+  //       buildTool={buildTool}
+  //       buildToolType={buildToolType}
+  //       socket={socket}
+  //     />
+  //   );
+  // } else if (actObj === userId) {
+  //   fill = (
+  //     <UserSquare
+  //       buildToolType={buildToolType}
+  //       userSquare={userSquare}
+  //       player={actObj}
+  //       setBuildTool={setBuildTool}
+  //       setInputTxtFocused={setInputTxtFocused}
+  //     />
+  //     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  //   );
+  // } else {
+  //   fill = (
+  //     <PlayerSquare
+  //       buildToolType={buildToolType}
+  //       player={actObj}
+  //       index={index}
+  //       world={world}
+  //       setWorld={setWorld}
+  //       buildTool={buildTool}
+  //       socket={socket}
+  //     />
+  //   );
+  // }
+  // }
 
   return fill;
 }
