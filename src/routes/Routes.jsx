@@ -12,6 +12,7 @@ import { SocketContext, socket } from '../contexts/sockets.mjs';
 import Login from '../components/Login/LoginPage.jsx';
 import Register from '../components/Register/RegisterPage.jsx';
 // main pages
+import Index from '../components/Index/IndexPage.jsx';
 import GridElem from '../components/World/Grid.jsx';
 // error pages
 import Error404 from '../components/Error/Error404Page.jsx';
@@ -77,13 +78,14 @@ export default function Routes({
       <Switch>
         <ContextRoute
           exact
-          path={['/', '/home', '/main']}
+          path="/"
           contextComponent={SocketContext}
           component={Grid}
           handleChatFocused={handleChatFocused}
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
         />
+        <Route path={['/home', '/main']} component={Index} />
         <Route path="/edit" component={EditWorld} />
         <Route path="/signup" component={Register} />
         <Route path="/login" component={Login} />
