@@ -3372,9 +3372,7 @@ landingWorld.board = [
       color: '#9CA3AF',
     },
     null,
-    {
-      color: '#9CA3AF',
-    },
+    null,
     {
       color: '#9CA3AF',
     },
@@ -3389,7 +3387,9 @@ landingWorld.board = [
     {
       color: '#9CA3AF',
     },
-    null,
+    {
+      color: '#9CA3AF',
+    },
     null,
     null,
     null,
@@ -3435,15 +3435,15 @@ landingWorld.board = [
     },
     null,
     null,
+    {
+      color: '#9CA3AF',
+    },
     null,
     {
       color: '#9CA3AF',
     },
     null,
     null,
-    {
-      color: '#9CA3AF',
-    },
     null,
     null,
     null,
@@ -3498,16 +3498,16 @@ landingWorld.board = [
       color: '#9CA3AF',
     },
     null,
-    {
-      color: '#9CA3AF',
-    },
-    {
-      color: '#9CA3AF',
-    },
-    {
-      color: '#9CA3AF',
-    },
     null,
+    {
+      color: '#9CA3AF',
+    },
+    {
+      color: '#9CA3AF',
+    },
+    {
+      color: '#9CA3AF',
+    },
     null,
     null,
     null,
@@ -3554,15 +3554,15 @@ landingWorld.board = [
       color: '#9CA3AF',
     },
     null,
+    {
+      color: '#9CA3AF',
+    },
     null,
     null,
     {
       color: '#9CA3AF',
     },
     null,
-    {
-      color: '#9CA3AF',
-    },
     null,
     null,
     null,
@@ -3613,18 +3613,18 @@ landingWorld.board = [
     {
       color: '#9CA3AF',
     },
+    null,
+    null,
+    {
+      color: '#9CA3AF',
+    },
+    null,
     {
       color: '#9CA3AF',
     },
     {
       color: '#9CA3AF',
     },
-    null,
-    {
-      color: '#9CA3AF',
-    },
-    null,
-    null,
     {
       color: '#9CA3AF',
     },
