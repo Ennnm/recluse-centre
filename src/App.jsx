@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 // component partials
@@ -8,6 +8,7 @@ import Routes from './routes/Routes.jsx';
 export default function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [isChatFocused, setIsChatFocused] = useState(false);
+  const [hasNavbar, setHasNavbar] = useState(true);
 
   // need useEffect for this?
 
@@ -30,22 +31,30 @@ export default function App() {
   };
 
   const handleChatFocused = () => {
-    console.log('chat is focused');
     setIsChatFocused(true);
   };
 
   const handleChatUnfocused = () => {
-    console.log('chat is unfocused');
     setIsChatFocused(false);
+  };
+
+  const handleSetNavbar = () => {
+    setHasNavbar(true);
+  };
+
+  const handleSetNoNavbar = () => {
+    setHasNavbar(false);
   };
 
   return (
     <>
-      <Navbar handleLogoutSubmit={handleLogoutSubmit} />
+      <Navbar hasNavbar={hasNavbar} handleLogoutSubmit={handleLogoutSubmit} />
       <Routes
         isChatFocused={isChatFocused}
         handleChatFocused={handleChatFocused}
         handleChatUnfocused={handleChatUnfocused}
+        handleSetNavbar={handleSetNavbar}
+        handleSetNoNavbar={handleSetNoNavbar}
         isLoggedOut={isLoggedOut}
       />
     </>

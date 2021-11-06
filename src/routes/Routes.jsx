@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types, react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -27,11 +27,22 @@ export const ContextRoute = ({
   handleChatFocused,
   handleChatUnfocused,
   isChatFocused,
-
+  hasNavbar,
+  handleSetNavbar,
+  handleSetNoNavbar,
   ...rest
 }) => {
   const { Provider } = contextComponent;
   const Component = component;
+
+  useEffect(() => {
+    // getting background from db, refresh all react worlds on new edit?
+    if (hasNavbar) {
+      handleSetNavbar();
+    } else {
+      handleSetNoNavbar();
+    }
+  }, []);
 
   return (
     <Route {...rest}>
@@ -67,9 +78,37 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
   );
 }
 
+function NavbarWrapper({ handleSetNavbar, children }) {
+  useEffect(() => {
+    // getting background from db, refresh all react worlds on new edit?
+    handleSetNavbar();
+  }, []);
+
+  return (
+    <>
+      {children}
+    </>
+  );
+}
+
+function NoNavbarWrapper({ handleSetNoNavbar, children }) {
+  useEffect(() => {
+    // getting background from db, refresh all react worlds on new edit?
+    handleSetNoNavbar();
+  }, []);
+
+  return (
+    <>
+      {children}
+    </>
+  );
+}
+
 export default function Routes({
   handleChatFocused,
   handleChatUnfocused,
+  handleSetNavbar,
+  handleSetNoNavbar,
   isChatFocused,
   isLoggedOut,
 }) {
@@ -84,17 +123,80 @@ export default function Routes({
           handleChatFocused={handleChatFocused}
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
+          hasNavbar
+          handleSetNavbar={handleSetNavbar}
+          handleSetNoNavbar={handleSetNoNavbar}
         />
-        <Route path={['/home', '/main']} render={() => <Index socket={socket} />} />
-        <Route path="/edit" component={EditWorld} />
-        <Route path="/signup" component={Register} />
-        <Route path="/login" component={Login} />
-        <Route path="/sessionexpired" render={() => <Login sessionExpired />} />
+        <Route
+          path={['/home', '/main']}
+          render={
+            () => (
+              <NoNavbarWrapper handleSetNoNavbar={handleSetNoNavbar}>
+                <Index socket={socket} />
+              </NoNavbarWrapper>
+            )
+          }
+        />
+        <Route
+          path="/edit"
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <EditWorld />
+              </NavbarWrapper>
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <Register />
+              </NavbarWrapper>
+            )
+          }
+        />
+        <Route
+          path="/login"
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <Login />
+              </NavbarWrapper>
+            )
+          }
+        />
+        <Route
+          path="/sessionexpired"
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <Login sessionExpired />
+              </NavbarWrapper>
+            )
+          }
+        />
         <Route
           path="/selectroom"
-          render={() => <SelectRoom socket={socket} />}
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <SelectRoom socket={socket} />
+              </NavbarWrapper>
+            )
+          }
         />
-        <Route path="*" component={Error404} />
+        <Route
+          path="*"
+          render={
+            () => (
+              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+                <Error404 />
+              </NavbarWrapper>
+            )
+          }
+        />
       </Switch>
       {isLoggedOut && <Redirect to="/login" />}
     </Router>
