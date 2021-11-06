@@ -5,7 +5,7 @@ import DummyGrid from './DummyGrid.jsx';
 import ActiveObjPlayerGrid from './ActiveObjPlayerGrid.jsx';
 import { SocketContext } from '../../contexts/sockets.mjs';
 
-import { setWorldFromId } from './axiosRequests.jsx';
+import { setWorldFromId } from './axiosRequests.mjs';
 
 export default function GridElem({ isChatFocused, room }) {
   console.log('gridElem update');

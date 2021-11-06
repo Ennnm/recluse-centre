@@ -398,7 +398,11 @@ const Modal = ({
   return elem;
 };
 
-export default function UserModal({ setBuildTool, setInputTxtFocused }) {
+export default function UserModal({
+  setBuildTool,
+  setInputTxtFocused,
+  userSquare,
+}) {
   const [toolSetting, setToolSetting] = useState({
     tool: '',
     color: '',
@@ -410,8 +414,10 @@ export default function UserModal({ setBuildTool, setInputTxtFocused }) {
   return (
     <div
       className="translate-y-16"
+      ref={userSquare}
       style={{
-        display: 'none',
+        // display: 'none',
+        visibility: 'hidden',
         position: 'absolute',
         top: '-200%',
       }}

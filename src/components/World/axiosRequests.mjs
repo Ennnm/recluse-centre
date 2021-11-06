@@ -26,8 +26,12 @@ export function updateWorldInDb(id, worldState) {
 }
 
 export const setWorldProperties = (world, setBackgrndArr, setWorld) => {
-  const { id, userId, name, worldState } = world;
-  const { board, activeObjCells, roomCells, wallCells } = worldState;
+  const {
+    id, userId, name, worldState,
+  } = world;
+  const {
+    board, activeObjCells, roomCells, wallCells,
+  } = worldState;
   worldId.current = id;
   worldName.current = name;
   // setWorldName(name);

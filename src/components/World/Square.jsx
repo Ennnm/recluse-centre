@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useRef } from 'react';
-import { updateWorldInDb } from './axiosRequests.jsx';
+import { updateWorldInDb } from './axiosRequests.mjs';
 import {
   rowFromIndex,
   colFromIndex,
@@ -16,17 +16,10 @@ const clickOnCell = (obj) => {
 };
 
 const clickOnPlayer = (player) => {
-  console.log(`This is player ${player}`);
+  console.log(`This is player ${player.id}: ${player.realName}`);
 };
 
-const buildOnCell = (
-  index,
-  world,
-  setWorld,
-  buildTool,
-  socket,
-  objToDelete = null
-) => {
+const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
 
@@ -56,11 +49,6 @@ const buildOnCell = (
       return true;
     });
     world.worldState.activeObjCells = filterActiveObj;
-    if (objToDelete !== null) {
-      // objToDelete.current.style.visibility = 'hidden';
-      objToDelete.current.key = Date.now();
-      console.log('objToDelete.current.key :>> ', objToDelete.current.key);
-    }
   }
 
   updateWorldInDb(world.id, world.worldState);
@@ -95,10 +83,9 @@ const ObjectSquare = ({
   socket,
 }) => {
   console.log('rendering objsq');
-  const objToDelete = useRef(null);
+
   return (
     <input
-      ref={objToDelete}
       className="cell gridBorder"
       type="image"
       src={faviconFromSite(obj.url)}
@@ -106,7 +93,7 @@ const ObjectSquare = ({
         if (buildToolType === '') {
           clickOnCell(obj);
         } else {
-          buildOnCell(index, world, setWorld, buildTool, socket, objToDelete);
+          buildOnCell(index, world, setWorld, buildTool, socket);
         }
       }}
       key={`active${index}`}
@@ -128,12 +115,12 @@ const UserSquare = ({
         clickOnPlayer(player);
       }
     }}
-    ref={userSquare}
+    // ref={userSquare}
     type="image"
     className="cell gridBorder"
     style={{
       backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-        player + 1
+        player.id + 1
       }.svg")`,
       cursor: 'pointer',
       position: 'relative',
@@ -143,9 +130,27 @@ const UserSquare = ({
       userSquare={userSquare}
       setBuildTool={setBuildTool}
       setInputTxtFocused={setInputTxtFocused}
+      userSquare={userSquare}
     />
+    <NameTag name={player.realName} />
   </div>
 );
+
+const NameTag = ({ name }) => {
+  console.log('in name tag', name);
+  return (
+    <div
+      className="absolute  z-10 font-sans font-semibold bg-white px-2 rounded-full border-2"
+      style={{
+        top: '100%',
+        left: '50%',
+        transform: 'translate(-50%, 0%)',
+      }}
+    >
+      {name}
+    </div>
+  );
+};
 const PlayerSquare = ({
   buildToolType,
   player,
@@ -155,7 +160,8 @@ const PlayerSquare = ({
   buildTool,
   socket,
 }) => (
-  <input
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <div
     onClick={() => {
       if (buildToolType === '' || buildToolType !== undefined) {
         clickOnPlayer(player);
@@ -164,10 +170,16 @@ const PlayerSquare = ({
       }
     }}
     type="image"
-    className="cell gridBorder"
-    src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
-    alt="profile pic"
-  />
+    className="cell gridBorder relative  "
+    style={{
+      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+        player.id + 1
+      }.svg")`,
+      cursor: 'pointer',
+    }}
+  >
+    <NameTag name={player.realName} />
+  </div>
 );
 
 export default function Square({
@@ -196,7 +208,7 @@ export default function Square({
     />
   );
   if (actObj !== null) {
-    if (typeof actObj === 'object') {
+    if ('url' in actObj) {
       fill = (
         <ObjectSquare
           obj={actObj}
@@ -208,7 +220,7 @@ export default function Square({
           socket={socket}
         />
       );
-    } else if (actObj === userId) {
+    } else if ('id' in actObj && actObj.id === userId) {
       fill = (
         <UserSquare
           buildToolType={buildToolType}
@@ -233,6 +245,43 @@ export default function Square({
       );
     }
   }
+  // if (typeof actObj === 'object') {
+  //   fill = (
+  //     <ObjectSquare
+  //       obj={actObj}
+  //       index={index}
+  //       world={world}
+  //       setWorld={setWorld}
+  //       buildTool={buildTool}
+  //       buildToolType={buildToolType}
+  //       socket={socket}
+  //     />
+  //   );
+  // } else if (actObj === userId) {
+  //   fill = (
+  //     <UserSquare
+  //       buildToolType={buildToolType}
+  //       userSquare={userSquare}
+  //       player={actObj}
+  //       setBuildTool={setBuildTool}
+  //       setInputTxtFocused={setInputTxtFocused}
+  //     />
+  //     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  //   );
+  // } else {
+  //   fill = (
+  //     <PlayerSquare
+  //       buildToolType={buildToolType}
+  //       player={actObj}
+  //       index={index}
+  //       world={world}
+  //       setWorld={setWorld}
+  //       buildTool={buildTool}
+  //       socket={socket}
+  //     />
+  //   );
+  // }
+  // }
 
   return fill;
 }

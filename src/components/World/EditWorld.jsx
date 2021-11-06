@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { numCols, genGridArray } from './utils.mjs';
 
-import { setWorldFromId, updateWorldInDb } from './axiosRequests.jsx';
+import { setWorldFromId, updateWorldInDb } from './axiosRequests.mjs';
 
 require('babel-polyfill');
 

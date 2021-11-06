@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Square from './Square.jsx';
-import { genGridArray } from './utils.mjs';
 
 export default function GridSquares({
   activeCells,
@@ -15,7 +14,6 @@ export default function GridSquares({
   setInputTxtFocused,
 }) {
   const activeObjGrid = playersPositions.map((arr) => arr.slice());
-
   activeCells.forEach((activity) => {
     const activityObj = {
       type: activity.type,
@@ -29,6 +27,7 @@ export default function GridSquares({
   const squares = active1dArr.map((actObj, i) => (
     <Square
       index={i}
+      key={`sq${i.toString()}`}
       actObj={actObj}
       userId={userId}
       userSquare={userSquare}
