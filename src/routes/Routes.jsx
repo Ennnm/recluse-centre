@@ -85,7 +85,7 @@ export default function Routes({
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
         />
-        <Route path={['/home', '/main']} component={Index} />
+        <Route path={['/home', '/main']} render={() => <Index socket={socket} />} />
         <Route path="/edit" component={EditWorld} />
         <Route path="/signup" component={Register} />
         <Route path="/login" component={Login} />
