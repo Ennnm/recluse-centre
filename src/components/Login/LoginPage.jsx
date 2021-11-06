@@ -31,7 +31,7 @@ export default function LoginPage({ sessionExpired, socket }) {
   const query = useQuery();
   const [isLoggedIn, setIsLoggedIn] = useState(cookie.hasLoginCookie());
   const [globalErrorMessage, setGlobalErrorMessage] = useState(
-    sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : ''
+    sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '',
   );
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
   const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');
@@ -105,7 +105,7 @@ export default function LoginPage({ sessionExpired, socket }) {
       <div className="row w-100 pt-3">
         <div className="col-12 pt-1">
           <p className="mb-0">
-            <a href="/">
+            <a className="text-blue-300 hover:text-blue-400 hover:underline" href="/">
               <small>« Back to Home</small>
             </a>
           </p>
@@ -115,12 +115,14 @@ export default function LoginPage({ sessionExpired, socket }) {
           <form>
             <div className="row">
               <div className="col-12">
-                <h4 className="mb-3 index-header">Log In</h4>
+                <h3 className="mb-3 index-header font-bold text-lg text-white">Log In</h3>
               </div>
               <div className="col-12">
-                <p className="mb-3">
-                  Do not have an account yet? Register{' '}
-                  <a href="/signup">here.</a>
+                <p className="mb-3 text-blue-50">
+                  Do not have an account yet? Register
+                  {' '}
+                  <a className="text-blue-300 hover:text-blue-400 hover:underline" href="/signup">here</a>
+                  .
                 </p>
               </div>
               <RegisterSuccessAlert
@@ -131,7 +133,7 @@ export default function LoginPage({ sessionExpired, socket }) {
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="userName">
-                  <strong>Username</strong>
+                  <strong className="text-blue-50">Username</strong>
                 </label>
                 <input
                   type="text"
@@ -144,12 +146,12 @@ export default function LoginPage({ sessionExpired, socket }) {
                   value={username}
                   onChange={handleUsernameChange}
                 />
-                <div className="invalid-feedback">{usernameInvalidMessage}</div>
+                <div className="invalid-feedback text-red-300">{usernameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="password">
-                  <strong>Password</strong>
+                  <strong className="text-blue-50">Password</strong>
                 </label>
                 <input
                   type="password"
@@ -161,7 +163,7 @@ export default function LoginPage({ sessionExpired, socket }) {
                   value={password}
                   onChange={handlePasswordChange}
                 />
-                <div className="invalid-feedback">{passwordInvalidMessage}</div>
+                <div className="invalid-feedback text-red-300">{passwordInvalidMessage}</div>
               </div>
             </div>
             <hr className="mb-4" />

@@ -339,6 +339,7 @@ body > div {
   @extend .grid-container;
   grid-template-columns: repeat(34, 1fr);
 }
+
 .cell {
   /* Set width to be 100% of CSS grid column */
   width: 100%;
