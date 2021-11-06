@@ -140,11 +140,12 @@ const NameTag = ({ name }) => {
   console.log('in name tag', name);
   return (
     <div
-      className="absolute  z-10 font-sans font-semibold bg-white px-2 rounded-full border-2"
+      className="absolute  z-10 font-sans font-semibold bg-gray-300 px-2 rounded-full border-2"
       style={{
         top: '100%',
         left: '50%',
         transform: 'translate(-50%, 0%)',
+        // backgroundColor: '#58566f',
       }}
     >
       {name}

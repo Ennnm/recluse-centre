@@ -15,7 +15,9 @@ body {
 }
 
 body {
-  background-color: azure;
+  // background-color: #58566f;
+  background-color: #424663;
+  // background-color: azure;
   min-height: 100%;
 }
 
@@ -351,6 +353,8 @@ body > div {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    color: #58566f;
+    // color: #58566f;
   }
 
   &:after {
@@ -364,5 +368,7 @@ body > div {
   }
 }
 .gridBorder {
-  border: 1px solid rgb(206, 224, 247);
+  // border: 1px solid #766675;
+  border: 1px solid #58566f;
+  // border: 1px solid rgb(206, 224, 247);
 }
