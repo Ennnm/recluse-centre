@@ -19,14 +19,7 @@ const clickOnPlayer = (player) => {
   console.log(`This is player ${player}`);
 };
 
-const buildOnCell = (
-  index,
-  world,
-  setWorld,
-  buildTool,
-  socket,
-  objToDelete = null
-) => {
+const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
 
@@ -56,11 +49,6 @@ const buildOnCell = (
       return true;
     });
     world.worldState.activeObjCells = filterActiveObj;
-    if (objToDelete !== null) {
-      // objToDelete.current.style.visibility = 'hidden';
-      objToDelete.current.key = Date.now();
-      console.log('objToDelete.current.key :>> ', objToDelete.current.key);
-    }
   }
 
   updateWorldInDb(world.id, world.worldState);
@@ -95,10 +83,9 @@ const ObjectSquare = ({
   socket,
 }) => {
   console.log('rendering objsq');
-  const objToDelete = useRef(null);
+
   return (
     <input
-      ref={objToDelete}
       className="cell gridBorder"
       type="image"
       src={faviconFromSite(obj.url)}
@@ -106,7 +93,7 @@ const ObjectSquare = ({
         if (buildToolType === '') {
           clickOnCell(obj);
         } else {
-          buildOnCell(index, world, setWorld, buildTool, socket, objToDelete);
+          buildOnCell(index, world, setWorld, buildTool, socket);
         }
       }}
       key={`active${index}`}
@@ -144,8 +131,24 @@ const UserSquare = ({
       setBuildTool={setBuildTool}
       setInputTxtFocused={setInputTxtFocused}
     />
+    <NameTag id={player} />
   </div>
 );
+
+const NameTag = ({ id }) => {
+  console.log('in name tag', id);
+  return (
+    <span
+      className="text-center"
+      style={{
+        position: 'absolute',
+        top: '100%',
+      }}
+    >
+      {id}
+    </span>
+  );
+};
 const PlayerSquare = ({
   buildToolType,
   player,
@@ -155,7 +158,8 @@ const PlayerSquare = ({
   buildTool,
   socket,
 }) => (
-  <input
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <div
     onClick={() => {
       if (buildToolType === '' || buildToolType !== undefined) {
         clickOnPlayer(player);
@@ -164,10 +168,16 @@ const PlayerSquare = ({
       }
     }}
     type="image"
-    className="cell gridBorder"
-    src={`https://avatars.dicebear.com/api/big-smile/${player + 1}.svg`}
-    alt="profile pic"
-  />
+    className="cell gridBorder relative justify-items-center "
+    style={{
+      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+        player + 1
+      }.svg")`,
+      cursor: 'pointer',
+    }}
+  >
+    <NameTag id={player} />
+  </div>
 );
 
 export default function Square({
