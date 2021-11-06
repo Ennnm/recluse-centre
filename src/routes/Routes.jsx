@@ -28,6 +28,7 @@ export const ContextRoute = ({
   isChatFocused,
   hasNavbar,
   isAuthPage,
+  isLoggedIn,
   handleSetNavbar,
   handleSetNoNavbar,
   setIsAuthPage,
@@ -58,6 +59,7 @@ export const ContextRoute = ({
           handleChatFocused={handleChatFocused}
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
+          isLoggedIn={isLoggedIn}
         />
       </Provider>
     </Route>
@@ -112,24 +114,30 @@ function PrivateWrapper({ isLoggedIn, children }) {
   return children;
 }
 
-function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
+function Grid({
+  handleChatFocused, handleChatUnfocused, isChatFocused, isLoggedIn,
+}) {
   return (
-    <div className="pt-5 main-wrapper">
-      <div className="mt-1 main-container">
-        <div className="grid-wrapper">
-          <GridElem isChatFocused={isChatFocused} room={1} />
-        </div>
-        <div className="chat-wrapper">
-          <Chat
-            handleChatFocused={handleChatFocused}
-            handleChatUnfocused={handleChatUnfocused}
-            socket={socket}
-            username="Some Test"
-            room={1}
-          />
+    <PrivateWrapper isLoggedIn={isLoggedIn}>
+      <div className="pt-5 main-wrapper">
+        <div className="mt-1 main-container">
+          <div className="grid-wrapper">
+            <GridElem isChatFocused={isChatFocused} room={1} />
+          </div>
+          <div className="chat-wrapper">
+            <Chat
+              handleChatFocused={handleChatFocused}
+              handleChatUnfocused={handleChatUnfocused}
+              socket={socket}
+              username="Some Test"
+              room={1}
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+    </PrivateWrapper>
+
   );
 }
 
@@ -157,6 +165,7 @@ export default function Routes({
           isChatFocused={isChatFocused}
           hasNavbar
           isAuthPage={false}
+          isLoggedIn={isLoggedIn}
           handleSetNavbar={handleSetNavbar}
           handleSetNoNavbar={handleSetNoNavbar}
           setIsAuthPage={setIsAuthPage}
