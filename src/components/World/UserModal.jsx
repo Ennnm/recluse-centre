@@ -10,11 +10,6 @@ import {
   faIcons,
   faTimes,
   faArrowRight,
-  faTrashAlt,
-  faFont,
-  faBookDead,
-  faWindowMaximize,
-  faHeading,
   faEraser,
 } from '@fortawesome/free-solid-svg-icons';
 import { tailWindCol400, faviconFromSite, validURL } from './utils.mjs';
@@ -22,7 +17,7 @@ import { tailWindCol400, faviconFromSite, validURL } from './utils.mjs';
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
     <button
-      className="h-12 w-12 border-1 m-2"
+      className="h-12 w-12 border-1 border-gray-400 m-2 rounded"
       type="button"
       onClick={() => {
         // open wall palette
@@ -42,7 +37,7 @@ const WallTool = ({ toolSetting, setToolSetting }) => (
 const RoomTool = ({ toolSetting, setToolSetting }) => (
   <div>
     <button
-      className="h-12 w-12 border-1 m-2"
+      className="h-12 w-12 border-1 m-2 border-gray-400 m-2 rounded"
       type="button"
       onClick={() => {
         setToolSetting({ ...toolSetting, tool: 'room' });
@@ -59,7 +54,7 @@ const RoomTool = ({ toolSetting, setToolSetting }) => (
 const CharFiller = ({ toolSetting, setToolSetting }) => (
   <div>
     <button
-      className="h-12 w-12 border-1 m-2"
+      className="h-12 w-12 border-1 m-2 border-gray-400 m-2 rounded"
       type="button"
       onClick={() => {
         setToolSetting({ ...toolSetting, tool: 'charFill' });
@@ -76,7 +71,7 @@ const CharFiller = ({ toolSetting, setToolSetting }) => (
 const UrlTool = ({ toolSetting, setToolSetting }) => (
   <div>
     <button
-      className="h-12 w-12 border-1 m-2 "
+      className="h-12 w-12 border-1 m-2 border-gray-400 m-2 rounded"
       type="button"
       onClick={() => {
         setToolSetting({ ...toolSetting, tool: 'url' });
@@ -100,9 +95,9 @@ const ToolsModal = ({
   return (
     <div
       ref={modalRef}
-      className="p-2 max-w-sm mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10"
+      className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-10"
     >
-      <div className="flex">
+      <div className="flex ">
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         {/* <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} /> */}
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
@@ -125,7 +120,7 @@ const ToolsModal = ({
 const ColorButton = ({ color, toolSetting, setBuildTool }) => (
   // eslint-disable-next-line jsx-a11y/control-has-associated-label
   <button
-    className="h-12 w-12 border-1 m-2"
+    className="h-12 w-12 border-1 m-2 border-gray-400 m-2 rounded"
     type="button"
     onClick={() => {
       setBuildTool({ ...toolSetting, color });
@@ -136,7 +131,7 @@ const ColorButton = ({ color, toolSetting, setBuildTool }) => (
 const CloseButton = ({ setBuildTool, setToolSetting, modalRef }) => (
   // eslint-disable-next-line jsx-a11y/control-has-associated-label
   <button
-    className="h-12 w-12 border-2 m-2"
+    className="h-12 w-12 border-2 m-2 border-gray-400 m-2 rounded"
     type="button"
     onClick={() => {
       modalRef.current.style.display = 'none';
@@ -166,7 +161,7 @@ const WallPalette = ({
   return (
     <div
       ref={modalRef}
-      className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+      className="p-2  mx-auto bg-gray-300  rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
       <div>
         <FontAwesomeIcon
@@ -186,7 +181,7 @@ const WallPalette = ({
 const EraserTool = ({ setBuildTool, toolSetting, setToolSetting }) => (
   <div>
     <button
-      className="h-12 w-12 border-1 m-2 "
+      className="h-12 w-12 border-1 m-2 border-gray-400 m-2 rounded"
       type="button"
       onClick={() => {
         setBuildTool({ ...toolSetting, tool: 'erase' });
@@ -201,7 +196,7 @@ const EraserTool = ({ setBuildTool, toolSetting, setToolSetting }) => (
 const EraseMode = ({ setToolSetting, setBuildTool, modalRef }) => (
   <div
     ref={modalRef}
-    className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+    className="p-2  mx-auto bg-gray-300  rounded-xl shadow-md  items-center space-x-4 z-10 flex"
   >
     <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faEraser} />
     <CloseButton
@@ -222,7 +217,7 @@ const CharFillForm = ({
   return (
     <div
       ref={modalRef}
-      className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+      className="p-2  mx-auto bg-gray-300  rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
       <FontAwesomeIcon
         className="text-3xl  m-2 text-green-700"
@@ -265,7 +260,7 @@ const UrlFillForm = ({
   return (
     <div
       ref={modalRef}
-      className="p-2   mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+      className="p-2   mx-auto bg-gray-300  rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
       <div>
         <FontAwesomeIcon
@@ -413,7 +408,7 @@ export default function UserModal({
   });
   return (
     <div
-      className="translate-y-16"
+      className="translate-y-16 "
       ref={userSquare}
       style={{
         // display: 'none',
