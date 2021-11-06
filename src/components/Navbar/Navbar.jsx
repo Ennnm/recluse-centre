@@ -1,10 +1,38 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Offcanvas, CloseButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
-// eslint-disable-next-line react/prop-types
-export default function Navbar({ hasNavbar, handleLogoutSubmit }) {
+function NavbarButtons({ isLoggedIn, isAuthPage, handleLogoutSubmit }) {
+  if (!isAuthPage) {
+    if (isLoggedIn) {
+      return (
+        <form
+          className="d-inline-block"
+        >
+          <button
+            className="btn text-white bg-red-400 hover:bg-red-300"
+            type="submit"
+            onClick={handleLogoutSubmit}
+          >
+            Log Out
+          </button>
+        </form>
+      );
+    }
+
+    return (
+      <a className="btn text-white bg-green-400 hover:bg-green-300" href="/login" role="button">Log In</a>
+    );
+  }
+
+  return null;
+}
+
+export default function Navbar({
+  isLoggedIn, isAuthPage, hasNavbar, handleLogoutSubmit,
+}) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const handleCloseOffCanvas = () => setShowOffcanvas(false);
@@ -30,18 +58,11 @@ export default function Navbar({ hasNavbar, handleLogoutSubmit }) {
                 </a>
               </div>
               <div className="col-9 text-end">
-                <form
-                  className="d-inline-block"
-                >
-                  <button
-                    className="btn text-white bg-red-400 hover:bg-red-300"
-                    type="submit"
-                    onClick={handleLogoutSubmit}
-                  >
-                    Log Out
-                  </button>
-                </form>
-                <a className="btn text-white bg-green-400 hover:bg-green-300" href="/login" role="button">Log In</a>
+                <NavbarButtons
+                  isLoggedIn={isLoggedIn}
+                  isAuthPage={isAuthPage}
+                  handleLogoutSubmit={handleLogoutSubmit}
+                />
               </div>
             </div>
           </div>

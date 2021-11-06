@@ -22,8 +22,7 @@ function GlobalRegisterErrorAlert({ errorMessage }) {
   return null;
 }
 
-export default function RegisterPage() {
-  const [isLoggedIn] = useState(cookie.hasLoginCookie());
+export default function RegisterPage({ isLoggedIn }) {
   const [isRegistered, setIsRegistered] = useState(false);
   const [globalErrorMessage, setGlobalErrorMessage] = useState('');
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
@@ -137,7 +136,7 @@ export default function RegisterPage() {
                 <p className="mb-3 text-blue-50">
                   Already have an account? Log in
                   {' '}
-                  <a className="text-blue-300 hover:text-blue-400 hover:underline" href="/signup">here</a>
+                  <a className="text-blue-300 hover:text-blue-400 hover:underline" href="/login">here</a>
                   .
                 </p>
               </div>

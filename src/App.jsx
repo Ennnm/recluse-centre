@@ -4,11 +4,15 @@ import axios from 'axios';
 // component partials
 import Navbar from './components/Navbar/Navbar.jsx';
 import Routes from './routes/Routes.jsx';
+// CUSTOM IMPORTS
+import { hasLoginCookie } from './modules/cookie.mjs';
 
 export default function App() {
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(hasLoginCookie());
   const [isChatFocused, setIsChatFocused] = useState(false);
   const [hasNavbar, setHasNavbar] = useState(true);
+  const [isAuthPage, setIsAuthPage] = useState(false);
+  const [isJustLoggedOut, setIsJustLoggedOut] = useState(false);
 
   // need useEffect for this?
 
@@ -21,7 +25,8 @@ export default function App() {
         if (response.data.error) {
           console.log('logout error:', response.data.error);
         } else {
-          setIsLoggedOut(true);
+          setIsLoggedIn(false);
+          setIsJustLoggedOut(true);
         }
       })
       .catch((error) => {
@@ -46,16 +51,28 @@ export default function App() {
     setHasNavbar(false);
   };
 
+  const handleSetIsAuthPage = (bool) => {
+    setIsAuthPage(bool);
+  };
+
   return (
     <>
-      <Navbar hasNavbar={hasNavbar} handleLogoutSubmit={handleLogoutSubmit} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        isAuthPage={isAuthPage}
+        hasNavbar={hasNavbar}
+        handleLogoutSubmit={handleLogoutSubmit}
+      />
       <Routes
         isChatFocused={isChatFocused}
+        isLoggedIn={isLoggedIn}
+        isJustLoggedOut={isJustLoggedOut}
+        setIsLoggedIn={setIsLoggedIn}
         handleChatFocused={handleChatFocused}
         handleChatUnfocused={handleChatUnfocused}
         handleSetNavbar={handleSetNavbar}
         handleSetNoNavbar={handleSetNoNavbar}
-        isLoggedOut={isLoggedOut}
+        setIsAuthPage={handleSetIsAuthPage}
       />
     </>
   );

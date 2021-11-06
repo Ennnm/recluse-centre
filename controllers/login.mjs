@@ -28,11 +28,18 @@ export default function initLoginController(db) {
       }
 
       // generate a hashed cookie string using SHA object
-      const hashedCookieString = util.getHash(user.id);
+      const hashedCookieString = util.getHash(`${user.id}`);
+      const hashedRealnameString = util.getHash(user.realName);
+      const hashedUsernameString = util.getHash(user.username);
+
       // set the loggedIn and userId cookies in the response
       // The user's password hash matches that in the DB and we authenticate the user.
       response.cookie('loggedIn', hashedCookieString);
       response.cookie('userId', user.id);
+      response.cookie('username', user.username);
+      response.cookie('userSession', hashedUsernameString);
+      response.cookie('realName', user.realName);
+      response.cookie('session', hashedRealnameString);
       const successMessage = 'Login success!';
       response.send({
         id: user.id,
@@ -63,6 +70,10 @@ export default function initLoginController(db) {
   const destroy = (request, response) => {
     response.clearCookie('userId');
     response.clearCookie('loggedIn');
+    response.clearCookie('username');
+    response.clearCookie('userSession');
+    response.clearCookie('realName');
+    response.clearCookie('session');
     response.send({
       message: 'Logout success!',
     });

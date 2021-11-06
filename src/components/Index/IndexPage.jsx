@@ -8,8 +8,23 @@ import IndexDummyGrid from './IndexDummyGrid.jsx';
 import IndexBaseGrid from './IndexBaseGrid.jsx';
 import { setWorldFromId } from '../World/axiosRequests.mjs';
 
+function IndexButtons({ isLoggedIn }) {
+  if (isLoggedIn) {
+    return (
+      <a className="btn text-white bg-green-400 hover:bg-green-300 btn-lg me-3" href="/world" role="button">Enter</a>
+    );
+  }
+
+  return (
+    <>
+      <a className="btn text-white bg-green-400 hover:bg-green-300 btn-lg me-3" href="/login" role="button">Log In</a>
+      <a className="btn text-white bg-blue-400 hover:bg-blue-300 btn-lg" href="/signup" role="button">Sign Up</a>
+    </>
+  );
+}
+
 // eslint-disable-next-line react/prop-types
-export default function IndexPage() {
+export default function IndexPage({ isLoggedIn }) {
   const [world, setWorld] = useState(new World(2));
   const handleUpdateWorld = () => {
     setWorldFromId(setWorld, 2);
@@ -43,8 +58,7 @@ export default function IndexPage() {
             </div>
           </div>
           <div className="d-flex justify-content-end pt-3">
-            <a className="btn text-white bg-green-400 hover:bg-green-300 btn-lg me-3" href="/login" role="button">Log In</a>
-            <a className="btn text-white bg-blue-400 hover:bg-blue-300 btn-lg" href="/signup" role="button">Sign Up</a>
+            <IndexButtons isLoggedIn={isLoggedIn} />
           </div>
         </div>
       </div>

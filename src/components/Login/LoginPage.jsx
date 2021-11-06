@@ -27,9 +27,8 @@ function GlobalLoginErrorAlert({ errorMessage }) {
 }
 
 // eslint-disable-next-line react/prop-types
-export default function LoginPage({ sessionExpired, socket }) {
+export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn }) {
   const query = useQuery();
-  const [isLoggedIn, setIsLoggedIn] = useState(cookie.hasLoginCookie());
   const [globalErrorMessage, setGlobalErrorMessage] = useState(
     sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '',
   );

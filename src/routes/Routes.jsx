@@ -18,7 +18,6 @@ import GridElem from '../components/World/Grid.jsx';
 import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
-import SelectRoom from '../components/Chat/SelectRoom.jsx';
 import Chat from '../components/Chat/Chat.jsx';
 
 export const ContextRoute = ({
@@ -28,8 +27,10 @@ export const ContextRoute = ({
   handleChatUnfocused,
   isChatFocused,
   hasNavbar,
+  isAuthPage,
   handleSetNavbar,
   handleSetNoNavbar,
+  setIsAuthPage,
   ...rest
 }) => {
   const { Provider } = contextComponent;
@@ -41,6 +42,12 @@ export const ContextRoute = ({
       handleSetNavbar();
     } else {
       handleSetNoNavbar();
+    }
+
+    if (isAuthPage) {
+      setIsAuthPage(true);
+    } else {
+      setIsAuthPage(false);
     }
   }, []);
 
@@ -56,6 +63,54 @@ export const ContextRoute = ({
     </Route>
   );
 };
+
+function NavbarWrapper({
+  isAuthPage, setIsAuthPage, handleSetNavbar, children,
+}) {
+  useEffect(() => {
+    handleSetNavbar();
+
+    if (isAuthPage) {
+      setIsAuthPage(true);
+    } else {
+      setIsAuthPage(false);
+    }
+  }, []);
+
+  return (
+    <>
+      {children}
+    </>
+  );
+}
+
+function NoNavbarWrapper({
+  isAuthPage, setIsAuthPage, handleSetNoNavbar, children,
+}) {
+  useEffect(() => {
+    handleSetNoNavbar();
+
+    if (isAuthPage) {
+      setIsAuthPage(true);
+    } else {
+      setIsAuthPage(false);
+    }
+  }, []);
+
+  return (
+    <>
+      {children}
+    </>
+  );
+}
+
+function PrivateWrapper({ isLoggedIn, children }) {
+  if (!isLoggedIn) {
+    return <Redirect to="/" />;
+  }
+
+  return children;
+}
 
 function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
   return (
@@ -78,39 +133,16 @@ function Grid({ handleChatFocused, handleChatUnfocused, isChatFocused }) {
   );
 }
 
-function NavbarWrapper({ handleSetNavbar, children }) {
-  useEffect(() => {
-    // getting background from db, refresh all react worlds on new edit?
-    handleSetNavbar();
-  }, []);
-
-  return (
-    <>
-      {children}
-    </>
-  );
-}
-
-function NoNavbarWrapper({ handleSetNoNavbar, children }) {
-  useEffect(() => {
-    // getting background from db, refresh all react worlds on new edit?
-    handleSetNoNavbar();
-  }, []);
-
-  return (
-    <>
-      {children}
-    </>
-  );
-}
-
 export default function Routes({
   handleChatFocused,
   handleChatUnfocused,
   handleSetNavbar,
   handleSetNoNavbar,
   isChatFocused,
-  isLoggedOut,
+  isLoggedIn,
+  setIsLoggedIn,
+  isJustLoggedOut,
+  setIsAuthPage,
 }) {
   return (
     <Router>
@@ -124,16 +156,22 @@ export default function Routes({
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
           hasNavbar
+          isAuthPage={false}
           handleSetNavbar={handleSetNavbar}
           handleSetNoNavbar={handleSetNoNavbar}
+          setIsAuthPage={setIsAuthPage}
         />
         <Route
           exact
           path={['/', '/home', '/main']}
           render={
             () => (
-              <NoNavbarWrapper handleSetNoNavbar={handleSetNoNavbar}>
-                <Index socket={socket} />
+              <NoNavbarWrapper
+                isAuthPage={false}
+                setIsAuthPage={setIsAuthPage}
+                handleSetNoNavbar={handleSetNoNavbar}
+              >
+                <Index isLoggedIn={isLoggedIn} />
               </NoNavbarWrapper>
             )
           }
@@ -142,7 +180,11 @@ export default function Routes({
           path="/edit"
           render={
             () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+              <NavbarWrapper
+                isAuthPage={false}
+                setIsAuthPage={setIsAuthPage}
+                handleSetNavbar={handleSetNavbar}
+              >
                 <EditWorld />
               </NavbarWrapper>
             )
@@ -152,8 +194,12 @@ export default function Routes({
           path="/signup"
           render={
             () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
-                <Register />
+              <NavbarWrapper
+                isAuthPage
+                setIsAuthPage={setIsAuthPage}
+                handleSetNavbar={handleSetNavbar}
+              >
+                <Register isLoggedIn={isLoggedIn} />
               </NavbarWrapper>
             )
           }
@@ -162,8 +208,12 @@ export default function Routes({
           path="/login"
           render={
             () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
-                <Login />
+              <NavbarWrapper
+                isAuthPage
+                setIsAuthPage={setIsAuthPage}
+                handleSetNavbar={handleSetNavbar}
+              >
+                <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
               </NavbarWrapper>
             )
           }
@@ -172,18 +222,12 @@ export default function Routes({
           path="/sessionexpired"
           render={
             () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
-                <Login sessionExpired />
-              </NavbarWrapper>
-            )
-          }
-        />
-        <Route
-          path="/selectroom"
-          render={
-            () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
-                <SelectRoom socket={socket} />
+              <NavbarWrapper
+                isAuthPage
+                setIsAuthPage={setIsAuthPage}
+                handleSetNavbar={handleSetNavbar}
+              >
+                <Login sessionExpired isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
               </NavbarWrapper>
             )
           }
@@ -192,14 +236,18 @@ export default function Routes({
           path="*"
           render={
             () => (
-              <NavbarWrapper handleSetNavbar={handleSetNavbar}>
+              <NavbarWrapper
+                isAuthPage={false}
+                setIsAuthPage={setIsAuthPage}
+                handleSetNavbar={handleSetNavbar}
+              >
                 <Error404 />
               </NavbarWrapper>
             )
           }
         />
       </Switch>
-      {isLoggedOut && <Redirect to="/login" />}
+      {isJustLoggedOut && <Redirect to="/" />}
     </Router>
   );
 }

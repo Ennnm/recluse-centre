@@ -15,7 +15,14 @@ export const getCookie = (cname) => {
 };
 
 export const hasLoginCookie = () => {
-  if (getCookie('loggedIn').trim() === '') {
+  if (
+    getCookie('loggedIn').trim() === ''
+    && getCookie('session').trim() === ''
+    && getCookie('userSession').trim() === ''
+    && getCookie('userId').trim() === ''
+    && getCookie('realName').trim() === ''
+    && getCookie('username').trim() === ''
+  ) {
     return false;
   }
 
