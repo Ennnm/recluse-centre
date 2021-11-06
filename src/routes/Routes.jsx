@@ -117,7 +117,7 @@ export default function Routes({
       <Switch>
         <ContextRoute
           exact
-          path="/"
+          path="/world"
           contextComponent={SocketContext}
           component={Grid}
           handleChatFocused={handleChatFocused}
@@ -128,7 +128,8 @@ export default function Routes({
           handleSetNoNavbar={handleSetNoNavbar}
         />
         <Route
-          path={['/home', '/main']}
+          exact
+          path={['/', '/home', '/main']}
           render={
             () => (
               <NoNavbarWrapper handleSetNoNavbar={handleSetNoNavbar}>

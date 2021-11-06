@@ -34,14 +34,14 @@ export default function Navbar({ hasNavbar, handleLogoutSubmit }) {
                   className="d-inline-block"
                 >
                   <button
-                    className="btn btn-danger"
+                    className="btn text-white bg-red-400 hover:bg-red-300"
                     type="submit"
                     onClick={handleLogoutSubmit}
                   >
                     Log Out
                   </button>
                 </form>
-                <a className="btn btn-success" href="/login" role="button">Log In</a>
+                <a className="btn text-white bg-green-400 hover:bg-green-300" href="/login" role="button">Log In</a>
               </div>
             </div>
           </div>

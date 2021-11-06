@@ -6,6 +6,7 @@ import App from './App.jsx';
 
 // create an element that React will render stuff into
 const rootElement = document.createElement('div');
+rootElement.classList.add('page-wrapper');
 
 // put that element onto the page
 document.body.appendChild(rootElement);

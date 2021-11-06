@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+// CUSTOM IMPORTS
+import { indexNumCols } from '../World/utils.mjs';
 
 export default function IndexBaseGrid({
   world,
 }) {
-  const indexNumCols = 34;
   const { board } = world.worldState;
   const arr1d = [].concat(...board);
   // read arr2d for wall grid, set div style accordigng to color stored in array
@@ -22,7 +23,7 @@ export default function IndexBaseGrid({
   return (
     <div
       id="indexBaseGrid"
-      className="index-grid-container position-absolute position-absolute-stretch"
+      className="index-grid-container position-absolute position-absolute-index-grid"
     >
       {cells}
     </div>

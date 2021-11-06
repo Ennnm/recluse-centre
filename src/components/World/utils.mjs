@@ -1,5 +1,7 @@
 export const numCols = 40;
 export const numRows = 60;
+export const indexNumCols = 34;
+export const indexNumRows = 17;
 
 export const Tile = {
   empty: 0,
