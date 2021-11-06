@@ -9,11 +9,15 @@ import {
   faThLarge,
   faIcons,
   faTimes,
+  faArrowRight,
+  faTrashAlt,
   faFont,
   faBookDead,
   faWindowMaximize,
+  faHeading,
+  faEraser,
 } from '@fortawesome/free-solid-svg-icons';
-import { tailWindCol400, faviconFromSite } from './utils.mjs';
+import { tailWindCol400, faviconFromSite, validURL } from './utils.mjs';
 
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
@@ -100,9 +104,14 @@ const ToolsModal = ({
     >
       <div className="flex">
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
-        <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        {/* <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} /> */}
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <UrlTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
+        <EraserTool
+          toolSetting={toolSetting}
+          setBuildTool={setBuildTool}
+          setToolSetting={setToolSetting}
+        />
         <CloseButton
           setBuildTool={setBuildTool}
           setToolSetting={setToolSetting}
@@ -113,7 +122,7 @@ const ToolsModal = ({
   );
 };
 
-const ColorButton = ({ color, toolSetting, setToolSetting, setBuildTool }) => (
+const ColorButton = ({ color, toolSetting, setBuildTool }) => (
   // eslint-disable-next-line jsx-a11y/control-has-associated-label
   <button
     className="h-12 w-12 border-1 m-2"
@@ -159,6 +168,12 @@ const WallPalette = ({
       ref={modalRef}
       className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
+      <div>
+        <FontAwesomeIcon
+          className="text-3xl m-2 text-purple-700"
+          icon={faChessRook}
+        />
+      </div>
       {colorButtons}
       <CloseButton
         setBuildTool={setBuildTool}
@@ -168,7 +183,34 @@ const WallPalette = ({
     </div>
   );
 };
-
+const EraserTool = ({ setBuildTool, toolSetting, setToolSetting }) => (
+  <div>
+    <button
+      className="h-12 w-12 border-1 m-2 "
+      type="button"
+      onClick={() => {
+        setBuildTool({ ...toolSetting, tool: 'erase' });
+        setToolSetting({ ...toolSetting, tool: 'erase' });
+      }}
+    >
+      <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faEraser} />
+    </button>
+    Erase
+  </div>
+);
+const EraseMode = ({ setToolSetting, setBuildTool, modalRef }) => (
+  <div
+    ref={modalRef}
+    className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+  >
+    <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faEraser} />
+    <CloseButton
+      setBuildTool={setBuildTool}
+      setToolSetting={setToolSetting}
+      modalRef={modalRef}
+    />
+  </div>
+);
 const CharFillForm = ({
   toolSetting,
   setToolSetting,
@@ -182,9 +224,10 @@ const CharFillForm = ({
       ref={modalRef}
       className="p-2  mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
-      <p>
-        <FontAwesomeIcon className="text-3xl m-2 text-gray-600" icon={faFont} />
-      </p>
+      <FontAwesomeIcon
+        className="text-3xl  m-2 text-green-700"
+        icon={faIcons}
+      />
       <input
         type="text"
         maxLength="2"
@@ -216,31 +259,71 @@ const UrlFillForm = ({
   setInputTxtFocused,
 }) => {
   const label = useRef();
+  const isUrlValid = useRef(false);
+  const urlInput = useRef('');
 
   return (
     <div
       ref={modalRef}
-      className="p-2   text-2xl mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
+      className="p-2   mx-auto bg-white rounded-xl shadow-md  items-center space-x-4 z-10 flex"
     >
-      {/* <FontAwesomeIcon
-          className="text-3xl m-2 text-gray-600"
-          icon={faWindowMaximize}
-        /> */}
-      <p ref={label}>url:</p>
-      <input
-        type="text"
-        className="appearance-none bg-transparent border-b-2  text-2xl border-gray-500 text-gray-900 mr-3 py-1 px-2 mx-2 leading-tight focus:outline-none  font-semibold"
-        onFocus={() => {
-          setInputTxtFocused(true);
-        }}
-        onBlur={() => {
-          setInputTxtFocused(false);
-        }}
-        onChange={(e) => {
-          e.preventDefault();
-          setBuildTool({ ...toolSetting, url: e.target.value });
-        }}
-      />
+      <div>
+        <FontAwesomeIcon
+          className="text-3xl m-2 text-yellow-400"
+          icon={faStickyNote}
+        />
+        Title
+      </div>
+      <div className="justify-start">
+        <input
+          type="text"
+          className="appearance-none bg-transparent border-b-2 w-24 text-2xl border-gray-500 text-gray-900 mr-3 py-1  leading-tight focus:outline-none  "
+          onFocus={() => {
+            setInputTxtFocused(true);
+          }}
+          onBlur={() => {
+            setInputTxtFocused(false);
+          }}
+          onChange={(e) => {
+            e.preventDefault();
+            setToolSetting({ ...toolSetting, title: e.target.value });
+            setBuildTool({ ...toolSetting, title: e.target.value });
+          }}
+        />
+      </div>
+      <div>
+        <FontAwesomeIcon
+          className="text-3xl m-2 text-green-500"
+          icon={faArrowRight}
+        />
+        Url
+      </div>
+      <div className="justify-start">
+        <input
+          type="text"
+          className="appearance-none bg-transparent border-b-2  text-2xl border-gray-500 text-gray-900 mr-3 py-1  leading-tight focus:outline-none  "
+          onFocus={() => {
+            setInputTxtFocused(true);
+          }}
+          onBlur={() => {
+            setInputTxtFocused(false);
+          }}
+          onChange={(e) => {
+            e.preventDefault();
+            urlInput.current = e.target.value;
+            isUrlValid.current = validURL(urlInput.current);
+            if (isUrlValid.current) {
+              setBuildTool({ ...toolSetting, url: urlInput.current });
+            }
+          }}
+        />
+        {!isUrlValid.current && urlInput.current.length > 0 && (
+          <p className="text-red-500 text-xs text-left italic">Invalid</p>
+        )}
+        {isUrlValid.current && (
+          <p className="text-green-500 text-xs italic">Valid</p>
+        )}
+      </div>
       <CloseButton
         setBuildTool={setBuildTool}
         setToolSetting={setToolSetting}
@@ -274,7 +357,6 @@ const Modal = ({
         setBuildTool={setBuildTool}
         toolSetting={toolSetting}
         setToolSetting={setToolSetting}
-        b
         modalRef={modalRef}
       />
     );
@@ -298,6 +380,17 @@ const Modal = ({
         setToolSetting={setToolSetting}
         modalRef={modalRef}
         setInputTxtFocused={setInputTxtFocused}
+      />
+    );
+  } else if (currentTool === 'erase') {
+    console.log('erase tool');
+
+    elem = (
+      <EraseMode
+        setBuildTool={setBuildTool}
+        toolSetting={toolSetting}
+        setToolSetting={setToolSetting}
+        modalRef={modalRef}
       />
     );
   }
