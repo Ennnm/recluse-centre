@@ -28,6 +28,16 @@ const validateUserName = (userInfo, type) => {
   return obj;
 };
 
+const validateUserDescription = (userInfo) => {
+  const obj = {};
+  if (!userInfo.description || userInfo.description.trim === '') {
+    obj.description_invalid = 'Please enter a description.';
+  } else if (userInfo.description.length < 1 || userInfo.description.length > 640) {
+    obj.description_invalid = 'Your description should only be 1 to 640 characters long.';
+  }
+  return obj;
+};
+
 const validatePassword = (userInfo, type) => {
   const obj = {};
   if (!userInfo.password || userInfo.password.trim === '') {
@@ -49,6 +59,7 @@ export const validateUserInfo = (userInfo) => ({
   ...validateRealName(userInfo, 'signup'),
   ...validateUserName(userInfo, 'signup'),
   ...validatePassword(userInfo, 'signup'),
+  ...validateUserDescription(userInfo),
 });
 
 export const validateLogin = (userInfo) => ({
