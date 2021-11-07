@@ -37,6 +37,7 @@ export default function initLoginController(db) {
       response.cookie('loggedIn', hashedCookieString);
       response.cookie('userId', user.id);
       response.cookie('username', user.username);
+      response.cookie('description', user.description);
       response.cookie('userSession', hashedUsernameString);
       response.cookie('realName', user.realName);
       response.cookie('session', hashedRealnameString);
@@ -46,6 +47,7 @@ export default function initLoginController(db) {
         message: successMessage,
         username: user.username,
         realName: user.realName,
+        description: user.description,
       });
     } catch (error) {
       let errorMessage = '';
