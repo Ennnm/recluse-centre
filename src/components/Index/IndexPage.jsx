@@ -25,7 +25,7 @@ function IndexButtons({ isLoggedIn }) {
 
 // eslint-disable-next-line react/prop-types
 export default function IndexPage({ isLoggedIn }) {
-  const [world, setWorld] = useState(new World(2));
+  const [world, setWorld] = useState(null);
   const handleUpdateWorld = () => {
     setWorldFromId(setWorld, 2);
   };
@@ -38,7 +38,7 @@ export default function IndexPage({ isLoggedIn }) {
     return () => {
       document.body.classList.remove('index-body');
     };
-  }, []);
+  }, [world]);
 
   return (
     <>
@@ -46,7 +46,10 @@ export default function IndexPage({ isLoggedIn }) {
         <div className="col-11 col-md-6">
           <div className="card w-100">
             <div className="card-body">
-              <IndexBaseGrid world={world} />
+              {
+                (world && world.worldState && world.worldState.board)
+                && (<IndexBaseGrid world={world} />)
+              }
               <IndexDummyGrid />
               <blockquote className="callout quote EN">
                 <FontAwesomeIcon className="quote-before" icon={faQuoteLeft} />
