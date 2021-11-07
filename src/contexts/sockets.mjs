@@ -1,7 +1,5 @@
 import { io } from 'socket.io-client';
 import React from 'react';
 
-export const socket = io('http://localhost:3001', {
-  withCredentials: true,
-});
+export const socket = io();
 export const SocketContext = React.createContext();

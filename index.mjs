@@ -73,12 +73,8 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3004;
 const PORTSOCKET = 3001;
 
-const io = new Server(server, {
-  cors: {
-    origin: `http://localhost:${PORT}`,
-    credentials: true,
-  }
-});
+let io = new Server(server);
+io = io.listen(server);
 
 const onConnection= (socket)=>{
   console.log(`User connected ${socket.id}`);
@@ -87,10 +83,9 @@ const onConnection= (socket)=>{
   socket.on("disconnect", ()=>{
     console.log('user disconnected', socket.id);
   })
-
 }
 
-server.listen(PORTSOCKET);
+// server.listen(PORTSOCKET);
 io.on("connection", onConnection);
 
-app.listen(PORT);
+server.listen(PORT);
