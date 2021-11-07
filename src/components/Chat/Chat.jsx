@@ -124,7 +124,7 @@ export default function Chat({
           });
 
           if (messageList.length > 0) {
-            setMessageList([...messages, ...messageList]);
+            setMessageList((list) => [...messages, ...list]);
           } else {
             setMessageList(messages);
           }
@@ -147,7 +147,9 @@ export default function Chat({
     });
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
-      setMessageList([...messageList, data]);
+      setMessageList((list) => [...list, data]);
+      console.log('message received!');
+      console.log(data);
     });
   }, [socket]);
 
