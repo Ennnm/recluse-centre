@@ -14,7 +14,7 @@ export default function initSignupController(db) {
       // get the hashed password as output from the SHA object
       const hashedPassword = util.getHash(validatedUserInfo.password);
       const nameFmt = validatedUserInfo.realName.trim().replace(/\s+/g, ' ');
-      const { username, profileImg } = validatedUserInfo;
+      const { username, profileImg, description } = validatedUserInfo;
       const user = await db.User.findOne({
         where: {
           username,
@@ -28,6 +28,7 @@ export default function initSignupController(db) {
         username,
         realName: nameFmt,
         password: hashedPassword,
+        description,
         profileImg,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -39,13 +40,14 @@ export default function initSignupController(db) {
         message: successMessage,
         username: newUser.username,
         realName: newUser.realName,
+        description: newUser.description,
       });
     } catch (error) {
       let errorMessage = '';
       if (
         error.message === globals.USERNAME_EXISTS_ERROR_MESSAGE
       ) {
-        errorMessage = 'There has been an error. Please try registering again with a proper username, name, or password.';
+        errorMessage = 'There has been an error. Please try registering again with a proper username, name, description, or password.';
       } else if (error.message === globals.INVALID_REGISTER_REQUEST_MESSAGE) {
         errorMessage = 'There has been an error. Registration input validation failed!';
       } else {

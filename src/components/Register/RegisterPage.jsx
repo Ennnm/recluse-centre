@@ -1,14 +1,13 @@
+/* eslint-disable react/prop-types, jsx-a11y/label-has-associated-control */
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 // Custom imports
 import { getRandomColor } from '../../../utils.mjs';
 import * as errors from '../../modules/errors.mjs';
-import * as cookie from '../../modules/cookie.mjs';
 
-// eslint-disable-next-line react/prop-types
 function GlobalRegisterErrorAlert({ errorMessage }) {
-  // eslint-disable-next-line react/prop-types
   if (errorMessage.trim() !== '') {
     return (
       <div className="col-12">
@@ -28,10 +27,12 @@ export default function RegisterPage({ isLoggedIn }) {
   const [usernameInvalidMessage, setUsernameInvalidMessage] = useState('');
   const [nameInvalidMessage, setNameInvalidMessage] = useState('');
   const [passwordInvalidMessage, setPasswordInvalidMessage] = useState('');
+  const [descriptionInvalidMessage, setDescriptionInvalidMessage] = useState('');
 
   const [username, setUsername] = useState('');
   const [realname, setRealname] = useState('');
   const [password, setPassword] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleUsernameChange = (event) => {
     // Retrieve input field value from JS event object.
@@ -54,17 +55,26 @@ export default function RegisterPage({ isLoggedIn }) {
     setPassword(inputName);
   };
 
+  const handleDescriptionChange = (event) => {
+    // Retrieve input field value from JS event object.
+    const inputName = event.target.value;
+    // Log input field value to verify what we typed.
+    setDescription(inputName);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     let usernameInvalid = '';
     let nameInvalid = '';
     let passwordInvalid = '';
+    let descriptionInvalid = '';
 
     const data = {
       realName: realname,
       username,
       password,
+      description,
       profileImg: getRandomColor(),
     };
 
@@ -86,11 +96,16 @@ export default function RegisterPage({ isLoggedIn }) {
             if (response.data.password_invalid) {
               passwordInvalid = response.data.password_invalid;
             }
+
+            if (response.data.description_invalid) {
+              descriptionInvalid = response.data.description_invalid;
+            }
           }
 
           setUsernameInvalidMessage(usernameInvalid);
           setNameInvalidMessage(nameInvalid);
           setPasswordInvalidMessage(passwordInvalid);
+          setDescriptionInvalidMessage(descriptionInvalid);
           setGlobalErrorMessage(errors.REGISTER_GLOBAL_ERROR_MESSAGE);
         } else {
           setIsRegistered(true);
@@ -142,7 +157,6 @@ export default function RegisterPage({ isLoggedIn }) {
               </div>
               <GlobalRegisterErrorAlert errorMessage={globalErrorMessage} />
               <div className="col-12 mb-3">
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="userName">
                   <strong className="text-blue-50">Username</strong>
                 </label>
@@ -162,7 +176,6 @@ export default function RegisterPage({ isLoggedIn }) {
                 <div className="invalid-feedback text-red-300">{usernameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="realName">
                   <strong className="text-blue-50">Real Name</strong>
                 </label>
@@ -182,7 +195,6 @@ export default function RegisterPage({ isLoggedIn }) {
                 <div className="invalid-feedback text-red-300">{nameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="password">
                   <strong className="text-blue-50">Password</strong>
                 </label>
@@ -199,6 +211,29 @@ export default function RegisterPage({ isLoggedIn }) {
                   onChange={handlePasswordChange}
                 />
                 <div className="invalid-feedback text-red-300">{passwordInvalidMessage}</div>
+              </div>
+              <div className="col-12 mb-3">
+                <label htmlFor="description" className="text-blue-50">
+                  <strong>Description</strong>
+                  {' '}
+                  (Tell us more about yourself!)
+                </label>
+                <textarea
+                  className={
+                    `form-control${
+                      descriptionInvalidMessage.trim() !== '' ? ' is-invalid' : ''
+                    }`
+                  }
+                  id="description"
+                  name="text"
+                  rows="4"
+                  maxLength="640"
+                  placeholder="eg. I enjoy long walks on the beach at sunset."
+                  onChange={handleDescriptionChange}
+                >
+                  {description}
+                </textarea>
+                <div className="invalid-feedback text-red-300">{descriptionInvalidMessage}</div>
               </div>
             </div>
             <hr className="mb-4" />

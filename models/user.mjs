@@ -24,7 +24,11 @@ export default function userModel(sequelize, DataTypes) {
       type: DataTypes.STRING(64),
     },
     description: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.TEXT,
+      validate: {
+        len: [1, 640],
+      },
     },
     createdAt: {
       allowNull: false,
