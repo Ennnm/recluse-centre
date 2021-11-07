@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from 'react';
-import '../../styles.scss';
-import 'tailwindcss/tailwind.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChessRook,
@@ -349,7 +347,13 @@ const NothingInspect = ({ modalRef }) => (
 );
 const Player = ({ player }) => (
   <div className="text-left  w-44 ">
-    <h1 className="font-semibold">This is {player.realName} :</h1>
+    <h1 className="font-semibold">
+      This is
+      {' '}
+      {player.realName}
+      {' '}
+      :
+    </h1>
     <p>
       {player.description === null || player.description.length === 0
         ? 'A mystery...'
