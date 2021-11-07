@@ -196,21 +196,27 @@ export default function ActiveObjPlayerGrid({
     });
   };
   const handleInteractKey = () => {
-    const userSqDisplay = userSquare.current.style.visibility;
-    userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
-    // openInteractiveObj();
-    // interactWPlayer();
-    const adjPlayers = adjPlayersNotSelf();
-    const adjActiveObjs = getActiveAdjCells();
+    if (userSquare.current && userSquare.current.style && userSquare.current.style.visibility) {
+      const userSqDisplay = userSquare.current.style.visibility;
+      userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+      // openInteractiveObj();
+      // interactWPlayer();
+      const adjPlayers = adjPlayersNotSelf();
+      const adjActiveObjs = getActiveAdjCells();
+      console.log('adjActiveObjs:');
+      console.log(adjActiveObjs);
 
-    setInteractMode([...interactMode, ...adjPlayers, ...adjActiveObjs]);
+      setInteractMode([...interactMode, ...adjPlayers, ...adjActiveObjs]);
 
-    setModalDisplay('interact');
+      setModalDisplay('interact');
+    }
   };
   const handleBuildKey = () => {
-    const userSqDisplay = userSquare.current.style.visibility;
-    userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
-    setModalDisplay('build');
+    if (userSquare.current && userSquare.current.style && userSquare.current.style.visibility) {
+      const userSqDisplay = userSquare.current.style.visibility;
+      userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+      setModalDisplay('build');
+    }
   };
   const handlePlayersPositions = (playerPos) => {
     console.log('handling playing positions');
