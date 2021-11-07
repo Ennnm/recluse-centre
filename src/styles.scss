@@ -1,9 +1,4 @@
-@import "../node_modules/bootstrap/scss/bootstrap";
-// @import '../node_modules/tailwindcss/base';
-// @import '../node_modules/tailwindcss/components';
-// @import '../node_modules/tailwindcss/utilities';
-
-$cell-dim: 30px;
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 * {
   box-sizing: border-box;
@@ -90,8 +85,6 @@ body.index-body {
   border-radius: 50%;
 }
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
-
 .chat-wrapper {
   position: fixed;
   left: 0;
@@ -101,7 +94,6 @@ body.index-body {
 
 .join-chat-container {
   color: #212121;
-  font-family: "Open Sans", sans-serif;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -254,7 +246,6 @@ body.index-body {
   background: rgba(38, 50, 56, 0.85);
   outline: none;
   color: #fff;
-  font-family: "Open Sans", sans-serif;
 
   &::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */

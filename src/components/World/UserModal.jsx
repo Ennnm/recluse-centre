@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from 'react';
-import '../../styles.scss';
-import 'tailwindcss/tailwind.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChessRook,
@@ -349,6 +347,7 @@ const NothingInspect = ({ modalRef }) => (
 );
 const Player = ({ player }) => (
   <div className="text-left  w-44 ">
+
     <h1 className="font-semibold">This is {player.realName} :</h1>
     <p>
       {player.description === null || player.description.length === 0
@@ -362,7 +361,9 @@ const LinkObjs = ({ linkObj }) => (
     <a href={linkObj.url} className="font-semibold underline hover:underline">
       {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
     </a>
+
     <p className="text-gray-500">linked by: {linkObj.userObj.realName}</p>
+
   </div>
 );
 const InspectModal = ({ interactObjs, modalRef }) => {
