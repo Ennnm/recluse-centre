@@ -73,6 +73,7 @@ export default function registerGridHandlers(io, socket) {
       player[0].y = y;
       player[0].realName = user.realName;
       player[0].username = user.username;
+      player[0].description = user.description;
     }
     else {
       console.log('user :>> ', user);
