@@ -1,10 +1,8 @@
-const validateRealName = (userInfo, type) => {
+const validateRealName = (userInfo) => {
   const regex = /^[A-Za-z'\-.\s]+$/;
   const obj = {};
   if (!userInfo.realName || userInfo.realName.trim() === '' || userInfo.realName.search(regex) === -1) {
-    if (type === 'signup') {
-      obj.realname_invalid = 'Please enter a valid name.';
-    }
+    obj.realname_invalid = 'Please enter a valid name.';
   }
   return obj;
 };
@@ -21,7 +19,7 @@ const validateUserName = (userInfo, type) => {
   } else if (userInfo.username.length < 1 || userInfo.username.length > 30) {
     obj.username_invalid = 'Your username should only be 1 to 30 characters long.';
   } else if (userInfo.username.search(regex) === -1) {
-    if (type === 'signup') {
+    if (type === 'signup' || type === 'settings') {
       obj.username_invalid = 'Your username should only include numbers, lowercase alphabets, and/or underscores.';
     }
   }
@@ -60,6 +58,13 @@ export const validateUserInfo = (userInfo) => ({
   ...validateUserName(userInfo, 'signup'),
   ...validatePassword(userInfo, 'signup'),
   ...validateUserDescription(userInfo),
+});
+
+export const validateUserSettings = (userInfo) => ({
+  ...userInfo,
+  ...validateRealName(userInfo, 'settings'),
+  ...validateUserName(userInfo, 'settings'),
+  ...validateUserDescription(userInfo, 'settings'),
 });
 
 export const validateLogin = (userInfo) => ({

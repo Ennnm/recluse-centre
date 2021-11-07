@@ -22,8 +22,8 @@ export default function routes(app) {
   app.post('/signup', SignupController.create);
   app.post('/login', LoginController.create);
   app.delete('/logout', LoginController.destroy);
-
   app.get('/user/:id', UserController.show);
+  app.put('/user/:id/update', UserController.update);
 
   app.get('*', (request, response) => {
     response.sendFile(resolve('dist', 'main.html'));

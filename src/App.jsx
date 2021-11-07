@@ -15,6 +15,7 @@ export default function App() {
   const [isJustLoggedOut, setIsJustLoggedOut] = useState(false);
   const [username, setUsername] = useState(getCookie('username').trim());
   const [realName, setRealName] = useState(getCookie('realName').trim().split('%20').join(' '));
+  const [description, setDescription] = useState(getCookie('description').trim().split('%20').join(' '));
   const [userId, setUserId] = useState(Number(getCookie('userId').trim()));
 
   // need useEffect for this?
@@ -73,6 +74,10 @@ export default function App() {
         handleLogoutSubmit={handleLogoutSubmit}
       />
       <Routes
+        username={username}
+        realName={realName}
+        description={description}
+        userId={userId}
         isChatFocused={isChatFocused}
         isLoggedIn={isLoggedIn}
         isJustLoggedOut={isJustLoggedOut}
@@ -82,6 +87,9 @@ export default function App() {
         handleSetNavbar={handleSetNavbar}
         handleSetNoNavbar={handleSetNoNavbar}
         setIsAuthPage={handleSetIsAuthPage}
+        setUsername={setUsername}
+        setRealName={setRealName}
+        setDescription={setDescription}
       />
     </>
   );
