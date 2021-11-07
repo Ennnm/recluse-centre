@@ -2,6 +2,87 @@
 import React, { useState, useEffect } from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
+function Message({ userId, messageContent }) {
+  if (messageContent.context === 'connected') {
+    return (
+      <div className="message">
+        <div>
+          <div className="message-content">
+            <p className="text-xs text-green-200">
+              <strong>
+                {messageContent.realName}
+                {' '}
+                &lt;
+                {messageContent.username}
+                &gt;
+              </strong>
+              {' '}
+              <span>is connected!</span>
+              {' '}
+              <em>
+                [
+                {messageContent.time}
+                ]
+              </em>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  } if (messageContent.context === 'disconnected') {
+    return (
+      <div className="message">
+        <div>
+          <div className="message-content">
+            <p className="text-xs text-red-400">
+              <strong>
+                {messageContent.realName}
+                {' '}
+                &lt;
+                {messageContent.username}
+                &gt;
+              </strong>
+              {' '}
+              <span>has been disconnected!</span>
+              {' '}
+              <em>
+                [
+                {messageContent.time}
+                ]
+              </em>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="message">
+      <div>
+        <div className="message-content">
+          <p className="text-xs">
+            <strong className={(userId === messageContent.userId ? 'text-yellow-200' : 'text-white')}>
+              {messageContent.realName}
+              {' '}
+              &lt;
+              {messageContent.username}
+              &gt;:
+            </strong>
+            {' '}
+            <span className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>{messageContent.message}</span>
+            {' '}
+            <em className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>
+              [
+              {messageContent.time}
+              ]
+            </em>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Chat({
   socket, username, userId, realName, room, handleChatFocused, handleChatUnfocused,
 }) {
@@ -10,7 +91,12 @@ export default function Chat({
   const [showChatBody, setShowChatBody] = useState(false);
 
   useEffect(() => {
-    socket.emit('chat:join', room);
+    socket.emit('chat:join', {
+      username,
+      userId,
+      realName,
+      room,
+    });
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
       setMessageList((list) => [...list, data]);
@@ -62,29 +148,7 @@ export default function Chat({
       <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
         <ScrollToBottom className="message-container">
           {messageList.map((messageContent) => (
-            <div className="message">
-              <div>
-                <div className="message-content">
-                  <p className="text-xs">
-                    <strong className={(userId === messageContent.userId ? 'text-yellow-200' : 'text-white')}>
-                      {messageContent.realName}
-                      {' '}
-                      &lt;
-                      {messageContent.username}
-                      &gt;:
-                    </strong>
-                    {' '}
-                    <span className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>{messageContent.message}</span>
-                    {' '}
-                    <em className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>
-                      [
-                      {messageContent.time}
-                      ]
-                    </em>
-                  </p>
-                </div>
-              </div>
-            </div>
+            <Message userId={userId} messageContent={messageContent} />
           ))}
         </ScrollToBottom>
       </div>

@@ -76,12 +76,71 @@ const PORTSOCKET = 3001;
 let io = new Server(server);
 io = io.listen(server);
 
+const chatUsers = [];
 const onConnection= (socket)=>{
   console.log(`User connected ${socket.id}`);
+
   registerGridHandlers(io, socket);
+
+  socket.on('chat:join', (data) => {
+    const obj = {
+      room: data.room,
+      socketId: socket.id,
+      username: data.username,
+      userId: data.userId,
+      realName: data.realName
+    }
+    chatUsers.push(obj);
+    socket.join(data.room);
+    const hour = new Date(Date.now()).getHours();
+    const min = new Date(Date.now()).getMinutes();
+    const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
+    const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+    const messageData = {
+      room: data.room,
+      username: data.username,
+      userId: data.userId,
+      realName: data.realName,
+      message: '',
+      time: `${hourFmt}:${minFmt}`,
+      context: 'connected',
+    };
+    socket.to(data.room).emit('chat:receive', messageData);
+  });
+
   registerChatHandlers(io, socket);
+
   socket.on("disconnect", ()=>{
-    console.log('user disconnected', socket.id);
+    let index = -1;
+    let userObj = {};
+
+    for (let i = 0; i < chatUsers.length; i += 1) {
+      if (chatUsers[i].socketId === socket.id) {
+        index = i;
+      }
+    } 
+
+    if (index > -1) {
+      userObj = chatUsers.splice(index, 1)[0];
+    }
+
+    if (Object.keys(userObj).length > 0) {
+      const hour = new Date(Date.now()).getHours();
+      const min = new Date(Date.now()).getMinutes();
+      const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
+      const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+      
+      const messageData = {
+        room: userObj.room,
+        username: userObj.username,
+        userId: userObj.userId,
+        realName: userObj.realName,
+        message: '',
+        time: `${hourFmt}:${minFmt}`,
+        context: 'disconnected',
+      };
+      socket.to(userObj.room).emit('chat:receive', messageData);
+    }
   })
 }
 
