@@ -64,7 +64,7 @@ export default function initMessageController(db) {
           },
         },
         order: [
-          [{ model: db.Message, as: 'worldMessages' }, 'createdAt', 'asc'],
+          [{ model: db.Message, as: 'worldMessages' }, 'createdAt', 'desc'],
         ],
         limit: 100,
       });
@@ -88,6 +88,8 @@ export default function initMessageController(db) {
           updatedAt: message.messageSender.dataValues.updatedAt,
         },
       }));
+
+      messages = messages.reverse();
 
       const successMessage = 'Messages received success!';
       response.send({
