@@ -108,6 +108,15 @@ export default function Navbar({
                     Home
                   </a>
                 </li>
+                {
+                  isLoggedIn && (
+                    <li className="nav-item">
+                      <a href="/world" className="nav-link text-white" aria-current="page">
+                        World
+                      </a>
+                    </li>
+                  )
+                }
               </ul>
               <NavbarProfile
                 isLoggedIn={isLoggedIn}

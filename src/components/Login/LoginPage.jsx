@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types, jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { useLocation, Redirect } from 'react-router-dom';
 import axios from 'axios';
@@ -10,9 +11,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-// eslint-disable-next-line react/prop-types
 function GlobalLoginErrorAlert({ errorMessage }) {
-  // eslint-disable-next-line react/prop-types
   if (errorMessage.trim() !== '') {
     return (
       <div className="col-12">
@@ -26,8 +25,9 @@ function GlobalLoginErrorAlert({ errorMessage }) {
   return null;
 }
 
-// eslint-disable-next-line react/prop-types
-export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn }) {
+export default function LoginPage({
+  sessionExpired, isLoggedIn, setIsLoggedIn, setPrevUsername, setPrevRealName, setPrevUserId,
+}) {
   const query = useQuery();
   const [globalErrorMessage, setGlobalErrorMessage] = useState(
     sessionExpired ? errors.SESSION_EXPIRED_ERROR_MESSAGE : '',
@@ -85,6 +85,9 @@ export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn })
           setPasswordInvalidMessage(passwordInvalid);
           setGlobalErrorMessage(errors.LOGIN_GLOBAL_ERROR_MESSAGE);
         } else {
+          setPrevUsername(response.data.username);
+          setPrevRealName(response.data.realName);
+          setPrevUserId(response.data.id);
           setIsLoggedIn(true);
         }
       })
@@ -96,7 +99,7 @@ export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn })
   };
 
   if (isLoggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to="/world" />;
   }
 
   return (
@@ -130,7 +133,6 @@ export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn })
               />
               <GlobalLoginErrorAlert errorMessage={globalErrorMessage} />
               <div className="col-12 mb-3">
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="userName">
                   <strong className="text-blue-50">Username</strong>
                 </label>
@@ -148,7 +150,6 @@ export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn })
                 <div className="invalid-feedback text-red-300">{usernameInvalidMessage}</div>
               </div>
               <div className="col-12 mb-3">
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="password">
                   <strong className="text-blue-50">Password</strong>
                 </label>
@@ -180,7 +181,6 @@ export default function LoginPage({ sessionExpired, isLoggedIn, setIsLoggedIn })
   );
 }
 
-// eslint-disable-next-line react/prop-types
 function RegisterSuccessAlert({ success, error }) {
   if (success === 'true' && !error) {
     return (

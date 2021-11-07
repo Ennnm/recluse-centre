@@ -126,6 +126,9 @@ export default function Routes({
   setIsLoggedIn,
   isJustLoggedOut,
   setIsAuthPage,
+  setUsername,
+  setRealName,
+  setUserId,
 }) {
   return (
     <Router>
@@ -212,7 +215,13 @@ export default function Routes({
               setIsAuthPage={setIsAuthPage}
               handleSetNavbar={handleSetNavbar}
             >
-              <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+              <Login
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setPrevUsername={setUsername}
+                setPrevRealName={setRealName}
+                setPrevUserId={setUserId}
+              />
             </NavbarWrapper>
           )}
         />

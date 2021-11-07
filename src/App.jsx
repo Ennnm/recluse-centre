@@ -87,6 +87,7 @@ export default function App() {
         handleSetNavbar={handleSetNavbar}
         handleSetNoNavbar={handleSetNoNavbar}
         setIsAuthPage={handleSetIsAuthPage}
+        setUserId={setUserId}
         setUsername={setUsername}
         setRealName={setRealName}
         setDescription={setDescription}

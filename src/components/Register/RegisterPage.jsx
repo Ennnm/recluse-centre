@@ -120,7 +120,7 @@ export default function RegisterPage({ isLoggedIn }) {
 
   if (isLoggedIn) {
     return (
-      <Redirect to="/" />
+      <Redirect to="/world" />
     );
   }
 
