@@ -20,6 +20,7 @@ export default function routes(app) {
   app.put('/world/:id/edit', worldController.edit);
   app.post('/world', worldController.create);
   app.post('/world/:id/createmessage', MessageController.create);
+  app.get('/world/:id/showmessages', MessageController.show);
 
   // USER CONTROL
   app.post('/signup', SignupController.create);

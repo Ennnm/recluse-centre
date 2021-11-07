@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types, react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ScrollToBottom from 'react-scroll-to-bottom';
@@ -89,8 +89,54 @@ export default function Chat({
 }) {
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
+  const [isMessagesLoaded, setIsMessagesLoaded] = useState(false);
   const [showChatBody, setShowChatBody] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`/world/${room}/showmessages`)
+      .then((response) => {
+        if (!response.data.error) {
+          let messages = [...response.data.messages];
+
+          messages = messages.map((message) => {
+            const date = new Date(message.createdAt);
+            const hour = date.getHours();
+            const min = date.getMinutes();
+            const sec = date.getSeconds();
+            const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
+            const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+            const secFmt = (sec.toString().length === 1 ? `0${sec}` : `${sec}`);
+
+            const messageData = {
+              room: message.worldId,
+              username: message.messageSender.username,
+              userId: message.messageSender.id,
+              realName: message.messageSender.realName,
+              message: message.message,
+              time: `${hourFmt}:${minFmt}:${secFmt}`,
+              date,
+              context: 'message',
+            };
+
+            return messageData;
+          });
+
+          if (messageList.length > 0) {
+            setMessageList([...messages, ...messageList]);
+          } else {
+            setMessageList(messages);
+          }
+        }
+
+        setIsMessagesLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsMessagesLoaded(true);
+      });
+  }, []);
 
   useEffect(() => {
     socket.emit('chat:join', {
@@ -101,9 +147,7 @@ export default function Chat({
     });
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
-      setMessageList((list) => [...list, data]);
-      console.log('message received!');
-      console.log(data);
+      setMessageList([...messageList, data]);
     });
   }, [socket]);
 
@@ -161,24 +205,27 @@ export default function Chat({
     }
   };
 
-  return (
-    <div className="chat-window">
-      <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
-        <ScrollToBottom className="message-container">
-          {messageList.map((messageContent) => (
-            <Message key={`messageUser${messageContent.username}messageTime${messageContent.time.split(':').join('')}WorldId${room}`} userId={userId} messageContent={messageContent} />
-          ))}
-        </ScrollToBottom>
+  if (isMessagesLoaded) {
+    return (
+      <div className="chat-window">
+        <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
+          <ScrollToBottom className="message-container">
+            {messageList.map((messageContent, index) => (
+              <Message userId={userId} messageContent={messageContent} />
+            ))}
+          </ScrollToBottom>
+        </div>
+        <div className="chat-footer">
+          <input type="text" className="chat-input" placeholder="Hey..." maxLength="640" value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
+          <button type="button" disabled={isSendingMessage} className="chat-submit-button" onClick={sendMessage}>
+            &#x27A4;
+          </button>
+          <button type="button" className="chat-expand-button" onClick={handleShowChatBody}>
+            {(showChatBody ? (<span>&#9660;</span>) : (<span>&#9650;</span>))}
+          </button>
+        </div>
       </div>
-      <div className="chat-footer">
-        <input type="text" className="chat-input" placeholder="Hey..." maxLength="640" value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
-        <button type="button" disabled={isSendingMessage} className="chat-submit-button" onClick={sendMessage}>
-          &#x27A4;
-        </button>
-        <button type="button" className="chat-expand-button" onClick={handleShowChatBody}>
-          {(showChatBody ? (<span>&#9660;</span>) : (<span>&#9650;</span>))}
-        </button>
-      </div>
-    </div>
-  );
+    );
+  }
+  return null;
 }

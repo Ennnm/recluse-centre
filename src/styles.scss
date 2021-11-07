@@ -352,6 +352,12 @@ body.index-body {
     &:hover {
       color: rgba(51, 105, 30, 0.85);
     }
+
+    &:disabled,
+    &:disabled:hover {
+      background: rgba(156, 163, 175, 0.85);
+      color: rgba(75, 85, 99, 0.85);
+    }
   }
 
   &.chat-expand-button {
