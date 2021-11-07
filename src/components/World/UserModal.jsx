@@ -345,37 +345,31 @@ const NothingInspect = ({ modalRef }) => (
     className="p-2  mx-auto  bg-gray-300 rounded-xl shadow-md   flex items-center space-x-4 z-20"
   >
     🔍??...
-    {/* <InspectCloseButton modalRef={modalRef} /> */}
   </div>
 );
-const Player = ({ player }) => {
-  console.log('player elem :>> ', player);
-  return (
-    <div className="text-left min-h-full  w-44 ">
-      <h1 className="font-semibold">This is {player.realName} :</h1>
-      <p>
-        {player.description === null || player.description.length === 0
-          ? 'A mystery...'
-          : player.description}
-      </p>
-    </div>
-  );
-};
-const LinkObjs = ({ linkObj }) => {
-  console.log('linkObj :>> ', linkObj);
-
-  return (
-    <div className="text-left min-w-full  w-44 ">
-      <a href={linkObj.url} className="font-semibold underline hover:underline">
-        {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
-      </a>
-      <p className="text-gray-500">linked by: {linkObj.userObj.realName}</p>
-    </div>
-  );
-};
+const Player = ({ player }) => (
+  <div className="text-left  w-44 ">
+    <h1 className="font-semibold">This is {player.realName} :</h1>
+    <p>
+      {player.description === null || player.description.length === 0
+        ? 'A mystery...'
+        : player.description}
+    </p>
+  </div>
+);
+const LinkObjs = ({ linkObj }) => (
+  <div className="text-left min-w-full  w-44 ">
+    <a href={linkObj.url} className="font-semibold underline hover:underline">
+      {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
+    </a>
+    <p className="text-gray-500">
+      linked by:
+      {linkObj.userObj.realName}
+    </p>
+  </div>
+);
 const InspectModal = ({ interactObjs, modalRef }) => {
   let elem = '';
-  console.log('interactObjs in insepct :>> ', interactObjs);
 
   if (interactObjs.length === 0) {
     elem = <NothingInspect modalRef={modalRef} />;
@@ -397,12 +391,10 @@ const InspectModal = ({ interactObjs, modalRef }) => {
     elem = (
       <div
         ref={modalRef}
-        className="p-2  mx-auto  flex bg-gray-300 rounded-xl shadow-md  min-w-full  space-x-4 z-20 break-words"
+        className="p-2  bg-gray-300 rounded-xl shadow-md  min-w-full  z-20 break-words"
       >
         {playersElems}
         {objElems}
-        {/* components for people, object previews */}
-        {/* <InspectCloseButton modalRef={modalRef} /> */}
       </div>
     );
   }
