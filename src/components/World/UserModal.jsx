@@ -348,7 +348,13 @@ const NothingInspect = ({ modalRef }) => (
 const Player = ({ player }) => (
   <div className="text-left  w-44 ">
 
-    <h1 className="font-semibold">This is {player.realName} :</h1>
+    <h1 className="font-semibold">
+      This is
+      {' '}
+      {player.realName}
+      {' '}
+      :
+    </h1>
     <p>
       {player.description === null || player.description.length === 0
         ? 'A mystery...'
@@ -358,11 +364,15 @@ const Player = ({ player }) => (
 );
 const LinkObjs = ({ linkObj }) => (
   <div className="text-left min-w-full  w-44 ">
-    <a href={linkObj.url} className="font-semibold underline hover:underline">
+    <a href={linkObj.url} target="_blank" className="font-semibold underline hover:underline" rel="noreferrer">
       {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
     </a>
 
-    <p className="text-gray-500">linked by: {linkObj.userObj.realName}</p>
+    <p className="text-gray-500">
+      linked by:
+      {' '}
+      {linkObj.userObj.realName}
+    </p>
 
   </div>
 );
