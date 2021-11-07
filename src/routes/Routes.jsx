@@ -8,17 +8,18 @@ import {
 } from 'react-router-dom';
 import { SocketContext, socket } from '../contexts/sockets.mjs';
 
+// wrappers
+import PrivateWrapper from './PrivateWrapper.jsx';
 // auth pages
 import Login from '../components/Login/LoginPage.jsx';
 import Register from '../components/Register/RegisterPage.jsx';
 // main pages
 import Index from '../components/Index/IndexPage.jsx';
-import GridElem from '../components/World/Grid.jsx';
 // error pages
 import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
-import Chat from '../components/Chat/Chat.jsx';
+import GridWrapper from '../components/World/GridWrapper.jsx';
 import Settings from '../components/Settings/SettingsPage.jsx';
 
 export const ContextRoute = ({
@@ -105,42 +106,6 @@ function NoNavbarWrapper({
   return <>{children}</>;
 }
 
-function PrivateWrapper({ isLoggedIn, children }) {
-  if (!isLoggedIn) {
-    return <Redirect to="/" />;
-  }
-
-  return children;
-}
-
-function Grid({
-  handleChatFocused,
-  handleChatUnfocused,
-  isChatFocused,
-  isLoggedIn,
-}) {
-  return (
-    <PrivateWrapper isLoggedIn={isLoggedIn}>
-      <div className="pt-5 main-wrapper">
-        <div className="mt-1 main-container">
-          <div className="grid-wrapper">
-            <GridElem isChatFocused={isChatFocused} room={1} />
-          </div>
-          <div className="chat-wrapper">
-            <Chat
-              handleChatFocused={handleChatFocused}
-              handleChatUnfocused={handleChatUnfocused}
-              socket={socket}
-              username="Some Test"
-              room={1}
-            />
-          </div>
-        </div>
-      </div>
-    </PrivateWrapper>
-  );
-}
-
 export default function Routes({
   username,
   realName,
@@ -163,7 +128,7 @@ export default function Routes({
           exact
           path="/world"
           contextComponent={SocketContext}
-          component={Grid}
+          component={GridWrapper}
           handleChatFocused={handleChatFocused}
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
