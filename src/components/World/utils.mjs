@@ -24,7 +24,9 @@ export function Room(x, y, id, name) {
   this.name = name;
   this.id = id;
 }
-export function ActiveObj(x, y, url, title = '') {
+export function ActiveObj(x, y, url, userObj, title = '') {
+  // add owner
+  this.userObj = userObj;
   this.x = x;
   this.y = y;
   this.url = url;
@@ -82,6 +84,8 @@ export function hexPalette(numColors, saturation, lightness) {
   return colors;
 }
 export const tailWindCol400 = ['#9CA3AF', '#F87171', '#FBBF24', '#34D399', '#60A5FA', '#818CF8', '#A78BFA', '#F472B6', ''];
+
+export const tailWindCol700 = ['#374151', '#B91C1C', '#B45309', '#047857', '#1D4ED8', '#4338CA', '#6D28D9', '#BE185D'];
 
 export const tailWindCol200 = ['#E5E7EB', '#FECACA', '#FDE68A', '#A7F3D0', '#BFDBFE', '#C7D2FE', '#DDD6FE', '#FBCFE8', ''];
 

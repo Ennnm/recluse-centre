@@ -12,7 +12,7 @@ import {
   faArrowRight,
   faEraser,
 } from '@fortawesome/free-solid-svg-icons';
-import { tailWindCol400, faviconFromSite, validURL } from './utils.mjs';
+import { tailWindCol400, tailWindCol700, validURL } from './utils.mjs';
 
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>
@@ -95,11 +95,10 @@ const ToolsModal = ({
   return (
     <div
       ref={modalRef}
-      className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-10"
+      className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
     >
       <div className="flex ">
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
-        {/* <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} /> */}
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <UrlTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <EraserTool
@@ -137,6 +136,18 @@ const CloseButton = ({ setBuildTool, setToolSetting, modalRef }) => (
       modalRef.current.style.display = 'none';
       setBuildTool({ tool: '' });
       setToolSetting({ tool: '' });
+    }}
+  >
+    <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faTimes} />
+  </button>
+);
+const InspectCloseButton = ({ modalRef }) => (
+  // eslint-disable-next-line jsx-a11y/control-has-associated-label
+  <button
+    className="h-12 w-12 border-2 m-2 border-gray-400 m-2 rounded"
+    type="button"
+    onClick={() => {
+      modalRef.current.style.display = 'none';
     }}
   >
     <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faTimes} />
@@ -327,76 +338,161 @@ const UrlFillForm = ({
     </div>
   );
 };
+
+const NothingInspect = ({ modalRef }) => (
+  <div
+    ref={modalRef}
+    className="p-2  mx-auto  bg-gray-300 rounded-xl shadow-md   flex items-center space-x-4 z-20"
+  >
+    🔍??...
+    {/* <InspectCloseButton modalRef={modalRef} /> */}
+  </div>
+);
+const Player = ({ player }) => {
+  console.log('player elem :>> ', player);
+  return (
+    <div className="text-left min-h-full  w-44 ">
+      <h1 className="font-semibold">This is {player.realName} :</h1>
+      <p>
+        {player.description === null || player.description.length === 0
+          ? 'A mystery...'
+          : player.description}
+      </p>
+    </div>
+  );
+};
+const LinkObjs = ({ linkObj }) => {
+  console.log('linkObj :>> ', linkObj);
+
+  return (
+    <div className="text-left min-w-full  w-44 ">
+      <a href={linkObj.url} className="font-semibold underline hover:underline">
+        {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
+      </a>
+      <p className="text-gray-500">linked by: {linkObj.userObj.realName}</p>
+    </div>
+  );
+};
+const InspectModal = ({ interactObjs, modalRef }) => {
+  let elem = '';
+  console.log('interactObjs in insepct :>> ', interactObjs);
+
+  if (interactObjs.length === 0) {
+    elem = <NothingInspect modalRef={modalRef} />;
+  } else {
+    // get list of objects
+    const objects = interactObjs.filter((x) => 'url' in x);
+    // get list of players
+    const players = interactObjs.filter((x) => 'realName' in x);
+    const playersElems = players.map((player) => (
+      <Player key={`p${player.id}`} player={player} />
+    ));
+
+    const objElems = objects.map((link, i) => (
+      <LinkObjs key={`l${i.toString()}`} linkObj={link} />
+    ));
+
+    console.log('objects in inspect:>> ', objects);
+    console.log('players in inspect :>> ', players);
+    elem = (
+      <div
+        ref={modalRef}
+        className="p-2  mx-auto  flex bg-gray-300 rounded-xl shadow-md  min-w-full  space-x-4 z-20 break-words"
+      >
+        {playersElems}
+        {objElems}
+        {/* components for people, object previews */}
+        {/* <InspectCloseButton modalRef={modalRef} /> */}
+      </div>
+    );
+  }
+  return elem;
+  // objectData or person data
+};
+
 const Modal = ({
   toolSetting,
   setToolSetting,
+  buildTool,
   setBuildTool,
   setInputTxtFocused,
+  interactMode,
+  modalDisplay,
 }) => {
+  console.log('interactMode :>> ', interactMode);
+  console.log('buildTool :>> ', buildTool);
   // when tool change, rerun happens
   const modalRef = useRef(null);
   let elem = <></>;
   const currentTool = toolSetting.tool;
-  if (currentTool === '') {
-    elem = (
-      <ToolsModal
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
-  } else if (currentTool === 'wall') {
-    elem = (
-      <WallPalette
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
-  } else if (currentTool === 'charFill') {
-    console.log('charfill tool');
-    elem = (
-      <CharFillForm
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-        setInputTxtFocused={setInputTxtFocused}
-      />
-    );
-  } else if (currentTool === 'url') {
-    console.log('url tool');
-    elem = (
-      <UrlFillForm
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-        setInputTxtFocused={setInputTxtFocused}
-      />
-    );
-  } else if (currentTool === 'erase') {
-    console.log('erase tool');
+  if (modalDisplay === 'interact') {
+    elem = <InspectModal interactObjs={interactMode} modalRef={modalRef} />;
+  }
+  if (modalDisplay === 'build') {
+    if (currentTool === '') {
+      elem = (
+        <ToolsModal
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    } else if (currentTool === 'wall') {
+      elem = (
+        <WallPalette
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    } else if (currentTool === 'charFill') {
+      console.log('charfill tool');
+      elem = (
+        <CharFillForm
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+          setInputTxtFocused={setInputTxtFocused}
+        />
+      );
+    } else if (currentTool === 'url') {
+      console.log('url tool');
+      elem = (
+        <UrlFillForm
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+          setInputTxtFocused={setInputTxtFocused}
+        />
+      );
+    } else if (currentTool === 'erase') {
+      console.log('erase tool');
 
-    elem = (
-      <EraseMode
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
+      elem = (
+        <EraseMode
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    }
   }
 
   return elem;
 };
 
 export default function UserModal({
+  userSquare,
+  buildTool,
   setBuildTool,
   setInputTxtFocused,
-  userSquare,
+  interactMode,
+  modalDisplay,
 }) {
   const [toolSetting, setToolSetting] = useState({
     tool: '',
@@ -408,20 +504,24 @@ export default function UserModal({
   });
   return (
     <div
-      className="translate-y-16 "
+      className=""
       ref={userSquare}
       style={{
         // display: 'none',
         visibility: 'hidden',
         position: 'absolute',
-        top: '-200%',
+        // top: '-200%',
+        transform: 'translate(0%, -100%)',
       }}
     >
       <Modal
+        buildTool={buildTool}
         setBuildTool={setBuildTool}
         toolSetting={toolSetting}
         setToolSetting={setToolSetting}
         setInputTxtFocused={setInputTxtFocused}
+        interactMode={interactMode}
+        modalDisplay={modalDisplay}
       />
     </div>
   );

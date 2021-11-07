@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useRef } from 'react';
@@ -16,10 +17,12 @@ const clickOnCell = (obj) => {
 };
 
 const clickOnPlayer = (player) => {
-  console.log(`This is player ${player.id}: ${player.realName}`);
+  console.log(
+    `This is player ${player.id}: ${player.realName}\nDescription: ${player.description}`
+  );
 };
 
-const buildOnCell = (index, world, setWorld, buildTool, socket) => {
+const buildOnCell = (index, world, setWorld, buildTool, socket, userObj) => {
   const row = rowFromIndex(index);
   const col = colFromIndex(index);
 
@@ -37,7 +40,13 @@ const buildOnCell = (index, world, setWorld, buildTool, socket) => {
   } else if (buildTool.tool === 'url') {
     // add to active cell not here
     if (buildTool.url.length > 0) {
-      const activeObj = new ActiveObj(col, row, buildTool.url, buildTool.title);
+      const activeObj = new ActiveObj(
+        col,
+        row,
+        buildTool.url,
+        userObj,
+        buildTool.title
+      );
       world.worldState.activeObjCells.push(activeObj);
     }
   } else if (buildTool.tool === 'erase') {
@@ -62,13 +71,14 @@ const BlankSquare = ({
   buildTool,
   buildToolType,
   socket,
+  userObj,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
   <div
     className="cell gridBorder"
     onClick={() => {
       if (buildToolType !== '') {
-        buildOnCell(index, world, setWorld, buildTool, socket);
+        buildOnCell(index, world, setWorld, buildTool, socket, userObj);
       }
     }}
   />
@@ -81,6 +91,7 @@ const ObjectSquare = ({
   buildTool,
   buildToolType,
   socket,
+  userObj,
 }) => {
   console.log('rendering objsq');
 
@@ -93,7 +104,7 @@ const ObjectSquare = ({
         if (buildToolType === '') {
           clickOnCell(obj);
         } else {
-          buildOnCell(index, world, setWorld, buildTool, socket);
+          buildOnCell(index, world, setWorld, buildTool, socket, userObj);
         }
       }}
       key={`active${index}`}
@@ -101,21 +112,38 @@ const ObjectSquare = ({
     />
   );
 };
-const UserSquare = ({
-  buildToolType,
+
+const NameTag = ({ name }) => (
+  <div
+    className="absolute  z-10 font-sans font-semibold bg-gray-300 px-2 rounded-full border-2"
+    style={{
+      top: '100%',
+      left: '50%',
+      transform: 'translate(-50%, 0%)',
+      // backgroundColor: '#58566f',
+    }}
+  >
+    {name}
+  </div>
+);
+const PlayerSquare = ({
+  clientId,
   userSquare,
   player,
+  buildTool,
   setBuildTool,
   setInputTxtFocused,
+  interactMode,
+  modalDisplay,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+
   <div
     onClick={() => {
-      if (buildToolType === '') {
+      if (buildTool.type === '') {
         clickOnPlayer(player);
       }
     }}
-    // ref={userSquare}
     type="image"
     className="cell gridBorder"
     style={{
@@ -126,73 +154,31 @@ const UserSquare = ({
       position: 'relative',
     }}
   >
-    <UserModal
-      userSquare={userSquare}
-      setBuildTool={setBuildTool}
-      setInputTxtFocused={setInputTxtFocused}
-      userSquare={userSquare}
-    />
+    {clientId === player.id && (
+      <UserModal
+        buildTool={buildTool}
+        userSquare={userSquare}
+        setBuildTool={setBuildTool}
+        setInputTxtFocused={setInputTxtFocused}
+        interactMode={interactMode}
+        modalDisplay={modalDisplay}
+      />
+    )}
     <NameTag name={player.realName} />
   </div>
 );
-
-const NameTag = ({ name }) => {
-  console.log('in name tag', name);
-  return (
-    <div
-      className="absolute  z-10 font-sans font-semibold bg-gray-300 px-2 rounded-full border-2"
-      style={{
-        top: '100%',
-        left: '50%',
-        transform: 'translate(-50%, 0%)',
-        // backgroundColor: '#58566f',
-      }}
-    >
-      {name}
-    </div>
-  );
-};
-const PlayerSquare = ({
-  buildToolType,
-  player,
-  index,
-  world,
-  setWorld,
-  buildTool,
-  socket,
-}) => (
-  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-  <div
-    onClick={() => {
-      if (buildToolType === '' || buildToolType !== undefined) {
-        clickOnPlayer(player);
-      } else {
-        buildOnCell(index, world, setWorld, buildTool, socket);
-      }
-    }}
-    type="image"
-    className="cell gridBorder relative  "
-    style={{
-      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-        player.id + 1
-      }.svg")`,
-      cursor: 'pointer',
-    }}
-  >
-    <NameTag name={player.realName} />
-  </div>
-);
-
 export default function Square({
   actObj,
   index,
-  userId,
+  userObj,
   userSquare,
   world,
   setWorld,
   buildTool,
   setBuildTool,
   setInputTxtFocused,
+  interactMode,
+  modalDisplay,
 }) {
   const buildToolType = buildTool.tool;
   const socket = useContext(SocketContext);
@@ -202,87 +188,44 @@ export default function Square({
     <BlankSquare
       index={index}
       world={world}
+      userObj={userObj}
       setWorld={setWorld}
       buildTool={buildTool}
       buildToolType={buildToolType}
       socket={socket}
+      interactMode={interactMode}
     />
   );
-  if (actObj !== null) {
+  if (actObj !== null && actObj !== undefined) {
     if ('url' in actObj) {
       fill = (
         <ObjectSquare
           obj={actObj}
           index={index}
           world={world}
+          userObj={userObj}
           setWorld={setWorld}
           buildTool={buildTool}
           buildToolType={buildToolType}
           socket={socket}
+          interactMode={interactMode}
         />
-      );
-    } else if ('id' in actObj && actObj.id === userId) {
-      fill = (
-        <UserSquare
-          buildToolType={buildToolType}
-          userSquare={userSquare}
-          player={actObj}
-          setBuildTool={setBuildTool}
-          setInputTxtFocused={setInputTxtFocused}
-        />
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       );
     } else {
       fill = (
         <PlayerSquare
-          buildToolType={buildToolType}
-          player={actObj}
-          index={index}
-          world={world}
-          setWorld={setWorld}
+          clientId={userObj.id}
           buildTool={buildTool}
-          socket={socket}
+          userSquare={userSquare}
+          player={actObj}
+          setBuildTool={setBuildTool}
+          setInputTxtFocused={setInputTxtFocused}
+          userObj={userObj}
+          interactMode={interactMode}
+          modalDisplay={modalDisplay}
         />
       );
     }
   }
-  // if (typeof actObj === 'object') {
-  //   fill = (
-  //     <ObjectSquare
-  //       obj={actObj}
-  //       index={index}
-  //       world={world}
-  //       setWorld={setWorld}
-  //       buildTool={buildTool}
-  //       buildToolType={buildToolType}
-  //       socket={socket}
-  //     />
-  //   );
-  // } else if (actObj === userId) {
-  //   fill = (
-  //     <UserSquare
-  //       buildToolType={buildToolType}
-  //       userSquare={userSquare}
-  //       player={actObj}
-  //       setBuildTool={setBuildTool}
-  //       setInputTxtFocused={setInputTxtFocused}
-  //     />
-  //     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-  //   );
-  // } else {
-  //   fill = (
-  //     <PlayerSquare
-  //       buildToolType={buildToolType}
-  //       player={actObj}
-  //       index={index}
-  //       world={world}
-  //       setWorld={setWorld}
-  //       buildTool={buildTool}
-  //       socket={socket}
-  //     />
-  //   );
-  // }
-  // }
-
   return fill;
 }

@@ -6,12 +6,14 @@ export default function GridSquares({
   activeCells,
   playersPositions,
   userSquare,
-  userId,
+  userObj,
   world,
   setWorld,
   buildTool,
   setBuildTool,
   setInputTxtFocused,
+  interactMode,
+  modalDisplay,
 }) {
   const activeObjGrid = playersPositions.map((arr) => arr.slice());
   activeCells.forEach((activity) => {
@@ -29,13 +31,15 @@ export default function GridSquares({
       index={i}
       key={`sq${i.toString()}`}
       actObj={actObj}
-      userId={userId}
+      userObj={userObj}
       userSquare={userSquare}
       world={world}
       setWorld={setWorld}
       buildTool={buildTool}
       setBuildTool={setBuildTool}
       setInputTxtFocused={setInputTxtFocused}
+      interactMode={interactMode}
+      modalDisplay={modalDisplay}
     />
   ));
   return (

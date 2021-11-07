@@ -8,9 +8,11 @@ function World(id) {
   this.playerPositions = [];
   this.playerSocketIds = [];
 }
-function SocketUser(userId, realName, socketId) {
+function SocketUser(userId, realName, description, socketId) {
   this.id = userId,
   this.realName = realName;
+  this.description = this.description;
+
   this.socketId = socketId;
 }
 
@@ -27,7 +29,7 @@ const gridFromPlayerPositions = (playerPositions) => {
 export default function registerGridHandlers(io, socket) {
   // payload is the message
   const joinGrid = async ({
-    userId, realName, worldId, userPosition,
+    userId, realName, description, worldId, userPosition,
   }) => {
     console.log('JoinuserId :>> ', userId);
     console.log('worldId :>> ', worldId);
@@ -38,9 +40,9 @@ export default function registerGridHandlers(io, socket) {
     const { playerGrid, playerSocketIds } = worldFromId;
 
     console.log('userPosition :>> ', userPosition);
-    playerGrid[userPosition.y][userPosition.x] = { id: userId, realName };
+    playerGrid[userPosition.y][userPosition.x] = { id: userId, realName, description };
 
-    playerSocketIds.push(new SocketUser(userId, realName, socket.id));
+    playerSocketIds.push(new SocketUser(userId, realName, description, socket.id));
 
     socket.join(`${WORLDHEADER}${worldId}`);
     io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
@@ -71,7 +73,7 @@ export default function registerGridHandlers(io, socket) {
     else {
       console.log('user :>> ', user);
       playerPositions.push({
-        id: user.id, realName: user.realName, x, y,
+        id: user.id, realName: user.realName, description: user.description, x, y,
       });
     }
     // server side compilation
