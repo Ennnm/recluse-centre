@@ -30,30 +30,6 @@ module.exports = merge(common, {
           },
         },
       },
-      {
-        test: /\.(scss|pcss|postcss|css)$/i,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: [
-                  [
-                    'postcss-preset-env',
-                    {
-                      tailwindcss: {},
-                      autoprefixer: {},
-                      // Options
-                    },
-                  ],
-                ],
-              },
-            },
-          },
-        ],
-      },
     ],
   },
 });
