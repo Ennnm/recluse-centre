@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, react/prop-types */
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, {
+  useState, useEffect, useContext, useRef,
+} from 'react';
 import axios from 'axios';
 import { numCols, numRows, genGridArray } from './utils.mjs';
 import { SocketContext } from '../../contexts/sockets.mjs';
@@ -88,6 +90,7 @@ export default function ActiveObjPlayerGrid({
   const [userObj, setUserObj] = useState({
     id: userId,
     realName: '',
+    username: '',
     description: '',
   });
   const userSquare = useRef('');
@@ -109,8 +112,9 @@ export default function ActiveObjPlayerGrid({
       }
     }
   };
-  const getAdjCells = () =>
-    directions.map((dir) => squareInDirection(userPosition, dir[0], dir[1]));
+  const getAdjCells = () => directions.map(
+    (dir) => squareInDirection(userPosition, dir[0], dir[1]),
+  );
 
   const getAdjacentPlayers = () => {
     const adjCells = getAdjCells().filter((x) => x !== null);
@@ -133,14 +137,14 @@ export default function ActiveObjPlayerGrid({
     const movedLocation = squareInDirection(
       userPosition,
       direction[0],
-      direction[1]
+      direction[1],
     );
     if (movedLocation !== null) {
       movePlayer(
         movedLocation[0],
         movedLocation[1],
         userPosition.x,
-        userPosition.y
+        userPosition.y,
       );
     }
   };
@@ -193,8 +197,7 @@ export default function ActiveObjPlayerGrid({
   };
   const handleInteractKey = () => {
     const userSqDisplay = userSquare.current.style.visibility;
-    userSquare.current.style.visibility =
-      userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+    userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
     // openInteractiveObj();
     // interactWPlayer();
     const adjPlayers = adjPlayersNotSelf();
@@ -206,8 +209,7 @@ export default function ActiveObjPlayerGrid({
   };
   const handleBuildKey = () => {
     const userSqDisplay = userSquare.current.style.visibility;
-    userSquare.current.style.visibility =
-      userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+    userSquare.current.style.visibility = userSqDisplay === 'hidden' ? 'visible' : 'hidden';
     setModalDisplay('build');
   };
   const handlePlayersPositions = (playerPos) => {
@@ -231,7 +233,7 @@ export default function ActiveObjPlayerGrid({
       .get(`/user/${userId}`)
       .then((response) => {
         const user = response.data;
-        const { realName, description } = user;
+        const { realName, description, username } = user;
         setUserObj(user);
         // SOCKETS
         console.log('user :>> ', user);
@@ -239,6 +241,7 @@ export default function ActiveObjPlayerGrid({
         socket.emit('grid:join', {
           userId,
           realName,
+          username,
           description,
           worldId,
           userPosition,

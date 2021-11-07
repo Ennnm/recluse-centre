@@ -18,8 +18,8 @@ const validateUserName = (userInfo, type) => {
     } else {
       obj.username_invalid = 'Please enter a valid username.';
     }
-  } else if (userInfo.username.length < 6 || userInfo.username.length > 30) {
-    obj.username_invalid = 'Your username should only be 6 to 30 characters long.';
+  } else if (userInfo.username.length < 1 || userInfo.username.length > 30) {
+    obj.username_invalid = 'Your username should only be 1 to 30 characters long.';
   } else if (userInfo.username.search(regex) === -1) {
     if (type === 'signup') {
       obj.username_invalid = 'Your username should only include numbers, lowercase alphabets, and/or underscores.';
