@@ -16,7 +16,7 @@ const clickOnCell = (obj) => {
   window.open(obj.url);
 };
 
-const clickOnPlayer = (player) => {
+const clickOnActive = (player) => {
   console.log(
     `This is player ${player.id}: ${player.realName}\nDescription: ${player.description}`
   );
@@ -92,6 +92,7 @@ const ObjectSquare = ({
   buildToolType,
   socket,
   userObj,
+  userSquare,
 }) => {
   console.log('rendering objsq');
 
@@ -141,7 +142,7 @@ const PlayerSquare = ({
   <div
     onClick={() => {
       if (buildTool.type === '') {
-        clickOnPlayer(player);
+        clickOnActive(player);
       }
     }}
     type="image"
@@ -209,6 +210,7 @@ export default function Square({
           buildToolType={buildToolType}
           socket={socket}
           interactMode={interactMode}
+          userSquare={userSquare}
         />
       );
     } else {
