@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
-import './styles.scss';
+import 'bootstrap/scss/bootstrap.scss';
 import 'tailwindcss/tailwind.css';
+import './styles.scss';
 
 import App from './App.jsx';
 
