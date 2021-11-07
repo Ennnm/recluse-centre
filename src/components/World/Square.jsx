@@ -18,7 +18,7 @@ const clickOnCell = (obj) => {
 
 const clickOnActive = (player) => {
   console.log(
-    `This is player ${player.id}: ${player.realName}\nDescription: ${player.description}`
+    `This is player ${player.id}: ${player.realName}\nDescription: ${player.description}`,
   );
 };
 
@@ -45,7 +45,7 @@ const buildOnCell = (index, world, setWorld, buildTool, socket, userObj) => {
         row,
         buildTool.url,
         userObj,
-        buildTool.title
+        buildTool.title,
       );
       world.worldState.activeObjCells.push(activeObj);
     }
@@ -136,26 +136,28 @@ const PlayerSquare = ({
   setInputTxtFocused,
   interactMode,
   modalDisplay,
-}) => (
+}) => {
+  console.log('player info:');
+  console.log(player);
+  return (
   // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-
-  <div
-    onClick={() => {
-      if (buildTool.type === '') {
-        clickOnActive(player);
-      }
-    }}
-    type="image"
-    className="cell gridBorder"
-    style={{
-      backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
-        player.id + 1
-      }.svg")`,
-      cursor: 'pointer',
-      position: 'relative',
-    }}
-  >
-    {clientId === player.id && (
+    <div
+      onClick={() => {
+        if (buildTool.type === '') {
+          clickOnActive(player);
+        }
+      }}
+      type="image"
+      className="cell gridBorder"
+      style={{
+        backgroundImage: `url("https://avatars.dicebear.com/api/big-smile/${
+          player.id + 1
+        }.svg")`,
+        cursor: 'pointer',
+        position: 'relative',
+      }}
+    >
+      {clientId === player.id && (
       <UserModal
         buildTool={buildTool}
         userSquare={userSquare}
@@ -164,10 +166,10 @@ const PlayerSquare = ({
         interactMode={interactMode}
         modalDisplay={modalDisplay}
       />
-    )}
-    <NameTag name={player.realName} />
-  </div>
-);
+      )}
+      <NameTag name={player.username} />
+    </div>
+  ); };
 export default function Square({
   actObj,
   index,

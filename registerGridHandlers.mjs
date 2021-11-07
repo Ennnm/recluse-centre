@@ -8,10 +8,11 @@ function World(id) {
   this.playerPositions = [];
   this.playerSocketIds = [];
 }
-function SocketUser(userId, realName, description, socketId) {
-  this.id = userId,
+function SocketUser(userId, realName, username, description, socketId) {
+  this.id = userId;
   this.realName = realName;
-  this.description = this.description;
+  this.username = username;
+  this.description = description;
 
   this.socketId = socketId;
 }
@@ -29,7 +30,7 @@ const gridFromPlayerPositions = (playerPositions) => {
 export default function registerGridHandlers(io, socket) {
   // payload is the message
   const joinGrid = async ({
-    userId, realName, description, worldId, userPosition,
+    userId, realName, username, description, worldId, userPosition,
   }) => {
     console.log('JoinuserId :>> ', userId);
     console.log('worldId :>> ', worldId);
@@ -40,9 +41,11 @@ export default function registerGridHandlers(io, socket) {
     const { playerGrid, playerSocketIds } = worldFromId;
 
     console.log('userPosition :>> ', userPosition);
-    playerGrid[userPosition.y][userPosition.x] = { id: userId, realName, description };
+    playerGrid[userPosition.y][userPosition.x] = {
+      id: userId, realName, username, description,
+    };
 
-    playerSocketIds.push(new SocketUser(userId, realName, description, socket.id));
+    playerSocketIds.push(new SocketUser(userId, realName, username, description, socket.id));
 
     socket.join(`${WORLDHEADER}${worldId}`);
     io.to(`${WORLDHEADER}${worldId}`).emit('PLAYER_POSITIONS', playerGrid);
@@ -69,11 +72,17 @@ export default function registerGridHandlers(io, socket) {
       player[0].x = x;
       player[0].y = y;
       player[0].realName = user.realName;
+      player[0].username = user.username;
     }
     else {
       console.log('user :>> ', user);
       playerPositions.push({
-        id: user.id, realName: user.realName, description: user.description, x, y,
+        id: user.id,
+        realName: user.realName,
+        username: user.username,
+        description: user.description,
+        x,
+        y,
       });
     }
     // server side compilation
