@@ -19,6 +19,7 @@ import Error404 from '../components/Error/Error404Page.jsx';
 // others
 import EditWorld from '../components/World/EditWorld.jsx';
 import Chat from '../components/Chat/Chat.jsx';
+import Settings from '../components/Settings/SettingsPage.jsx';
 
 export const ContextRoute = ({
   contextComponent,
@@ -141,6 +142,10 @@ function Grid({
 }
 
 export default function Routes({
+  username,
+  realName,
+  userId,
+  description,
   handleChatFocused,
   handleChatUnfocused,
   handleSetNavbar,
@@ -203,6 +208,25 @@ export default function Routes({
               handleSetNavbar={handleSetNavbar}
             >
               <Register isLoggedIn={isLoggedIn} />
+            </NavbarWrapper>
+          )}
+        />
+        <Route
+          path="/settings"
+          render={() => (
+            <NavbarWrapper
+              isAuthPage={false}
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <PrivateWrapper isLoggedIn={isLoggedIn}>
+                <Settings
+                  prevUsername={username}
+                  prevRealName={realName}
+                  prevDescription={description}
+                  userId={userId}
+                />
+              </PrivateWrapper>
             </NavbarWrapper>
           )}
         />

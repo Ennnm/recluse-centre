@@ -8,6 +8,7 @@ const expireSession = (response) => {
   response.clearCookie('userSession');
   response.clearCookie('realName');
   response.clearCookie('session');
+  response.clearCookie('description');
   response.redirect('/sessionexpired');
 };
 
@@ -34,14 +35,18 @@ const auth = (db) => async (request, response, next) => {
   if (request.cookies.session) {
     cookies.push(request.cookies.session);
   }
+  if (request.cookies.description) {
+    cookies.push(request.cookies.description);
+  }
 
   // check to see if the cookies you need exists
-  if (cookies.length === 6) {
+  if (cookies.length === 7) {
     // get the hashed value that should be inside the cookie
     const hash = getHash(request.cookies.userId);
     const hashedUsername = getHash(request.cookies.username);
-    const { realName } = request.cookies;
+    const { realName, description } = request.cookies;
     const realNameSpaced = (typeof request.cookies.realName === 'string') ? request.cookies.realName.split('%20').join(' ') : realName;
+    const descriptionSpaced = (typeof request.cookies.description === 'string') ? request.cookies.description.split('%20').join(' ') : description;
     const hashedRealname = getHash(realNameSpaced);
 
     // test the value of the cookie
@@ -59,6 +64,7 @@ const auth = (db) => async (request, response, next) => {
             { id: request.cookies.userId },
             { realName: realNameSpaced },
             { username: request.cookies.username },
+            { description: descriptionSpaced },
           ],
         },
         attributes: { exclude: ['password'] },

@@ -22,6 +22,7 @@ export const hasLoginCookie = () => {
     && getCookie('userId').trim() === ''
     && getCookie('realName').trim() === ''
     && getCookie('username').trim() === ''
+    && getCookie('description').trim() === ''
   ) {
     return false;
   }
