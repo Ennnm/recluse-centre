@@ -52,7 +52,6 @@ module.exports = merge(common, {
               },
             },
           },
-          'sass-loader',
         ],
       },
     ],
