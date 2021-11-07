@@ -24,7 +24,9 @@ export function Room(x, y, id, name) {
   this.name = name;
   this.id = id;
 }
-export function ActiveObj(x, y, url, title = '') {
+export function ActiveObj(x, y, url, userObj, title = '') {
+  // add owner
+  this.userObj = userObj;
   this.x = x;
   this.y = y;
   this.url = url;

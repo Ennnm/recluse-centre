@@ -95,11 +95,10 @@ const ToolsModal = ({
   return (
     <div
       ref={modalRef}
-      className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-10"
+      className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
     >
       <div className="flex ">
         <WallTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
-        {/* <RoomTool toolSetting={toolSetting} setToolSetting={setToolSetting} /> */}
         <CharFiller toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <UrlTool toolSetting={toolSetting} setToolSetting={setToolSetting} />
         <EraserTool
@@ -137,6 +136,18 @@ const CloseButton = ({ setBuildTool, setToolSetting, modalRef }) => (
       modalRef.current.style.display = 'none';
       setBuildTool({ tool: '' });
       setToolSetting({ tool: '' });
+    }}
+  >
+    <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faTimes} />
+  </button>
+);
+const InspectCloseButton = ({ modalRef }) => (
+  // eslint-disable-next-line jsx-a11y/control-has-associated-label
+  <button
+    className="h-12 w-12 border-2 m-2 border-gray-400 m-2 rounded"
+    type="button"
+    onClick={() => {
+      modalRef.current.style.display = 'none';
     }}
   >
     <FontAwesomeIcon className="text-3xl m-2 text-gray-500" icon={faTimes} />
@@ -327,76 +338,122 @@ const UrlFillForm = ({
     </div>
   );
 };
+const InspectModal = ({ interactObjs, modalRef }) => {
+  let elem = '';
+  console.log('interactObjs in insepct :>> ', interactObjs);
+
+  if (interactObjs.length === 0) {
+    elem = (
+      <div
+        ref={modalRef}
+        className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
+      >
+        <div className="flex ">
+          Nothing to inspect...
+          <InspectCloseButton modalRef={modalRef} />
+        </div>
+      </div>
+    );
+  } else {
+    elem = (
+      <div
+        ref={modalRef}
+        className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
+      >
+        <div className="flex ">
+          gsdggdsgsdgsgss
+          {/* components for people, object previews */}
+          <InspectCloseButton modalRef={modalRef} />
+        </div>
+      </div>
+    );
+  }
+  return elem;
+  // objectData or person data
+};
 const Modal = ({
   toolSetting,
   setToolSetting,
+  buildTool,
   setBuildTool,
   setInputTxtFocused,
+  interactMode,
+  modalDisplay,
 }) => {
+  console.log('interactMode :>> ', interactMode);
+  console.log('buildTool :>> ', buildTool);
   // when tool change, rerun happens
   const modalRef = useRef(null);
   let elem = <></>;
   const currentTool = toolSetting.tool;
-  if (currentTool === '') {
-    elem = (
-      <ToolsModal
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
-  } else if (currentTool === 'wall') {
-    elem = (
-      <WallPalette
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
-  } else if (currentTool === 'charFill') {
-    console.log('charfill tool');
-    elem = (
-      <CharFillForm
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-        setInputTxtFocused={setInputTxtFocused}
-      />
-    );
-  } else if (currentTool === 'url') {
-    console.log('url tool');
-    elem = (
-      <UrlFillForm
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-        setInputTxtFocused={setInputTxtFocused}
-      />
-    );
-  } else if (currentTool === 'erase') {
-    console.log('erase tool');
+  if (modalDisplay === 'interact') {
+    elem = <InspectModal interactObjs={interactMode} modalRef={modalRef} />;
+  }
+  if (modalDisplay === 'build') {
+    if (currentTool === '') {
+      elem = (
+        <ToolsModal
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    } else if (currentTool === 'wall') {
+      elem = (
+        <WallPalette
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    } else if (currentTool === 'charFill') {
+      console.log('charfill tool');
+      elem = (
+        <CharFillForm
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+          setInputTxtFocused={setInputTxtFocused}
+        />
+      );
+    } else if (currentTool === 'url') {
+      console.log('url tool');
+      elem = (
+        <UrlFillForm
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+          setInputTxtFocused={setInputTxtFocused}
+        />
+      );
+    } else if (currentTool === 'erase') {
+      console.log('erase tool');
 
-    elem = (
-      <EraseMode
-        setBuildTool={setBuildTool}
-        toolSetting={toolSetting}
-        setToolSetting={setToolSetting}
-        modalRef={modalRef}
-      />
-    );
+      elem = (
+        <EraseMode
+          setBuildTool={setBuildTool}
+          toolSetting={toolSetting}
+          setToolSetting={setToolSetting}
+          modalRef={modalRef}
+        />
+      );
+    }
   }
 
   return elem;
 };
 
 export default function UserModal({
+  userSquare,
+  buildTool,
   setBuildTool,
   setInputTxtFocused,
-  userSquare,
+  interactMode,
+  modalDisplay,
 }) {
   const [toolSetting, setToolSetting] = useState({
     tool: '',
@@ -418,10 +475,13 @@ export default function UserModal({
       }}
     >
       <Modal
+        buildTool={buildTool}
         setBuildTool={setBuildTool}
         toolSetting={toolSetting}
         setToolSetting={setToolSetting}
         setInputTxtFocused={setInputTxtFocused}
+        interactMode={interactMode}
+        modalDisplay={modalDisplay}
       />
     </div>
   );

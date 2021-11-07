@@ -67,7 +67,10 @@ export const ContextRoute = ({
 };
 
 function NavbarWrapper({
-  isAuthPage, setIsAuthPage, handleSetNavbar, children,
+  isAuthPage,
+  setIsAuthPage,
+  handleSetNavbar,
+  children,
 }) {
   useEffect(() => {
     handleSetNavbar();
@@ -79,15 +82,14 @@ function NavbarWrapper({
     }
   }, []);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
 
 function NoNavbarWrapper({
-  isAuthPage, setIsAuthPage, handleSetNoNavbar, children,
+  isAuthPage,
+  setIsAuthPage,
+  handleSetNoNavbar,
+  children,
 }) {
   useEffect(() => {
     handleSetNoNavbar();
@@ -99,11 +101,7 @@ function NoNavbarWrapper({
     }
   }, []);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
 
 function PrivateWrapper({ isLoggedIn, children }) {
@@ -115,7 +113,10 @@ function PrivateWrapper({ isLoggedIn, children }) {
 }
 
 function Grid({
-  handleChatFocused, handleChatUnfocused, isChatFocused, isLoggedIn,
+  handleChatFocused,
+  handleChatUnfocused,
+  isChatFocused,
+  isLoggedIn,
 }) {
   return (
     <PrivateWrapper isLoggedIn={isLoggedIn}>
@@ -135,9 +136,7 @@ function Grid({
           </div>
         </div>
       </div>
-
     </PrivateWrapper>
-
   );
 }
 
@@ -173,87 +172,79 @@ export default function Routes({
         <Route
           exact
           path={['/', '/home', '/main']}
-          render={
-            () => (
-              <NoNavbarWrapper
-                isAuthPage={false}
-                setIsAuthPage={setIsAuthPage}
-                handleSetNoNavbar={handleSetNoNavbar}
-              >
-                <Index isLoggedIn={isLoggedIn} />
-              </NoNavbarWrapper>
-            )
-          }
+          render={() => (
+            <NoNavbarWrapper
+              isAuthPage={false}
+              setIsAuthPage={setIsAuthPage}
+              handleSetNoNavbar={handleSetNoNavbar}
+            >
+              <Index isLoggedIn={isLoggedIn} />
+            </NoNavbarWrapper>
+          )}
         />
         <Route
           path="/edit"
-          render={
-            () => (
-              <NavbarWrapper
-                isAuthPage={false}
-                setIsAuthPage={setIsAuthPage}
-                handleSetNavbar={handleSetNavbar}
-              >
-                <EditWorld />
-              </NavbarWrapper>
-            )
-          }
+          render={() => (
+            <NavbarWrapper
+              isAuthPage={false}
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <EditWorld />
+            </NavbarWrapper>
+          )}
         />
         <Route
           path="/signup"
-          render={
-            () => (
-              <NavbarWrapper
-                isAuthPage
-                setIsAuthPage={setIsAuthPage}
-                handleSetNavbar={handleSetNavbar}
-              >
-                <Register isLoggedIn={isLoggedIn} />
-              </NavbarWrapper>
-            )
-          }
+          render={() => (
+            <NavbarWrapper
+              isAuthPage
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <Register isLoggedIn={isLoggedIn} />
+            </NavbarWrapper>
+          )}
         />
         <Route
           path="/login"
-          render={
-            () => (
-              <NavbarWrapper
-                isAuthPage
-                setIsAuthPage={setIsAuthPage}
-                handleSetNavbar={handleSetNavbar}
-              >
-                <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-              </NavbarWrapper>
-            )
-          }
+          render={() => (
+            <NavbarWrapper
+              isAuthPage
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            </NavbarWrapper>
+          )}
         />
         <Route
           path="/sessionexpired"
-          render={
-            () => (
-              <NavbarWrapper
-                isAuthPage
-                setIsAuthPage={setIsAuthPage}
-                handleSetNavbar={handleSetNavbar}
-              >
-                <Login sessionExpired isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-              </NavbarWrapper>
-            )
-          }
+          render={() => (
+            <NavbarWrapper
+              isAuthPage
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <Login
+                sessionExpired
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+              />
+            </NavbarWrapper>
+          )}
         />
         <Route
           path="*"
-          render={
-            () => (
-              <NavbarWrapper
-                isAuthPage={false}
-                setIsAuthPage={setIsAuthPage}
-                handleSetNavbar={handleSetNavbar}
-              >
-                <Error404 />
-              </NavbarWrapper>
-            )
-          }
+          render={() => (
+            <NavbarWrapper
+              isAuthPage={false}
+              setIsAuthPage={setIsAuthPage}
+              handleSetNavbar={handleSetNavbar}
+            >
+              <Error404 />
+            </NavbarWrapper>
+          )}
         />
       </Switch>
       {isJustLoggedOut && <Redirect to="/" />}

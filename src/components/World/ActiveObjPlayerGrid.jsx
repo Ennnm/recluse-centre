@@ -69,6 +69,7 @@ export default function ActiveObjPlayerGrid({
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
   const [buildTool, setBuildTool] = useState({
+    flag: false,
     tool: '',
     color: '',
     roomId: 0,
@@ -77,14 +78,17 @@ export default function ActiveObjPlayerGrid({
     url: '',
     title: '',
   });
+
+  const [interactMode, setInteractMode] = useState([]);
+  const [modalDisplay, setModalDisplay] = useState(null);
   const [isInputTxtFocused, setInputTxtFocused] = useState(false);
   const [activeCells, setActiveCells] = useState([]);
   const userId = getUserIdCookie();
 
   const [userObj, setUserObj] = useState({
     id: userId,
-    username: '',
     realName: '',
+    description: '',
   });
   const userSquare = useRef('');
 
@@ -141,13 +145,22 @@ export default function ActiveObjPlayerGrid({
     }
   };
 
-  const interactWPlayer = () => {
+  const adjPlayersNotSelf = () => {
     let adjPlayerCell = getAdjacentPlayers();
-    adjPlayerCell = adjPlayerCell.filter((player) => player !== userId);
+    adjPlayerCell = adjPlayerCell.filter((player) => player.id !== userId);
 
-    adjPlayerCell.forEach((player) => {
-      console.log(`adjacent to player ${player}`);
-    });
+    console.log('adjPlayerCell :>> ', adjPlayerCell);
+    console.log('interactWplyaer :>> ', interactMode);
+
+    // setInteractMode([...interactMode, ...adjPlayerCell]);
+
+    // adjPlayerCell.forEach((player) => {
+    //   console.log(
+    //     `adjacent to player ${player.realName}, description ${player.description}`
+    //   );
+    // });
+    return adjPlayerCell;
+    // reference to dialog sq that is triggered by E
   };
 
   const getActiveAdjCells = () => {
@@ -168,31 +181,46 @@ export default function ActiveObjPlayerGrid({
   const openInteractiveObj = () => {
     const activeAdjCells = getActiveAdjCells();
 
+    console.log('activeAdjCells :>> ', activeAdjCells);
+    console.log('interactMode :>> ', interactMode);
+
+    // setInteractMode([...interactMode, ...activeAdjCells]);
+
     activeAdjCells.forEach((cell) => {
-      window.open(cell.url);
+      console.log(`${cell.userObj.realName}: \n${cell.title}\n${cell.url}`);
+      // window.open(cell.url);
     });
   };
   const handleInteractKey = () => {
-    openInteractiveObj();
-    interactWPlayer();
+    const userSqDisplay = userSquare.current.style.visibility;
+    userSquare.current.style.visibility =
+      userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+    // openInteractiveObj();
+    // interactWPlayer();
+    const adjPlayers = adjPlayersNotSelf();
+    const adjActiveObjs = getActiveAdjCells();
+
+    setInteractMode([...interactMode, ...adjPlayers, ...adjActiveObjs]);
+
+    setModalDisplay('interact');
   };
   const handleBuildKey = () => {
     const userSqDisplay = userSquare.current.style.visibility;
     userSquare.current.style.visibility =
       userSqDisplay === 'hidden' ? 'visible' : 'hidden';
+    setModalDisplay('build');
   };
-
   const handlePlayersPositions = (playerPos) => {
     console.log('handling playing positions');
-    // console.log('playerPos :>> ', playerPos);
     // remove existing copy
-    // console.log('playerPos :>> ', playerPos);
-    playerPos = playerPos.map((row) =>
-      row.map((cell) => (cell !== null && cell.id === userId ? null : cell))
-    );
-    const { x, y } = userPosition;
-    console.log('userObj :>> ', userObj);
-    playerPos[y][x] = userObj;
+    // if (userObj.realName !== '') {
+    //   playerPos = playerPos.map((row) =>
+    //     row.map((cell) => (cell !== null && cell.id === userId ? null : cell))
+    //   );
+    //   const { x, y } = userPosition;
+    //   console.log('userObj :>> ', userObj);
+    //   playerPos[y][x] = userObj;
+    // }
 
     setPlayersPositions(playerPos);
   };
@@ -203,14 +231,15 @@ export default function ActiveObjPlayerGrid({
       .get(`/user/${userId}`)
       .then((response) => {
         const user = response.data;
-        const { realName } = user;
+        const { realName, description } = user;
         setUserObj(user);
         // SOCKETS
-        console.log('realName :>> ', realName);
+        console.log('user :>> ', user);
         console.log('userPosition :>> ', userPosition);
         socket.emit('grid:join', {
           userId,
           realName,
+          description,
           worldId,
           userPosition,
         });
@@ -227,8 +256,12 @@ export default function ActiveObjPlayerGrid({
       if (!isChatFocused && !isInputTxtFocused) {
         if (Object.keys(directionalKeys).includes(e.code)) {
           handleDirKeys(e.code);
+          // TODO FIGURE OUT INTERACT MODE
+          setInteractMode([]);
+          setModalDisplay(null);
           if (buildTool.tool !== '') {
             setBuildTool({
+              flag: false,
               tool: '',
               color: '',
               roomId: 0,
@@ -278,12 +311,14 @@ export default function ActiveObjPlayerGrid({
         activeCells={activeCells}
         playersPositions={playersPositions}
         userSquare={userSquare}
-        userId={userId}
+        userObj={userObj}
         world={world}
         setWorld={setWorld}
         buildTool={buildTool}
         setBuildTool={setBuildTool}
         setInputTxtFocused={setInputTxtFocused}
+        interactMode={interactMode}
+        modalDisplay={modalDisplay}
       />
     </>
   );
