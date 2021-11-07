@@ -5,7 +5,7 @@ import axios from 'axios';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Routes from './routes/Routes.jsx';
 // CUSTOM IMPORTS
-import { hasLoginCookie } from './modules/cookie.mjs';
+import { hasLoginCookie, getCookie } from './modules/cookie.mjs';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(hasLoginCookie());
@@ -13,6 +13,9 @@ export default function App() {
   const [hasNavbar, setHasNavbar] = useState(true);
   const [isAuthPage, setIsAuthPage] = useState(false);
   const [isJustLoggedOut, setIsJustLoggedOut] = useState(false);
+  const [username, setUsername] = useState(getCookie('username').trim());
+  const [realName, setRealName] = useState(getCookie('realName').trim().split('%20').join(' '));
+  const [userId, setUserId] = useState(Number(getCookie('userId').trim()));
 
   // need useEffect for this?
 
@@ -27,6 +30,9 @@ export default function App() {
         } else {
           setIsLoggedIn(false);
           setIsJustLoggedOut(true);
+          setUsername('');
+          setRealName('');
+          setUserId(0);
         }
       })
       .catch((error) => {
@@ -58,6 +64,9 @@ export default function App() {
   return (
     <>
       <Navbar
+        username={username}
+        userId={userId}
+        realName={realName}
         isLoggedIn={isLoggedIn}
         isAuthPage={isAuthPage}
         hasNavbar={hasNavbar}

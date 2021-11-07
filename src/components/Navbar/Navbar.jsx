@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Offcanvas, CloseButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCog } from '@fortawesome/free-solid-svg-icons';
 
 function NavbarButtons({ isLoggedIn, isAuthPage, handleLogoutSubmit }) {
   if (!isAuthPage) {
@@ -30,8 +30,36 @@ function NavbarButtons({ isLoggedIn, isAuthPage, handleLogoutSubmit }) {
   return null;
 }
 
+function NavbarProfile({
+  isLoggedIn, username, realName, userId,
+}) {
+  if (isLoggedIn) {
+    return (
+      <div className="offcanvas-body-bottom">
+        <a href="/settings" className="row d-flex align-items-center text-white text-decoration-none" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+          <div className="col-10 d-flex align-items-center">
+            <img src={`https://avatars.dicebear.com/api/big-smile/${userId + 1}.svg`} alt="" width="32" height="32" className="rounded-circle me-2" />
+            <p className="m-0 text-truncated-parent">
+              <strong>{realName}</strong>
+              {' '}
+              <span>
+                (
+                {username}
+                )
+              </span>
+            </p>
+          </div>
+          <div className="col-2 d-flex justify-content-end"><FontAwesomeIcon icon={faCog} /></div>
+        </a>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export default function Navbar({
-  isLoggedIn, isAuthPage, hasNavbar, handleLogoutSubmit,
+  username, realName, userId, isLoggedIn, isAuthPage, hasNavbar, handleLogoutSubmit,
 }) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
@@ -73,13 +101,21 @@ export default function Navbar({
             <CloseButton variant="white" onClick={handleCloseOffCanvas} />
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <ul className="nav nav-pills flex-column mb-auto">
-              <li className="nav-item">
-                <a href="/" className="nav-link text-white" aria-current="page">
-                  Home
-                </a>
-              </li>
-            </ul>
+            <div className="d-flex flex-column">
+              <ul className={`offcanvas-body-top nav nav-pills flex-column mb-auto${isLoggedIn ? ' is-logged-in' : ''}`}>
+                <li className="nav-item">
+                  <a href="/" className="nav-link text-white" aria-current="page">
+                    Home
+                  </a>
+                </li>
+              </ul>
+              <NavbarProfile
+                isLoggedIn={isLoggedIn}
+                username={username}
+                realName={realName}
+                userId={userId}
+              />
+            </div>
           </Offcanvas.Body>
         </Offcanvas>
       </>

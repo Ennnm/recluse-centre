@@ -61,10 +61,30 @@ body.index-body {
 .offcanvas-body {
   padding: 0;
   height: 100%;
+  overflow-y: hidden;
+}
+
+.offcanvas-body-top {
+  overflow-y: auto;
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+.offcanvas-body-top.is-logged-in {
+  height: calc(100% - 50px);
+}
+
+.offcanvas-body-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .offcanvas-body > div {
-  min-height: 100%;
+  height: 100%;
 }
 
 .offcanvas-body .nav-pills .nav-link {
