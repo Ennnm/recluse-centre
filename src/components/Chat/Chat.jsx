@@ -147,9 +147,25 @@ export default function Chat({
     });
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
-      setMessageList((list) => [...list, data]);
-      console.log('message received!');
-      console.log(data);
+      let message = {
+        ...data,
+      };
+
+      if (message.context === 'connected' || message.context === 'disconnected') {
+        const date = new Date(Date.now());
+        const hour = date.getHours();
+        const min = date.getMinutes();
+        const sec = date.getSeconds();
+        const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
+        const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+        const secFmt = (sec.toString().length === 1 ? `0${sec}` : `${sec}`);
+        message = {
+          ...message,
+          time: `${hourFmt}:${minFmt}:${secFmt}`,
+          date,
+        };
+      }
+      setMessageList((list) => [...list, message]);
     });
   }, [socket]);
 
