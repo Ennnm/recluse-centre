@@ -34,6 +34,9 @@ export const ContextRoute = ({
   handleSetNavbar,
   handleSetNoNavbar,
   setIsAuthPage,
+  username,
+  userId,
+  realName,
   ...rest
 }) => {
   const { Provider } = contextComponent;
@@ -58,6 +61,9 @@ export const ContextRoute = ({
     <Route {...rest}>
       <Provider value={socket}>
         <Component
+          username={username}
+          realName={realName}
+          userId={userId}
           handleChatFocused={handleChatFocused}
           handleChatUnfocused={handleChatUnfocused}
           isChatFocused={isChatFocused}
@@ -138,6 +144,9 @@ export default function Routes({
           handleSetNavbar={handleSetNavbar}
           handleSetNoNavbar={handleSetNoNavbar}
           setIsAuthPage={setIsAuthPage}
+          username={username}
+          realName={realName}
+          userId={userId}
         />
         <Route
           exact

@@ -1,18 +1,16 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 export default function Chat({
-  // eslint-disable-next-line react/prop-types
-  socket, username, room, handleChatFocused, handleChatUnfocused,
+  socket, username, userId, realName, room, handleChatFocused, handleChatUnfocused,
 }) {
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
   const [showChatBody, setShowChatBody] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react/prop-types
     socket.emit('chat:join', room);
-    // eslint-disable-next-line react/prop-types
     socket.on('chat:receive', (data) => {
       // set message list when RECEIVING a message
       setMessageList((list) => [...list, data]);
@@ -23,14 +21,20 @@ export default function Chat({
 
   const sendMessage = async () => {
     if (currentMessage.trim() !== '') {
+      const hour = new Date(Date.now()).getHours();
+      const min = new Date(Date.now()).getMinutes();
+      const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
+      const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
       const messageData = {
         room,
-        author: username,
+        username,
+        userId,
+        realName,
         message: currentMessage,
-        time: `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`,
+        time: `${hourFmt}:${minFmt}`,
+        context: 'message',
       };
 
-      // eslint-disable-next-line react/prop-types
       await socket.emit('chat:send', messageData);
       // set message list also when we SEND / EMIT our own message
       setMessageList((list) => [...list, messageData]);
@@ -58,16 +62,26 @@ export default function Chat({
       <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
         <ScrollToBottom className="message-container">
           {messageList.map((messageContent) => (
-            <div className="message" id={(username === messageContent.author ? 'you' : 'other')}>
+            <div className="message">
               <div>
                 <div className="message-content">
-                  <p>
-                    {messageContent.message}
+                  <p className="text-xs">
+                    <strong className={(userId === messageContent.userId ? 'text-yellow-200' : 'text-white')}>
+                      {messageContent.realName}
+                      {' '}
+                      &lt;
+                      {messageContent.username}
+                      &gt;:
+                    </strong>
+                    {' '}
+                    <span className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>{messageContent.message}</span>
+                    {' '}
+                    <em className={(userId === messageContent.userId ? 'text-yellow-100' : 'text-gray-200')}>
+                      [
+                      {messageContent.time}
+                      ]
+                    </em>
                   </p>
-                </div>
-                <div className="message-meta">
-                  <p id="time">{messageContent.time}</p>
-                  <p id="author">{messageContent.author}</p>
                 </div>
               </div>
             </div>
@@ -75,7 +89,7 @@ export default function Chat({
         </ScrollToBottom>
       </div>
       <div className="chat-footer">
-        <input type="text" className="chat-input" placeholder="Hey..." value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
+        <input type="text" className="chat-input" placeholder="Hey..." maxLength="640" value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
         <button type="button" className="chat-submit-button" onClick={sendMessage}>
           &#x27A4;
         </button>

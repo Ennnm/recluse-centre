@@ -46,6 +46,9 @@ function KeybindAlert({ showAlert, setShowAlert }) {
 }
 
 export default function GridWrapper({
+  username,
+  realName,
+  userId,
   handleChatFocused,
   handleChatUnfocused,
   isChatFocused,
@@ -65,7 +68,9 @@ export default function GridWrapper({
               handleChatFocused={handleChatFocused}
               handleChatUnfocused={handleChatUnfocused}
               socket={socket}
-              username="Some Test"
+              username={username}
+              realName={realName}
+              userId={userId}
               room={1}
             />
           </div>
