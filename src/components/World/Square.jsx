@@ -116,7 +116,7 @@ const ObjectSquare = ({
 
 const NameTag = ({ name }) => (
   <div
-    className="absolute  z-10 font-sans font-semibold bg-gray-300 px-2 rounded-full border-2"
+    className="absolute  z-10 font-sans font-semibold bg-gray-300 px-2 rounded-full border-2 whitespace-nowrap"
     style={{
       top: '100%',
       left: '50%',
@@ -167,7 +167,7 @@ const PlayerSquare = ({
         modalDisplay={modalDisplay}
       />
       )}
-      <NameTag name={player.username} />
+      <NameTag name={player.realName} />
     </div>
   ); };
 export default function Square({
