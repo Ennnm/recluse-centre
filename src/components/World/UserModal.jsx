@@ -338,39 +338,78 @@ const UrlFillForm = ({
     </div>
   );
 };
+
+const NothingInspect = ({ modalRef }) => (
+  <div
+    ref={modalRef}
+    className="p-2  mx-auto  bg-gray-300 rounded-xl shadow-md   flex items-center space-x-4 z-20"
+  >
+    🔍??...
+    {/* <InspectCloseButton modalRef={modalRef} /> */}
+  </div>
+);
+const Player = ({ player }) => {
+  console.log('player elem :>> ', player);
+  return (
+    <div className="text-left min-h-full  w-44 ">
+      <h1 className="font-semibold">This is {player.realName} :</h1>
+      <p>
+        {player.description === null || player.description.length === 0
+          ? 'A mystery...'
+          : player.description}
+      </p>
+    </div>
+  );
+};
+const LinkObjs = ({ linkObj }) => {
+  console.log('linkObj :>> ', linkObj);
+
+  return (
+    <div className="text-left min-w-full  w-44 ">
+      <a href={linkObj.url} className="font-semibold underline hover:underline">
+        {linkObj.title.length > 0 ? linkObj.title : linkObj.url}
+      </a>
+      <p className="text-gray-500">linked by: {linkObj.userObj.realName}</p>
+    </div>
+  );
+};
 const InspectModal = ({ interactObjs, modalRef }) => {
   let elem = '';
   console.log('interactObjs in insepct :>> ', interactObjs);
 
   if (interactObjs.length === 0) {
-    elem = (
-      <div
-        ref={modalRef}
-        className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
-      >
-        <div className="flex ">
-          Nothing to inspect...
-          <InspectCloseButton modalRef={modalRef} />
-        </div>
-      </div>
-    );
+    elem = <NothingInspect modalRef={modalRef} />;
   } else {
+    // get list of objects
+    const objects = interactObjs.filter((x) => 'url' in x);
+    // get list of players
+    const players = interactObjs.filter((x) => 'realName' in x);
+    const playersElems = players.map((player) => (
+      <Player key={`p${player.id}`} player={player} />
+    ));
+
+    const objElems = objects.map((link, i) => (
+      <LinkObjs key={`l${i.toString()}`} linkObj={link} />
+    ));
+
+    console.log('objects in inspect:>> ', objects);
+    console.log('players in inspect :>> ', players);
     elem = (
       <div
         ref={modalRef}
-        className="p-2 max-w-sm mx-auto  bg-gray-300 rounded-xl shadow-md  items-center space-x-4 z-20"
+        className="p-2  mx-auto  flex bg-gray-300 rounded-xl shadow-md  min-w-full  space-x-4 z-20 break-words"
       >
-        <div className="flex ">
-          gsdggdsgsdgsgss
-          {/* components for people, object previews */}
-          <InspectCloseButton modalRef={modalRef} />
-        </div>
+        {playersElems}
+        {objElems}
+        {/* components for people, object previews */}
+        {/* <InspectCloseButton modalRef={modalRef} /> */}
       </div>
     );
   }
   return elem;
   // objectData or person data
 };
+
 const Modal = ({
   toolSetting,
   setToolSetting,
@@ -465,13 +504,14 @@ export default function UserModal({
   });
   return (
     <div
-      className="translate-y-16 "
+      className=""
       ref={userSquare}
       style={{
         // display: 'none',
         visibility: 'hidden',
         position: 'absolute',
-        top: '-200%',
+        // top: '-200%',
+        transform: 'translate(0%, -100%)',
       }}
     >
       <Modal
