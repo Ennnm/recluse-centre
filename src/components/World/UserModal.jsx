@@ -12,7 +12,7 @@ import {
   faArrowRight,
   faEraser,
 } from '@fortawesome/free-solid-svg-icons';
-import { tailWindCol400, faviconFromSite, validURL } from './utils.mjs';
+import { tailWindCol400, tailWindCol700, validURL } from './utils.mjs';
 
 const WallTool = ({ toolSetting, setToolSetting }) => (
   <div>

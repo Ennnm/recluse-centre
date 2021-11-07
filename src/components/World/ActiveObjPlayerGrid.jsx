@@ -40,7 +40,7 @@ const isWall = (obj) => {
   return true;
 };
 
-const movedPosition = (userPosition, x, y) => {
+const squareInDirection = (userPosition, x, y) => {
   let destinationX = userPosition.x;
   let destinationY = userPosition.y;
 
@@ -63,8 +63,8 @@ export default function ActiveObjPlayerGrid({
 }) {
   const backgrndArr = world.worldState.board;
   const [userPosition, setUserPosition] = useState({
-    x: getRandomInt(numCols),
-    y: 0,
+    x: 3 + getRandomInt(5),
+    y: 8 + getRandomInt(5),
     // y: getRandomInt(numRows / 2),
   });
   const [playersPositions, setPlayersPositions] = useState(genGridArray());
@@ -106,7 +106,7 @@ export default function ActiveObjPlayerGrid({
     }
   };
   const getAdjCells = () =>
-    directions.map((dir) => movedPosition(userPosition, dir[0], dir[1]));
+    directions.map((dir) => squareInDirection(userPosition, dir[0], dir[1]));
 
   const getAdjacentPlayers = () => {
     const adjCells = getAdjCells().filter((x) => x !== null);
@@ -126,7 +126,7 @@ export default function ActiveObjPlayerGrid({
   const handleDirKeys = (key) => {
     const direction = getDirVectorFromKeyCode(key);
 
-    const movedLocation = movedPosition(
+    const movedLocation = squareInDirection(
       userPosition,
       direction[0],
       direction[1]
@@ -177,31 +177,23 @@ export default function ActiveObjPlayerGrid({
     interactWPlayer();
   };
   const handleBuildKey = () => {
-    // const userSquareChilds = userSquare.current.childNodes;
-    // userSquareChilds.forEach((child) => {
-    //   const currDisplay = child.style.display;
-    //   child.style.display = currDisplay === 'none' ? 'block' : 'none';
-    // });
     const userSqDisplay = userSquare.current.style.visibility;
     userSquare.current.style.visibility =
       userSqDisplay === 'hidden' ? 'visible' : 'hidden';
-    // userSquareChilds.forEach((child) => {
-    //   const currDisplay = child.style.display;
-    //   child.style.display = currDisplay === 'none' ? 'block' : 'none';
-    // });
   };
 
   const handlePlayersPositions = (playerPos) => {
-    console.log('hanndling playing positions');
+    console.log('handling playing positions');
     // console.log('playerPos :>> ', playerPos);
     // remove existing copy
     // console.log('playerPos :>> ', playerPos);
-    // playerPos = playerPos.map((row) =>
-    //   row.map((cell) => (cell !== null && cell.id === userId ? null : cell))
-    // );
-    // const { x, y } = userPosition;
-    // console.log('userObj :>> ', userObj);
-    // playerPos[y][x] = userObj;
+    playerPos = playerPos.map((row) =>
+      row.map((cell) => (cell !== null && cell.id === userId ? null : cell))
+    );
+    const { x, y } = userPosition;
+    console.log('userObj :>> ', userObj);
+    playerPos[y][x] = userObj;
+
     setPlayersPositions(playerPos);
   };
 

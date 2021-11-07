@@ -208,7 +208,8 @@ export default function Square({
       socket={socket}
     />
   );
-  if (actObj !== null) {
+  // if (typeof actObj === 'object') {
+  if (actObj !== null && actObj !== undefined) {
     if ('url' in actObj) {
       fill = (
         <ObjectSquare
