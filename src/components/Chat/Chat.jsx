@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 function Message({ userId, messageContent }) {
@@ -89,6 +90,7 @@ export default function Chat({
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
   const [showChatBody, setShowChatBody] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   useEffect(() => {
     socket.emit('chat:join', {
@@ -107,25 +109,41 @@ export default function Chat({
 
   const sendMessage = async () => {
     if (currentMessage.trim() !== '') {
-      const hour = new Date(Date.now()).getHours();
-      const min = new Date(Date.now()).getMinutes();
+      setIsSendingMessage(true);
+      const date = new Date(Date.now());
+      const hour = date.getHours();
+      const min = date.getMinutes();
+      const sec = date.getSeconds();
       const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
       const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+      const secFmt = (sec.toString().length === 1 ? `0${sec}` : `${sec}`);
       const messageData = {
         room,
         username,
         userId,
         realName,
         message: currentMessage,
-        time: `${hourFmt}:${minFmt}`,
+        time: `${hourFmt}:${minFmt}:${secFmt}`,
+        date,
         context: 'message',
       };
 
-      await socket.emit('chat:send', messageData);
-      // set message list also when we SEND / EMIT our own message
-      setMessageList((list) => [...list, messageData]);
-      setCurrentMessage('');
-      setShowChatBody(true);
+      axios
+        .post(`/world/${room}/createmessage`, messageData)
+        .then(async (response) => {
+          if (!response.data.error) {
+            await socket.emit('chat:send', messageData);
+            // set message list also when we SEND / EMIT our own message
+            setMessageList((list) => [...list, messageData]);
+            setCurrentMessage('');
+            setShowChatBody(true);
+            setIsSendingMessage(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsSendingMessage(false);
+        });
     }
   };
 
@@ -148,13 +166,13 @@ export default function Chat({
       <div className={`chat-body${showChatBody ? '' : ' d-none'}`}>
         <ScrollToBottom className="message-container">
           {messageList.map((messageContent) => (
-            <Message userId={userId} messageContent={messageContent} />
+            <Message key={`messageUser${messageContent.username}messageTime${messageContent.time.split(':').join('')}WorldId${room}`} userId={userId} messageContent={messageContent} />
           ))}
         </ScrollToBottom>
       </div>
       <div className="chat-footer">
         <input type="text" className="chat-input" placeholder="Hey..." maxLength="640" value={currentMessage} onChange={handleCurrentMessageChange} onKeyPress={handleCurrentMessageKeyPress} onFocus={handleChatFocused} onBlur={handleChatUnfocused} />
-        <button type="button" className="chat-submit-button" onClick={sendMessage}>
+        <button type="button" disabled={isSendingMessage} className="chat-submit-button" onClick={sendMessage}>
           &#x27A4;
         </button>
         <button type="button" className="chat-expand-button" onClick={handleShowChatBody}>

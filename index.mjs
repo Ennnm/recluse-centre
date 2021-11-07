@@ -92,17 +92,21 @@ const onConnection= (socket)=>{
     }
     chatUsers.push(obj);
     socket.join(data.room);
-    const hour = new Date(Date.now()).getHours();
-    const min = new Date(Date.now()).getMinutes();
+    const date = new Date(Date.now());
+    const hour = date.getHours();
+    const min = date.getMinutes();
+    const sec = date.getSeconds();
     const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
     const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
+    const secFmt = (sec.toString().length === 1 ? `0${sec}` : `${sec}`);
     const messageData = {
       room: data.room,
       username: data.username,
       userId: data.userId,
       realName: data.realName,
       message: '',
-      time: `${hourFmt}:${minFmt}`,
+      time: `${hourFmt}:${minFmt}:${secFmt}`,
+      date,
       context: 'connected',
     };
     socket.to(data.room).emit('chat:receive', messageData);
@@ -125,18 +129,21 @@ const onConnection= (socket)=>{
     }
 
     if (Object.keys(userObj).length > 0) {
-      const hour = new Date(Date.now()).getHours();
-      const min = new Date(Date.now()).getMinutes();
+      const date = new Date(Date.now());
+      const hour = date.getHours();
+      const min = date.getMinutes();
+      const sec = date.getSeconds();
       const hourFmt = (hour.toString().length === 1 ? `0${hour}` : `${hour}`);
       const minFmt = (min.toString().length === 1 ? `0${min}` : `${min}`);
-      
+      const secFmt = (sec.toString().length === 1 ? `0${sec}` : `${sec}`);
       const messageData = {
         room: userObj.room,
         username: userObj.username,
         userId: userObj.userId,
         realName: userObj.realName,
         message: '',
-        time: `${hourFmt}:${minFmt}`,
+        time: `${hourFmt}:${minFmt}:${secFmt}`,
+        date,
         context: 'disconnected',
       };
       socket.to(userObj.room).emit('chat:receive', messageData);

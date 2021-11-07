@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import db from './models/index.mjs';
 
 import initWorldsController from './controllers/worlds.mjs';
+import initMessageController from './controllers/messages.mjs';
 import initSignupController from './controllers/signup.mjs';
 import initLoginController from './controllers/login.mjs';
 import initUsersController from './controllers/users.mjs';
@@ -9,6 +10,7 @@ import initUsersController from './controllers/users.mjs';
 export default function routes(app) {
   console.log('test');
   const worldController = initWorldsController(db);
+  const MessageController = initMessageController(db);
   const SignupController = initSignupController(db);
   const LoginController = initLoginController(db);
   const UserController = initUsersController(db);
@@ -17,6 +19,7 @@ export default function routes(app) {
   app.get('/world/:id', worldController.show);
   app.put('/world/:id/edit', worldController.edit);
   app.post('/world', worldController.create);
+  app.post('/world/:id/createmessage', MessageController.create);
 
   // USER CONTROL
   app.post('/signup', SignupController.create);
