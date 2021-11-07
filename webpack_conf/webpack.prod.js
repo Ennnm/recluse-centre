@@ -31,7 +31,7 @@ module.exports = merge(common, {
         },
       },
       {
-        test: /\.(scss|pcss|postcss|css)$/i,
+        test: /\.scss$/i,
         use: [
           'style-loader',
           'css-loader',
