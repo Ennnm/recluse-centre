@@ -81,7 +81,7 @@ I have worked with interns similar to Jia En before: brilliant, very creative, a
 
 In group work, we can never have perfect 50-50 allocation of work. In my work experience before Bootcamp, people are unlikely to complain about work allocation if they are passionate about what they are working on 😝.
 
-Yes, I sincerely feel that Jia En was the hard carry for this project in the product engineering sense. However, she was also getting quite tired of typical CRUD apps setups at this point, so I am more than willing to do the dirtier work of authentication setup, routes, registration and login flow. This work is probably less technically challenging but more tedious compared to world building and interactions, but they are still important aspects of a social application.
+Yes, I sincerely feel that Jia En was the hard carry for this project in the product engineering sense. However, I knew she was also getting quite tired of typical CRUD apps setups at this point. Thus, I am more than willing to do the dirtier work of authentication setup, routes, registration and login flow. This work is probably less technically challenging but more tedious compared to world building and interactions, but they are still important experiential aspects of a social application.
 
 Despite not working on the aspects most will consider to be the "most fun", I still learnt a lot! It's interesting re-thinking authentication flows in a heavily AJAX-ed application, compared to my previous setups using server-side rendering. 
 
