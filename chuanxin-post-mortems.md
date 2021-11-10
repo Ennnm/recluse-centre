@@ -3,9 +3,10 @@
 ## What went well? Please share a link to the specific code.
 
 ### Socket.io and the Database
+
 I had to figure out how to use Socket.io together with AJAX calls to the database, because tutorials online usually focus on setting up Socket.io on the front-end without consideration of using a database.
 
-Instead of showing you a specific line of code, I will be talking through a series of connected diagrams [here](https://lucid.app/lucidchart/5890a381-f2c4-46b6-a48c-40b64cc7c381/edit?viewport_loc=247%2C184%2C1591%2C719%2Cg2gpeH_JiEd~&invitationId=inv_fcdec2c5-cf91-4e01-b6ae-48370dc1fccb). 
+Instead of showing you a specific line of code, I will be talking through a series of connected diagrams [here](https://lucid.app/lucidchart/5890a381-f2c4-46b6-a48c-40b64cc7c381/edit?viewport_loc=247%2C184%2C1591%2C719%2Cg2gpeH_JiEd~&invitationId=inv_fcdec2c5-cf91-4e01-b6ae-48370dc1fccb).
 
 Long story short, I will retrieve the message history from the database when the user has first connected to the world. Subsequently, all other messages will be received from Socket.io payloads (as opposed to payloads from AJAX calls), but only when the API call is successful.
 
@@ -29,7 +30,7 @@ We switched to a 2-port setup for the IO instance and Express initially. You can
 
 However, we recognised that may pose problems when deploying later. How do we set Heroku up such that it has 2 ports listening at the same time? Heroku will provide a `PORT` variable in `process.env`, but what about 2 ports?
 
-We quickly realised by changing our way of thinking about servers, we may still have a single port environment which will help a lot with making deployment easier. If a "server" is something that listens to a port, the IO instance *need not* be a "server".
+We quickly realised by changing our way of thinking about servers, we may still have a single port environment which will help a lot with making deployment easier. If a "server" is something that listens to a port, the IO instance _need not_ be a "server".
 
 This is [how we have finally set it up](https://github.com/Ennnm/recluse-centre/commit/d6590c22296432760b196d9e0364944c5c480195). Briefly, we wrapped a HTTP server instance around an Express app instance. We have the IO instance listen to the server instance, and in turn the server instance listens to 1 port. If a "server" is just something that listens to a port, we now only have 1 server ... and the IO instance listens to the server as opposed to another port.
 
@@ -51,21 +52,11 @@ This means that Bootstrap's and Tailwind's CSS classes are unlikely to clash and
 
 That said, it might be preferable if we have come to a consensus early on the UI library to use. It is usually not recommended to have multiple large UI libraries imported, for fear of clashing styles. We wouldn't want to have Bootstrap and Material UI running at the same time, conflicting each other.
 
-### Webpack
-
-Secondly, Webpack. I believe both of us would have benefited from knowing how to set up Webpack by ourselves better. StackOverflow and copying setups will not suffice, because everyone's Webpack setup differs.
-
-That said, I also felt Rocket Academy's documentations on Webpack can also be better. Quoting [this documentation here](https://bootcamp.rocketacademy.co/6-6-frontend-infrastructure/6.1-webpack/6.1.1-webpack-with-local-modules):
-
-> We will rarely need to configure Webpack from scratch, because usually someone on the team has done it already. No need to understand all the details of Webpack configuration at the moment.
-
-Given the overall personality of this batch to explore outside the curriculum, such a statement will not suffice. Then again, as mentioned earlier, everyone's Webpack setup differs. I also know senior developers who have had difficulties wrangling with Webpack. Personally, I am not sure how Rocket Academy can improve the Webpack documentation so that we are sufficiently confident to set up our own configurations.
-
 ### Consistency in chat timestamps in Socket.io
 
 Let's refer to the diagrams [here](https://lucid.app/lucidchart/5890a381-f2c4-46b6-a48c-40b64cc7c381/edit?viewport_loc=247%2C184%2C1591%2C719%2Cg2gpeH_JiEd~&invitationId=inv_fcdec2c5-cf91-4e01-b6ae-48370dc1fccb) again.
 
-I only realised this bug during the project presentations, because a student from FTBC5 is living in a timezone 1 hour before Singapore time. Namely, the order of the chat messages is rendered correctly on the chat interface, but her timestamp says `9:40:00` instead of `10:40:00` instead. 
+I only realised this bug during the project presentations, because a student from FTBC5 is living in a timezone 1 hour before Singapore time. Namely, the order of the chat messages is rendered correctly on the chat interface, but her timestamp says `9:40:00` instead of `10:40:00` instead.
 
 No particular code to show for this, but I am rendering the timestamps as a string using `${hour}:${min}:${sec}` on `socket.emit` instead of `socket.on('chat:receive')`. Using Socket.io and databases deployed on Heroku, I should not only be considering the differences between client time and server time, but also if the timestamp should be reflecting the one on the client sender's end, or the client recipient's end.
 
@@ -83,7 +74,7 @@ In group work, we can never have perfect 50-50 allocation of work. In my work ex
 
 Yes, I sincerely feel that Jia En was the hard carry for this project in the product engineering sense. However, I knew she was also getting quite tired of typical CRUD apps setups at this point. Thus, I am more than willing to do the dirtier work of authentication setup, routes, registration and login flow. This work is probably less technically challenging but more tedious compared to world building and interactions, but they are still important experiential aspects of a social application.
 
-Despite not working on the aspects most will consider to be the "most fun", I still learnt a lot! It's interesting re-thinking authentication flows in a heavily AJAX-ed application, compared to my previous setups using server-side rendering. 
+Despite not working on the aspects most will consider to be the "most fun", I still learnt a lot! It's interesting re-thinking authentication flows in a heavily AJAX-ed application, compared to my previous setups using server-side rendering.
 
 I also accomplished my goal of learning Socket.io this project. Chat is a common "basic" example of learning Socket.io, but I learnt how to integrate Socket.io with an app that has a database. Also, I had to consider when to retrieve information from a database, and when I should simply use the payloads provided by Socket.io.
 
