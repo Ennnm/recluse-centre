@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rocketacademy/react-express-base-swe1.git"
+    "url": "git+https://github.com/Ennnm/recluse-centre.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rocketacademy/react-express-base-swe1/issues"
+    "url": "https://github.com/Ennnm/recluse-centre/issues"
   },
-  "homepage": "https://github.com/rocketacademy/react-express-base-swe1#readme",
+  "homepage": "https://github.com/Ennnm/recluse-centre#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
