@@ -33,17 +33,18 @@
 
 ## About The Project
 
-_some description_
-
 ![screenshot of 2D grid world](/images/kai-ss.png)
 
+With the emergence of COVID-19, students and professionals worldwide exchanged physical offices and classrooms for remote learning and online conferencing.
 
+Recluse Centre simulates the experience of real-life social interactions and working environments with a 2-D virtual world to facilitate discussions and co-working.
 
-​	
+#### With Recluse Centre, you can:
 
-
-
-
+- Have "world"-wide discussions with peers in your 2-D world
+- Design social and co-working spaces by creating rooms with walls and colouring them, and assigning room names to said walls.
+- Set meeting agendas, create video conferencing, or simply set up useful tools for your co-working peers with our build tool's external link creator.
+- Explore the social spaces created by your peers in your 2-D world, and interact with the links and objects in the world. 
 
 You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
