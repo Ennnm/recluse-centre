@@ -52,19 +52,35 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 ## Usage Steps
 
-_some description_
+<img width="1440" alt="Screenshot 2022-01-12 at 1 04 59 AM" src="https://user-images.githubusercontent.com/7672836/148988417-5247e9e6-2bad-42e1-8d5f-ba2d5aa4e398.png">
+
+1. Starting from [our landing page](https://fast-reef-85640.herokuapp.com/), log in or register for an account.
+
+![screenshot of 2D grid world](/images/kai-ss.png)
+
+2. Upon logging in, you should land in a world. The instructions for moving your character, opening the build tool and interacting with objects and links will be in the yellow alert below the top navigation bar.
 
 ![query other user](/images/query-user.png)
 
 ![query link](/images/query-link.png)
 
-​	
+3. Standing next to a link (or a character, or an object), you can press E on your keyboard to interact with it. Interacting with it opens a tooltip with its description, and a link (if any). For external link objects, you can also open them in a new window by clicking on them.
 
+<img width="427" alt="Screenshot 2022-01-12 at 1 12 32 AM" src="https://user-images.githubusercontent.com/7672836/148989493-664efe32-760a-4bb8-b75c-67163a5dac98.png">
 
+4. Pressing B on your keyboard opens the build tool. There should be 4 options available. In this example, we will select the Wall tool.
 
+<img width="770" alt="Screenshot 2022-01-12 at 1 14 36 AM" src="https://user-images.githubusercontent.com/7672836/148989814-173b8c36-cd8d-4899-8709-e7ad6920cf7b.png">
 
+5. Clicking on the Wall tool should open a palette of colours you can use for your wall. Click on any one you prefer. For this demo, we just clicked on the red colour.
 
+<img width="765" alt="Screenshot 2022-01-12 at 1 16 11 AM" src="https://user-images.githubusercontent.com/7672836/148990091-d617ed8d-bbf8-4741-83bb-d453be4d2e09.png">
 
+6. Click any unoccupied tile on the grid map immediately after selecting your colour to add the wall. In the screenshot above, we just created a red wall next to the character Chuan Xin. This "click on a tile immediately after selecting and filling up the required information" interface is also used for the other 3 build tools: adding a character to a wall, adding a external link, erasing a wall or object. Press B again or click on the cross on the right-hand side of the build menus to exit from the interface.
+
+<img width="366" alt="Screenshot 2022-01-12 at 1 21 03 AM" src="https://user-images.githubusercontent.com/7672836/148990841-d9fe623d-360e-4727-b337-eaa962a63db7.png">
+
+7. Click on the blue button in the bottom-right hand corner of the page to expand or collapse the chat interface. Scroll up or down to view the chat messages. The input box in the bottom-left hand corner of the page allows you to type out a message. Hitting Enter or clicking on the green button allows you to submit your typed message to broadcast to visitors of the world. Your messages will persist throughout the entire lifetime of the world.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
