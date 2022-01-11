@@ -77,7 +77,7 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 <img width="765" alt="Screenshot 2022-01-12 at 1 16 11 AM" src="https://user-images.githubusercontent.com/7672836/148990091-d617ed8d-bbf8-4741-83bb-d453be4d2e09.png">
 
-6. Click any unoccupied tile on the grid map immediately after selecting your colour to add the wall. In the screenshot above, we just created a red wall next to the character Chuan Xin. This "click on a tile immediately after selecting and filling up the required information" interface is also used for the other 3 build tools: adding a character to a wall, adding a external link, erasing a wall or object. Press B again or click on the cross on the right-hand side of the build menus to exit from the interface.
+6. Click any unoccupied tile on the grid map immediately after selecting your colour to add the wall. In the screenshot above, we just created a red wall to the left of the character Chuan Xin. This "click on a tile immediately after selecting and filling up the required information" interface is also used for the other 3 build tools: adding a character to a wall, adding a external link, erasing a wall or object. Press B again or click on the cross on the right-hand side of the build menus to exit from the interface.
 
 <img width="1440" alt="Screenshot 2022-01-12 at 1 31 46 AM" src="https://user-images.githubusercontent.com/7672836/148992471-6bf0b6da-ee8c-49cf-aa88-0f80ef13e364.png">
 
