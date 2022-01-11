@@ -78,7 +78,7 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 6. Click any unoccupied tile on the grid map immediately after selecting your colour to add the wall. In the screenshot above, we just created a red wall next to the character Chuan Xin. This "click on a tile immediately after selecting and filling up the required information" interface is also used for the other 3 build tools: adding a character to a wall, adding a external link, erasing a wall or object. Press B again or click on the cross on the right-hand side of the build menus to exit from the interface.
 
-<img width="366" alt="Screenshot 2022-01-12 at 1 21 03 AM" src="https://user-images.githubusercontent.com/7672836/148990841-d9fe623d-360e-4727-b337-eaa962a63db7.png">
+<img width="1440" alt="Screenshot 2022-01-12 at 1 21 29 AM" src="https://user-images.githubusercontent.com/7672836/148991466-e5f4920a-e8a8-4856-8ee3-89db2c947538.png">
 
 7. Click on the blue button in the bottom-right hand corner of the page to expand or collapse the chat interface. Scroll up or down to view the chat messages. The input box in the bottom-left hand corner of the page allows you to type out a message. Hitting Enter or clicking on the green button allows you to submit your typed message to broadcast to visitors of the world. Your messages will persist throughout the entire lifetime of the world.
 
