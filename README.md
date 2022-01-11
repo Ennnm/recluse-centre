@@ -19,7 +19,8 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#built-with">Built With</a></li>
-	<li><a href="#roadmap">Roadmap</a></li>
+	 <li><a href="#roadmap">Roadmap</a></li>
+	 <li><a href="#retrospective">Retrospective</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -84,8 +85,6 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 ## Built With
 
 ##### Frontend
@@ -113,8 +112,6 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -122,12 +119,18 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 - [ ] Missing username when user first enters the world. Username only appears after said user moves.
 - [ ] Inability to press B to re-open Build tool immediately after user closes it by clicking the cross button on the Build menu. The user can press B to re-open it only after moving your character.
 - [ ] User can create multiple worlds.
-- 
+
 See the [open issues](https://github.com/Ennnm/recluse-centre/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- RETROSPECTIVE -->
 
+## Retrospective
+
+WIP
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 
