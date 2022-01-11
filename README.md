@@ -119,9 +119,11 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 
 ## Roadmap
 
-- [] missing name when user enters the world that appears when user moves
-
-See the [open issues](https://github.com/Ennnm/repo_name/issues) for a full list of proposed features (and known issues).
+- [ ] Missing username when user first enters the world. Username only appears after said user moves.
+- [ ] Inability to press B to re-open Build tool immediately after user closes it by clicking the cross button on the Build menu. The user can press B to re-open it only after moving your character.
+- [ ] User can create multiple worlds.
+- 
+See the [open issues](https://github.com/Ennnm/recluse-centre/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
