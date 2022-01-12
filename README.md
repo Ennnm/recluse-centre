@@ -209,7 +209,9 @@ Project Link: [https://github.com/Ennnm/recluse-centre](https://github.com/Ennnm
 
 ## Acknowledgments
 
-* [Recurse Center Virtual RC](https://www.recurse.com/virtual-rc)
+* [Recurse Center Virtual RC](https://www.recurse.com/virtual-rc) (primary inspiration)
+* [Gather](https://www.gather.town/) (secondary inspiration)
+* [Build A Realtime Chat App In ReactJS and NodeJS | Socket.io Tutorial by PedroTech](https://youtu.be/NU-HfZY3ATQ)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
