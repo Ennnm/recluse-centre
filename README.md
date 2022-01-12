@@ -128,7 +128,33 @@ See the [open issues](https://github.com/Ennnm/recluse-centre/issues) for a full
 
 ## Retrospective
 
-WIP
+#### Entity Relationship Diagram (ERD)
+
+The [ERD](https://docs.google.com/document/d/1fQhvfqzocZeyBxOy1r0T87QU6TS7LFvhEnjATlzulaQ/edit#) is set up with the initial assumption that we will need the database to store various sessions and activities of the users, such as their last position in the world. This table is made redundant when the decision is made to restart the user's position everytime they return to the world.
+
+Without the need of a `sessions` table, feature sets involving notifications and messaging in the world are reliant on Socket.io. The features that involve an interaction between the database and Socket.io include building objects and walls in the world, and chat messaging.
+
+Additionally, tables are also set up with the vision of allowing users to create their own worlds. Unfortunately, this feature has not come to fruition at the time of writing due to the project deadline.
+
+#### Socket.io and Express Setup
+
+The [initial setup](https://github.com/Ennnm/recluse-centre/blob/884b9dc8b5e9d4289ab13c2eca603674f2b0a216/index.mjs#L68-L80) of Socket.io on Express involves wrapping setting up the Socket.io instance around the Express app, but only having the Express app listen to our port.
+
+Strangely, this worked on Jia En's Windows setup, but the Socket.io instance can never be found on Chuan Xin's MacOS setup. With guidance from this [Youtube video tutorial on Socket.io](https://youtu.be/NU-HfZY3ATQ), [the initial setup was changed](https://github.com/Ennnm/recluse-centre/blob/f76612eec8c2f4a34f939f07b2d3ad28415d429d/index.mjs#L70-L87) to have the Socket.io instance and the Express app listen to different ports.
+
+However, we envisioned that we may have problems with deploying this application for the purposes of an interactive presentation for our project demonstration. This is because we cannot directly set the ports for our Socket.io instance and Express app to listen on Heroku; Heroku will configure the ports internally and forward traffic accordingly.
+
+[Changes were made again](https://github.com/Ennnm/recluse-centre/blob/d6590c22296432760b196d9e0364944c5c480195/index.mjs#L71-L91) so that we can follow a single-port setup once more. This time, we learnt that the [initial setup](https://github.com/Ennnm/recluse-centre/blob/884b9dc8b5e9d4289ab13c2eca603674f2b0a216/index.mjs#L68-L80) could be problematic because the Socket.io server instance wrapped around Express is not listening to the port; only Express is.
+
+#### Tailwind, Bootstrap, and Webpack
+
+While it is never ever recommended to mix 2 UI libraries together due to the possibility of conflicting classes and styles, we decided to take the risk and do so. This is because of our dilemma: while we wanted to try a different CSS library (Tailwind), we also wanted to be able to reuse old UI templates (Bootstrap) for the navbar and authentication pages from previous projects.
+
+Fortunately, there aren't too many conflicts on having 2 UI libraries together. The only prominent conflict is Tailwind seems to reset text and background colour styling on default tags, and we imported Tailwind after Bootstrap. However, this is mitigated by re-applying (albeit tediously) the colour classes provided by Tailwind on the background and texts that we did not want reset.
+
+We tried importing the SCSS files for Tailwind and Bootstrap using 2 preliminary sources: importing [through the JSX files](https://github.com/Ennnm/recluse-centre/commit/c60c9e2016c9283363a1185a89f81368d7223fa3), and then [through the SCSS files](https://github.com/Ennnm/recluse-centre/commit/ccd1fcadecdf17853558740bf412cc43e53fda59). While both methods worked locally, Webpack had trouble compiling our modules for Heroku deployment, and we only had cryptic error messages from attempting to deploy.
+
+Due to the lack of time to explore and re-configure our Webpack setup for production, we [settled for importing the CSS of Tailwind and Bootstrap on index.html](https://github.com/Ennnm/recluse-centre/commit/2ef5b4b902f361ee4f64786cab001ccdd7b491d5). This is with the knowledge that we aren't using any of Tailwind's features listed [here](https://v1.tailwindcss.com/docs/installation#using-tailwind-via-cdn), by only using their utility classes.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
