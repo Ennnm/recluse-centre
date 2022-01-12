@@ -96,6 +96,10 @@ You can find the deployed app [here](https://fast-reef-85640.herokuapp.com/)
 - [Express](https://expressjs.com/)
 - [Sequelize/PostgreSQL](https://sequelize.org/v7/)
 
+##### Module Bundler
+
+- [Webpack](https://webpack.js.org/)
+
 ##### Realtime user movement and chat
 
 - [Socket.IO](https://socket.io/)
