@@ -4,7 +4,7 @@
 
 # Recluse Centre
 
-##### Recluse centre is an interactive virtual space where you can roam, chat, customize spaces and host links. 
+##### Recluse Centre is an interactive virtual space where you can roam, chat, customize spaces and host links. 
 
 <!-- TABLE OF CONTENTS -->
 
