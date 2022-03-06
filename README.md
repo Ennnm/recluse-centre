@@ -4,7 +4,9 @@
 
 # Recluse Centre
 
-##### Recluse Centre is an interactive virtual space where you can roam, chat, customize spaces and host links. 
+Recluse Centre is an interactive virtual space where you can roam, chat, customize spaces and host links. 
+
+**This project is deployed and can be viewed on this [website](https://fast-reef-85640.herokuapp.com/).**
 
 <!-- TABLE OF CONTENTS -->
 
