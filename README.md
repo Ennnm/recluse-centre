@@ -21,8 +21,15 @@ Recluse Centre is an interactive virtual space where you can roam, chat, customi
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#built-with">Built With</a></li>
-	 <li><a href="#roadmap">Roadmap</a></li>
-	 <li><a href="#retrospective">Retrospective</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#retrospective">Retrospective</a>
+      <ol>
+	<li><a href="#entity-relationship-diagram-erd">Entity Relationship Diagram (ERD)</a></li>
+	<li><a href="#socketio-and-express-setup">Socket.io and Express Setup</a></li>
+	<li><a href="#tailwind-bootstrap-and-webpack">Tailwind, Bootstrap, and Webpack</a></li>
+      </ol>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -134,6 +141,8 @@ See the [open issues](https://github.com/Ennnm/recluse-centre/issues) for a full
 
 ## Retrospective
 
+<!-- ENTITY RELATIONSHIP DIAGRAM ERD -->
+
 #### Entity Relationship Diagram (ERD)
 
 The [ERD](https://docs.google.com/document/d/1fQhvfqzocZeyBxOy1r0T87QU6TS7LFvhEnjATlzulaQ/edit#) is set up with the initial assumption that we will need the database to store various sessions and activities of the users, such as their last position in the world. This table is made redundant when the decision is made to restart the user's position everytime they return to the world.
@@ -141,6 +150,10 @@ The [ERD](https://docs.google.com/document/d/1fQhvfqzocZeyBxOy1r0T87QU6TS7LFvhEn
 Without the need of a `sessions` table, feature sets involving notifications and messaging in the world are reliant on Socket.io. The features that involve an interaction between the database and Socket.io include building objects and walls in the world, and chat messaging.
 
 Additionally, tables are also set up with the vision of allowing users to create their own worlds. Unfortunately, this feature has not come to fruition at the time of writing due to the project deadline.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- SOCKETIO AND EXPRESS SETUP -->
 
 #### Socket.io and Express Setup
 
@@ -151,6 +164,10 @@ Strangely, this worked on Jia En's Windows setup, but the Socket.io instance can
 However, we envisioned that we may have problems with deploying this application for the purposes of an interactive presentation for our project demonstration. This is because we cannot directly set the ports for our Socket.io instance and Express app to listen on Heroku; Heroku will configure the ports internally and forward traffic accordingly.
 
 [Changes were made again](https://github.com/Ennnm/recluse-centre/blob/d6590c22296432760b196d9e0364944c5c480195/index.mjs#L71-L91) so that we can follow a single-port setup once more. This time, we learnt that the [initial setup](https://github.com/Ennnm/recluse-centre/blob/884b9dc8b5e9d4289ab13c2eca603674f2b0a216/index.mjs#L68-L80) could be problematic because the Socket.io server instance wrapped around Express is not listening to the port; only Express is.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- TAILWIND BOOTSTRAP AND WEBPACK -->
 
 #### Tailwind, Bootstrap, and Webpack
 
